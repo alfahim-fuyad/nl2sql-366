@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Natural Language to SQL</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar" id="navbar">
+  <button class="logo" id="logo-btn" type="button" aria-label="Reload page">
+    <span class="lo-nl">nl</span><span class="lo-2">2</span><span class="lo-sql">sql</span><span class="lo-dot"></span>
+  </button>
+
+  <!-- Hamburger (mobile only) -->
+  <button class="nav-hamburger" id="nav-hamburger" type="button" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="nav-links" id="nav-links">
+    <button id="about-btn" type="button">About</button>
+    <button id="help-btn" type="button">Help</button>
+    <button type="button" onclick="window.location.href='/simulator'">Run Simulator</button>
+    <button type="button" onclick="window.open('https://github.com/fuad556805/nl2sql-ai','_blank')">GitHub</button>
+  </div>
+</div>
+
+<!-- About modal -->
+<div class="modal-overlay" id="about-modal">
+  <div class="modal-box about-modal-box">
+
+    <!-- App description -->
+    <div class="about-app-section">
+      <h2 class="about-app-title">About nl2sql</h2>
+      <p>
+        <strong>nl2sql</strong> is a hybrid natural-language-to-SQL tool. It combines a
+        machine-learning intent classifier with rule-based attribute matching to turn
+        plain-English questions into real SQL queries — no coding required.
+      </p>
+      <ul>
+        <li>Upload any CSV file — columns and sample values are read automatically.</li>
+        <li>Type a question like <code>"average salary by district"</code>.</li>
+        <li>The AI detects your intent, matches the right columns, and builds a safe SQL query.</li>
+        <li>Results appear instantly. No data ever leaves this app — everything runs locally.</li>
+      </ul>
+    </div>
+
+    <!-- Divider -->
+    <div class="about-divider">
+      <span>Project Proposal</span>
+    </div>
+
+    <!-- University badge -->
+    <div class="about-university">
+      <div class="about-uni-logo">EWU</div>
+      <div>
+        <div class="about-uni-name">East West University</div>
+        <div class="about-uni-dept">Department of Computer Science &amp; Engineering</div>
+      </div>
+    </div>
+
+    <!-- Course info grid -->
+    <div class="about-info-grid">
+      <div class="about-info-cell">
+        <span class="about-info-label">Course</span>
+        <span class="about-info-value">Artificial Intelligence</span>
+      </div>
+      <div class="about-info-cell">
+        <span class="about-info-label">Code</span>
+        <span class="about-info-value">CSE366</span>
+      </div>
+      <div class="about-info-cell">
+        <span class="about-info-label">Section</span>
+        <span class="about-info-value">05</span>
+      </div>
+      <div class="about-info-cell">
+        <span class="about-info-label">Semester</span>
+        <span class="about-info-value">Summer 2026</span>
+      </div>
+    </div>
+
+    <!-- Group & members -->
+    <div class="about-group-header">
+      <span class="about-group-badge">Group 02</span>
+      <span class="about-section-label">Submitted by</span>
+    </div>
+    <div class="about-members">
+      <div class="about-member">
+        <span class="about-member-name">Md Al Fahim Fuyad</span>
+        <span class="about-member-id">2023-1-60-066</span>
+      </div>
+      <div class="about-member">
+        <span class="about-member-name">Md Toyabur Rhaman</span>
+        <span class="about-member-id">2023-1-60-065</span>
+      </div>
+      <div class="about-member">
+        <span class="about-member-name">Fahmida Mahin</span>
+        <span class="about-member-id">2023-3-60-481</span>
+      </div>
+    </div>
+
+    <!-- Supervisor -->
+    <div class="about-supervisor">
+      <span class="about-section-label">Submitted to</span>
+      <div class="about-supervisor-card">
+        <div class="about-supervisor-name">Md Al-Imran</div>
+        <div class="about-supervisor-role">Senior Lecturer</div>
+        <div class="about-supervisor-dept">Dept. of Computer Science &amp; Engineering</div>
+      </div>
+    </div>
+
+    <button class="modal-close" data-close="about-modal">Close</button>
+  </div>
+</div>
+
+<!-- Help modal -->
+<div class="modal-overlay" id="help-modal">
+  <div class="modal-box">
+    <h2>Help &amp; Tips</h2>
+    <p><strong>1. Upload a dataset</strong></p>
+    <ul>
+      <li>Drag &amp; drop or click to browse a <code>.csv</code> file.</li>
+      <li>The first row must contain column headers.</li>
+    </ul>
+    <p><strong>2. Ask a question</strong></p>
+    <ul>
+      <li><code>show female patients older than 30</code></li>
+      <li><code>average purchase amount by location</code></li>
+      <li><code>top 5 highest salary</code></li>
+      <li><code>count students where district is Dhaka</code></li>
+    </ul>
+    <p><strong>3. Tips for best results</strong></p>
+    <ol>
+      <li>Mention the column name in your question (e.g. "purchase amount", "review score").</li>
+      <li>Use <code>average</code>, <code>total</code>, <code>maximum</code>, <code>minimum</code> for aggregates.</li>
+      <li>Use <code>top N</code> / <code>lowest N</code> for ranked results.</li>
+      <li>Use <code>by &lt;column&gt;</code> to group results.</li>
+    </ol>
+    <p>If a question is too ambiguous, the app will show a clear error instead of guessing.</p>
+    <button class="modal-close" data-close="help-modal">Close</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Page header -->
+  <div class="header">
+    <h1>Natural Language to SQL</h1>
+    <p>Upload a CSV dataset and ask questions in plain English — the AI generates and runs the SQL for you.</p>
+  </div>
+
+  <!-- Upload error banner -->
+  <div id="global-error" class="error-box" style="display:none; margin-bottom:16px;"></div>
+
+  <!-- Upload card -->
+  <div class="card">
+    <input type="file" id="file-input" accept=".csv" />
+
+    <div id="drop-zone">
+      <div class="upload-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 16 12 12 8 16"/>
+          <line x1="12" y1="12" x2="12" y2="21"/>
+          <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+        </svg>
+      </div>
+      <h3>Drag &amp; Drop your file here</h3>
+      <p>or click anywhere in this area to browse</p>
+      <div class="badge-row">
+        <span class="badge">CSV</span>
+      </div>
+    </div>
+
+    <div id="upload-info">
+      <span class="dot"></span>
+      <span id="upload-filename"><strong>—</strong></span>
+      <span class="meta" id="upload-meta"></span>
+      <button id="change-file-btn">Change file</button>
+    </div>
+
+    <div class="req-box">
+      <div class="req-title">Data Requirements</div>
+      <ul>
+        <li>First row must contain column headers.</li>
+        <li>Supports any CSV with text and numeric columns.</li>
+        <li>Descriptive column names improve matching accuracy.</li>
+        <li>Large datasets work fine — only schema and sample values are held in memory.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Dataset preview -->
+  <div class="card" id="preview-section" style="display:none;">
+    <div class="sql-label">Dataset Preview</div>
+    <div class="results-meta" id="preview-meta"></div>
+    <div class="table-wrap" style="margin-top:10px;">
+      <table>
+        <thead id="preview-thead"></thead>
+        <tbody id="preview-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Query + Results card -->
+  <div class="card" id="query-section">
+
+    <div class="ask-row">
+      <div class="input-wrap">
+        <label for="question-input">Ask a question about your data</label>
+        <input
+          type="text"
+          id="question-input"
+          placeholder='e.g. "show female patients older than 30 from Dhaka"'
+          autocomplete="off"
+        />
+      </div>
+      <button id="ask-btn">Ask</button>
+    </div>
+
+    <div id="sql-block">
+      <div style="margin-top:20px;">
+        <div class="sql-label">Generated SQL</div>
+        <div class="intent-badge" id="intent-label"></div>
+        <div class="sql-code" id="sql-output"></div>
+      </div>
+    </div>
+
+    <div id="error-box" class="error-box" style="display:none;"></div>
+
+    <div id="results-block">
+      <div class="sql-label" style="margin-top:20px;">Query Results</div>
+      <div class="results-meta" id="results-meta"></div>
+      <div class="table-wrap">
+        <table id="results-table">
+          <thead id="results-thead"></thead>
+          <tbody id="results-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

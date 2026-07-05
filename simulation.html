@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NL2SQL Pipeline — Step-by-Step Simulation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ─── Top bar ─── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      border-bottom: 1px solid #e8e8e8;
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.83rem; font-weight: 500; color: #555;
+      text-decoration: none;
+      border: 1px solid #e0e0e0; border-radius: 7px;
+      padding: 5px 12px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .back-btn:hover { background: #f5f5f5; color: #111; }
+    .page-title { font-size: 0.95rem; font-weight: 700; color: #111; }
+    .page-sub   { font-size: 0.78rem; color: #888; margin-top: 1px; }
+    .step-counter {
+      font-size: 0.83rem; font-weight: 600;
+      color: #555; background: #f3f4f6;
+      border-radius: 20px; padding: 4px 14px;
+    }
+    .step-counter span { color: #111; }
+
+    /* ─── Pipeline map ─── */
+    .pipeline-map {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 20px 32px;
+      overflow-x: auto;
+      border-bottom: 1px solid #e8e8e8;
+      background: #fafafa;
+      scrollbar-width: thin;
+    }
+    .map-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .map-node:hover { background: #efefef; }
+    .map-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid #d1d5db;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700;
+      color: #9ca3af;
+      transition: all 0.25s;
+      flex-shrink: 0;
+    }
+    .map-node.active .map-dot {
+      background: #111; border-color: #111;
+      color: #fff; transform: scale(1.15);
+    }
+    .map-node.done .map-dot {
+      background: #22c55e; border-color: #22c55e; color: #fff;
+    }
+    .map-label {
+      font-size: 0.62rem; color: #9ca3af;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+      transition: color 0.25s;
+    }
+    .map-node.active .map-label { color: #111; font-weight: 700; }
+    .map-node.done  .map-label  { color: #22c55e; }
+    .map-arrow {
+      color: #d1d5db; font-size: 0.75rem;
+      flex-shrink: 0; padding: 0 2px;
+      padding-bottom: 18px;
+    }
+    .map-arrow.done { color: #22c55e; }
+
+    /* ─── Main layout ─── */
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      min-height: calc(100vh - 180px);
+    }
+    @media (max-width: 860px) {
+      .main { grid-template-columns: 1fr; }
+      .sidebar { border-left: none; border-top: 1px solid #e8e8e8; }
+    }
+
+    /* ─── Step content ─── */
+    .step-content {
+      padding: 36px 40px;
+      min-width: 0;
+    }
+    @media (max-width: 600px) { .step-content { padding: 24px 20px; } }
+
+    /* ─── Step transition ─── */
+    .step-panel {
+      animation: fadeSlide 0.3s ease both;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* File badge */
+    .file-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f3f4f6; border: 1px solid #e5e7eb;
+      border-radius: 8px; padding: 7px 14px;
+      margin-bottom: 22px;
+    }
+    .file-icon {
+      width: 20px; height: 20px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .file-name {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.88rem; font-weight: 700; color: #111;
+    }
+    .file-role {
+      font-size: 0.75rem; color: #6b7280; margin-left: 4px;
+    }
+
+    /* Step heading */
+    .step-num {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #9ca3af; margin-bottom: 6px;
+    }
+    .step-heading {
+      font-size: 1.4rem; font-weight: 800; color: #111; margin-bottom: 8px;
+    }
+    .step-why {
+      font-size: 0.9rem; color: #4b5563; line-height: 1.65;
+      margin-bottom: 28px; max-width: 600px;
+    }
+
+    /* Info sections */
+    .info-grid { display: flex; flex-direction: column; gap: 18px; }
+    .info-block {}
+    .info-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: #9ca3af; margin-bottom: 8px;
+    }
+    .info-box {
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 10px; padding: 14px 18px;
+      font-size: 0.88rem; color: #374151; line-height: 1.7;
+    }
+    .info-box.code {
+      background: #1e1e2e; border-color: #2d2d3d;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      color: #cdd6f4;
+    }
+    .info-box ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .info-box li { display: flex; align-items: baseline; gap: 8px; }
+    .info-box li .bullet { color: #d1d5db; font-size: 0.7rem; flex-shrink: 0; }
+
+    /* Token pills */
+    .tokens { display: flex; flex-wrap: wrap; gap: 8px; }
+    .token {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fff; border: 1px solid #d1d5db;
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 0.82rem; font-weight: 500; color: #374151;
+    }
+    .token.op  { border-color: #f97316; color: #f97316; background: #fff7ed; }
+    .token.val { border-color: #3b82f6; color: #1d4ed8; background: #eff6ff; }
+    .token.cat { border-color: #8b5cf6; color: #6d28d9; background: #f5f3ff; }
+    .token.kw  { border-color: #22c55e; color: #15803d; background: #f0fdf4; }
+
+    /* Mapping table */
+    .map-table { width: 100%; border-collapse: collapse; }
+    .map-table th {
+      text-align: left; font-size: 0.76rem; font-weight: 700;
+      color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 0 12px 10px 0; border-bottom: 1px solid #e5e7eb;
+    }
+    .map-table td {
+      padding: 9px 12px 9px 0;
+      font-size: 0.85rem; color: #374151;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: middle;
+    }
+    .map-table tr:last-child td { border-bottom: none; }
+    .map-table code {
+      background: #f3f4f6; border: 1px solid #e5e7eb;
+      border-radius: 4px; padding: 2px 7px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.82rem; color: #111;
+    }
+    .arrow-cell { color: #9ca3af; font-size: 0.8rem; }
+
+    /* SQL output */
+    .sql-block {
+      background: #1e1e2e; border-radius: 10px;
+      padding: 20px 22px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.88rem; line-height: 1.8; color: #cdd6f4;
+    }
+    .sql-block .kw  { color: #89b4fa; font-weight: 600; }
+    .sql-block .tbl { color: #a6e3a1; }
+    .sql-block .col { color: #f9e2af; }
+    .sql-block .str { color: #f38ba8; }
+    .sql-block .num { color: #fab387; }
+    .sql-block .cmt { color: #6c7086; font-style: italic; }
+
+    /* Result table */
+    .result-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .result-table th {
+      background: #f9fafb; text-align: left;
+      padding: 10px 14px; font-weight: 700; color: #374151;
+      border-bottom: 2px solid #e5e7eb; white-space: nowrap;
+    }
+    .result-table td {
+      padding: 10px 14px; color: #374151;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: #f9fafb; }
+    .badge-positive {
+      display: inline-block; font-size: 0.74rem; font-weight: 600;
+      color: #dc2626; background: #fef2f2; border: 1px solid #fecaca;
+      border-radius: 4px; padding: 2px 8px;
+    }
+    .badge-negative {
+      display: inline-block; font-size: 0.74rem; font-weight: 600;
+      color: #16a34a; background: #f0fdf4; border: 1px solid #bbf7d0;
+      border-radius: 4px; padding: 2px 8px;
+    }
+
+    /* Next file indicator */
+    .next-file {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 24px; font-size: 0.83rem; color: #6b7280;
+    }
+    .next-file strong { color: #111; font-family: monospace; }
+    .next-file .arrow { color: #d1d5db; }
+
+    /* Validation checks */
+    .check-list { display: flex; flex-direction: column; gap: 10px; }
+    .check-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 16px;
+      border-radius: 8px; border: 1px solid #e5e7eb;
+      font-size: 0.86rem; color: #374151;
+    }
+    .check-icon {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
+    }
+    .check-icon.pass { background: #dcfce7; color: #16a34a; }
+    .check-icon.fail { background: #fee2e2; color: #dc2626; }
+
+    /* ─── Sidebar ─── */
+    .sidebar {
+      border-left: 1px solid #e8e8e8;
+      padding: 32px 28px;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .sidebar-section {}
+    .sidebar-title {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: #9ca3af; margin-bottom: 12px;
+    }
+
+    /* Dataset table */
+    .ds-table { width: 100%; border-collapse: collapse; font-size: 0.79rem; }
+    .ds-table th {
+      background: #f3f4f6; text-align: left;
+      padding: 7px 10px; font-weight: 700; color: #6b7280;
+      border-bottom: 1px solid #e5e7eb; white-space: nowrap;
+    }
+    .ds-table td {
+      padding: 7px 10px; color: #374151;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .ds-table tr:last-child td { border-bottom: none; }
+    .ds-table tr.hl td { background: #fefce8; }
+
+    /* Query box */
+    .query-box {
+      background: #fff; border: 1px solid #e5e7eb;
+      border-radius: 10px; padding: 14px 16px;
+      font-size: 0.88rem; color: #111;
+      font-style: italic; line-height: 1.55;
+      position: relative;
+    }
+    .query-box::before {
+      content: '"';
+      font-size: 2rem; color: #e5e7eb;
+      position: absolute; top: 6px; left: 12px;
+      font-style: normal; line-height: 1;
+    }
+    .query-box p { padding-left: 14px; }
+
+    /* File list */
+    .file-list { display: flex; flex-direction: column; gap: 6px; }
+    .file-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 8px;
+      border: 1px solid transparent;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .file-row.active {
+      background: #111; border-color: #111; color: #fff;
+    }
+    .file-row.done {
+      background: #f0fdf4; border-color: #bbf7d0; color: #15803d;
+    }
+    .file-row.idle { color: #9ca3af; border-color: #f3f4f6; }
+    .file-row .f-icon {
+      width: 18px; height: 18px; border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.58rem; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .file-row .f-name { font-family: monospace; font-weight: 600; flex: 1; }
+    .file-row .f-check { font-size: 0.75rem; }
+
+    /* ─── Navigation ─── */
+    .nav-bar {
+      position: sticky; bottom: 0;
+      background: #fff; border-top: 1px solid #e8e8e8;
+      padding: 16px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 50;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: 8px;
+      font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all 0.15s;
+    }
+    .nav-btn.prev {
+      background: #f3f4f6; color: #374151;
+    }
+    .nav-btn.prev:hover:not(:disabled) { background: #e5e7eb; }
+    .nav-btn.next {
+      background: #111; color: #fff;
+    }
+    .nav-btn.next:hover:not(:disabled) { background: #333; }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .nav-progress {
+      display: flex; gap: 6px; align-items: center;
+    }
+    .nav-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #e5e7eb; transition: all 0.25s;
+    }
+    .nav-dot.active { background: #111; transform: scale(1.3); }
+    .nav-dot.done   { background: #22c55e; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 600px) {
+      .topbar { padding: 12px 16px; }
+      .pipeline-map { padding: 14px 16px; }
+      .nav-bar { padding: 12px 16px; }
+      .step-heading { font-size: 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="/">← Back to App</a>
+    <div>
+      <div class="page-title">NL2SQL Pipeline Simulation</div>
+      <div class="page-sub">Developer learning tool · Fixed example walkthrough</div>
+    </div>
+  </div>
+  <div class="step-counter">Step <span id="counter-cur">1</span> of <span id="counter-tot">10</span></div>
+</header>
+
+<!-- Pipeline map -->
+<nav class="pipeline-map" id="pipeline-map" aria-label="Pipeline steps"></nav>
+
+<!-- Main body -->
+<div class="main">
+
+  <!-- Step content -->
+  <section class="step-content">
+    <div id="step-panel"></div>
+  </section>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">User Query</div>
+      <div class="query-box">
+        <p>Show female patients older than 30 from Dhaka.</p>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Dataset</div>
+      <table class="ds-table">
+        <thead>
+          <tr><th>Name</th><th>Gender</th><th>Age</th><th>Location</th><th>Dengue</th></tr>
+        </thead>
+        <tbody id="dataset-body">
+          <tr><td>A</td><td>Female</td><td>35</td><td>Dhaka</td><td>Positive</td></tr>
+          <tr><td>B</td><td>Male</td><td>28</td><td>Chattogram</td><td>Negative</td></tr>
+          <tr><td>C</td><td>Female</td><td>42</td><td>Dhaka</td><td>Positive</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Module Execution Status</div>
+      <div class="file-list" id="file-list"></div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- Navigation bar -->
+<nav class="nav-bar">
+  <button class="nav-btn prev" id="prev-btn" onclick="navigate(-1)">← Previous</button>
+  <div class="nav-progress" id="nav-dots"></div>
+  <button class="nav-btn next" id="next-btn" onclick="navigate(1)">Next →</button>
+</nav>
+
+<script>
+// ─── Step definitions ────────────────────────────────────────────────────────
+
+const STEPS = [
+  {
+    file:  "app.py",
+    color: "#6366f1",
+    icon:  "PY",
+    title: "Request Entry Point",
+    why:   "app.py is the Flask web server that receives every HTTP request. When the user submits a question, app.py accepts the POST request on the <code>/ask</code> route, retrieves the session state (loaded CSV + schema), and orchestrates calls to every pipeline module in sequence.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `HTTP POST /ask<br>Body: { "question": "Show female patients older than 30 from Dhaka." }`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Validates that a dataset is already uploaded in the session.",
+          "Extracts the raw question string from the JSON body.",
+          "Loads the trained intent model from disk (intent_model.pkl + vectorizer.pkl).",
+          "Calls each pipeline module in order, threading outputs as inputs to the next."
+        ]
+      },
+      {
+        label: "Output",
+        type:  "box",
+        content: `Passes question string → <strong>tokenizer.py</strong>`
+      }
+    ],
+    next: "tokenizer.py"
+  },
+  {
+    file:  "tokenizer.py",
+    color: "#f59e0b",
+    icon:  "TK",
+    title: "Text Cleaning & Tokenization",
+    why:   "tokenizer.py normalises the raw question so downstream modules work with clean, comparable tokens. It strips punctuation, lowercases text, and removes common stopwords that add no meaning to the query.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `"Show female patients older than 30 from Dhaka."`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Lowercase the entire string.",
+          "Remove punctuation (the trailing period).",
+          "Split into individual word tokens.",
+          "Remove stopwords defined in knowledge/stopwords.json (show, from, than).",
+          "Return both the cleaned token list and the original lowercased string for phrase matching."
+        ]
+      },
+      {
+        label: "Output — tokens",
+        type:  "tokens",
+        items: [
+          { text: "female",   cls: "cat" },
+          { text: "patients", cls: "" },
+          { text: "older",    cls: "op" },
+          { text: "than",     cls: "op" },
+          { text: "30",       cls: "val" },
+          { text: "dhaka",    cls: "cat" }
+        ]
+      }
+    ],
+    next: "intent_detector.py"
+  },
+  {
+    file:  "intent_detector.py",
+    color: "#3b82f6",
+    icon:  "ML",
+    title: "Query Intent Classification",
+    why:   "intent_detector.py determines what kind of SQL query the user wants. It uses a TF-IDF vectorizer and a Multinomial Naive Bayes classifier trained on 100,000 labelled examples. Without knowing the intent, the SQL generator cannot know whether to write SELECT *, COUNT(*), AVG(), etc.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `"show female patients older than 30 from dhaka"`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Load pre-trained TF-IDF vectorizer (vectorizer.pkl).",
+          "Transform the cleaned question into a numeric TF-IDF feature vector.",
+          "Feed vector into the Naive Bayes model (intent_model.pkl).",
+          "Rule-based override: question contains 'show' without a count phrase → confirm SELECT.",
+          "Return the predicted intent class."
+        ]
+      },
+      {
+        label: "Output",
+        type:  "tokens",
+        items: [
+          { text: "Intent = SELECT", cls: "kw" }
+        ]
+      }
+    ],
+    next: "attribute_matcher.py"
+  },
+  {
+    file:  "attribute_matcher.py",
+    color: "#8b5cf6",
+    icon:  "AM",
+    title: "Entity & Column Extraction",
+    why:   "attribute_matcher.py identifies which columns the user is referring to. Users rarely type the exact column name — they say 'age' when the column is 'Age', or 'location' when it's 'Location'. This module resolves that gap using fuzzy string matching and a synonym dictionary.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `Tokens: [female, patients, older, 30, dhaka]<br>Schema columns: [Name, Gender, Age, Location, Dengue]`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Normalise each column name (lowercase, remove underscores, remove brackets).",
+          "Expand synonyms via knowledge/synonyms.json: 'location' → 'Location', 'older' → 'Age'.",
+          "Slide a window of n tokens across the question and compare each window to each column name using RapidFuzz token_sort_ratio.",
+          "Scan schema sample values — 'Female' matches Gender column, 'Dhaka' matches Location column.",
+          "Assign each matched entity to its best-fit column."
+        ]
+      },
+      {
+        label: "Output — entity → column mapping",
+        type:  "mapping",
+        rows: [
+          { from: "female",    arrow: "→", to: "Gender", note: "categorical sample match" },
+          { from: "older than 30", arrow: "→", to: "Age",    note: "synonym + numeric" },
+          { from: "dhaka",    arrow: "→", to: "Location", note: "categorical sample match" }
+        ]
+      }
+    ],
+    next: "operator_detector.py"
+  },
+  {
+    file:  "operator_detector.py",
+    color: "#f97316",
+    icon:  "OP",
+    title: "SQL Operator Detection",
+    why:   "operator_detector.py converts natural language comparison phrases into SQL operator symbols. The question says 'older than 30' — that phrase must become the SQL operator <code>&gt;</code>. Without this step, the SQL generator would not know the comparison direction.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `"show female patients older than 30 from dhaka"`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Load phrase dictionary from knowledge/operators.json.",
+          "Sort all phrases by descending length (greedy longest-match).",
+          "Scan the question for each phrase using word-boundary matching.",
+          "Record matched phrase, SQL operator symbol, and character position.",
+          "Prevent overlapping matches using a used-positions set."
+        ]
+      },
+      {
+        label: "Output",
+        type:  "mapping",
+        rows: [
+          { from: '"older than"', arrow: "→", to: ">", note: "SQL comparison operator" },
+          { from: '"female"',     arrow: "→", to: "=", note: "equality (categorical)" },
+          { from: '"dhaka"',      arrow: "→", to: "=", note: "equality (categorical)" }
+        ]
+      }
+    ],
+    next: "value_matcher.py"
+  },
+  {
+    file:  "value_matcher.py",
+    color: "#06b6d4",
+    icon:  "VM",
+    title: "Value Extraction",
+    why:   "value_matcher.py extracts the actual filter values — the concrete numbers and category strings the WHERE clause will compare against. Operators and columns are now known; this module finds what to put on the right-hand side of each condition.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `Question: "show female patients older than 30 from dhaka"<br>Schema sample values: Gender=[Male, Female], Age=[35, 28, 42], Location=[Dhaka, Chattogram]`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Numeric extraction: regex \\b\\d+(?:\\.\\d+)?\\b → finds '30' at position 34.",
+          "Categorical extraction: iterate schema sample values, test each against the question using word-boundary regex.",
+          "'Female' matches question → value for Gender column.",
+          "'Dhaka' matches question → value for Location column.",
+          "Pair each value with the nearest column and operator by character proximity."
+        ]
+      },
+      {
+        label: "Output — filter conditions",
+        type:  "mapping",
+        rows: [
+          { from: "Gender",   arrow: "=",  to: "'Female'", note: "categorical" },
+          { from: "Age",      arrow: ">",  to: "30",       note: "numeric" },
+          { from: "Location", arrow: "=",  to: "'Dhaka'",  note: "categorical" }
+        ]
+      }
+    ],
+    next: "sql_generator.py"
+  },
+  {
+    file:  "sql_generator.py",
+    color: "#22c55e",
+    icon:  "GN",
+    title: "SQL Query Generation",
+    why:   "sql_generator.py assembles the final SQL string from the structured query dictionary built by all previous modules. All column and table identifiers are double-quoted to safely handle names that contain spaces, hyphens, or SQL reserved words.",
+    sections: [
+      {
+        label: "Input received — internal query dict",
+        type:  "code",
+        content: `{
+  "intent":   "SELECT",
+  "filters":  [
+    { "column": "Gender",   "op": "=", "value": "'Female'" },
+    { "column": "Age",      "op": ">", "value": 30 },
+    { "column": "Location", "op": "=", "value": "'Dhaka'" }
+  ],
+  "group_by": null,
+  "order_by": null,
+  "limit":    null
+}`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Intent = SELECT → SELECT * clause.",
+          "Wrap table name and column names in double quotes.",
+          "Build WHERE clause: join all filters with AND.",
+          "No GROUP BY / ORDER BY / LIMIT in this query.",
+          "Return complete SQL string."
+        ]
+      },
+      {
+        label: "Output — generated SQL",
+        type:  "sql",
+        sql:   `<span class="kw">SELECT</span> *
+<span class="kw">FROM</span>   <span class="tbl">"patients"</span>
+<span class="kw">WHERE</span>  <span class="col">"Gender"</span>   = <span class="str">'Female'</span>
+  <span class="kw">AND</span>  <span class="col">"Age"</span>      > <span class="num">30</span>
+  <span class="kw">AND</span>  <span class="col">"Location"</span> = <span class="str">'Dhaka'</span>;`
+      }
+    ],
+    next: "sql_validator.py"
+  },
+  {
+    file:  "sql_validator.py",
+    color: "#ef4444",
+    icon:  "VL",
+    title: "SQL Safety Validation",
+    why:   "sql_validator.py is a security and correctness gate. Before any SQL reaches the database engine, the validator confirms it is a safe read-only query, contains no injection attempts, and only references columns that actually exist in the uploaded dataset.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `SELECT * FROM "patients" WHERE "Gender" = 'Female' AND "Age" > 30 AND "Location" = 'Dhaka'`
+      },
+      {
+        label: "Validation checks",
+        type:  "checks",
+        items: [
+          { label: "Query starts with SELECT (read-only)", pass: true },
+          { label: "No dangerous keywords: DROP, DELETE, UPDATE, INSERT, ALTER, TRUNCATE", pass: true },
+          { label: "No extra semicolons (multi-statement injection)", pass: true },
+          { label: "All WHERE columns exist in schema: Gender ✓  Age ✓  Location ✓", pass: true }
+        ]
+      },
+      {
+        label: "Output",
+        type:  "tokens",
+        items: [
+          { text: "✓  VALID — safe to execute", cls: "kw" }
+        ]
+      }
+    ],
+    next: "sql_executor.py"
+  },
+  {
+    file:  "sql_executor.py",
+    color: "#64748b",
+    icon:  "EX",
+    title: "SQL Execution",
+    why:   "sql_executor.py sends the validated SQL to the database engine and returns the result as (column_names, rows). In development the engine is SQLite; in production it is PostgreSQL (Neon). The dataset was loaded into this engine when the CSV was uploaded.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `SELECT * FROM "patients" WHERE "Gender" = 'Female' AND "Age" > 30 AND "Location" = 'Dhaka'`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Connect to SQLite (dev) or PostgreSQL via DATABASE_URL (prod).",
+          "Execute the SQL string using a parameterised connection.",
+          "Fetch all result rows via cursor.fetchall().",
+          "Extract column names from cursor.description.",
+          "Return (column_names, rows) tuple to app.py."
+        ]
+      },
+      {
+        label: "Output — raw result",
+        type:  "code",
+        content: `columns = ["Name", "Gender", "Age", "Location", "Dengue"]
+rows    = [
+  ("A", "Female", 35, "Dhaka", "Positive"),
+  ("C", "Female", 42, "Dhaka", "Positive")
+]`
+      }
+    ],
+    next: "app.py (response)"
+  },
+  {
+    file:  "app.py",
+    color: "#6366f1",
+    icon:  "PY",
+    title: "Final Result Returned",
+    why:   "app.py receives the (columns, rows) tuple from sql_executor.py, serialises it as JSON, and sends the HTTP response back to the browser. The frontend JavaScript then renders the results table and the generated SQL.",
+    sections: [
+      {
+        label: "JSON response sent to browser",
+        type:  "code",
+        content: `{
+  "sql":     "SELECT * FROM \\"patients\\" WHERE ...",
+  "intent":  "SELECT",
+  "columns": ["Name", "Gender", "Age", "Location", "Dengue"],
+  "rows":    [
+    ["A", "Female", 35, "Dhaka", "Positive"],
+    ["C", "Female", 42, "Dhaka", "Positive"]
+  ],
+  "count": 2
+}`
+      },
+      {
+        label: "Matching records — displayed in UI",
+        type:  "result-table"
+      }
+    ],
+    next: null
+  }
+];
+
+// ─── Module list (sidebar) ────────────────────────────────────────────────────
+
+const MODULES = [
+  { name: "app.py",              color: "#6366f1", stepIdx: 0 },
+  { name: "tokenizer.py",        color: "#f59e0b", stepIdx: 1 },
+  { name: "intent_detector.py",  color: "#3b82f6", stepIdx: 2 },
+  { name: "attribute_matcher.py",color: "#8b5cf6", stepIdx: 3 },
+  { name: "operator_detector.py",color: "#f97316", stepIdx: 4 },
+  { name: "value_matcher.py",    color: "#06b6d4", stepIdx: 5 },
+  { name: "sql_generator.py",    color: "#22c55e", stepIdx: 6 },
+  { name: "sql_validator.py",    color: "#ef4444", stepIdx: 7 },
+  { name: "sql_executor.py",     color: "#64748b", stepIdx: 8 },
+  { name: "app.py (response)",   color: "#6366f1", stepIdx: 9 },
+];
+
+// ─── State ────────────────────────────────────────────────────────────────────
+
+let current = 0;
+
+// ─── Render helpers ───────────────────────────────────────────────────────────
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function renderSection(sec) {
+  let html = `<div class="info-block"><div class="info-label">${sec.label}</div>`;
+
+  if (sec.type === "box") {
+    html += `<div class="info-box">${sec.content}</div>`;
+  } else if (sec.type === "code") {
+    html += `<div class="info-box code">${escHtml(sec.content)}</div>`;
+  } else if (sec.type === "list") {
+    html += `<div class="info-box"><ul>`;
+    sec.items.forEach(item => {
+      html += `<li><span class="bullet">→</span><span>${item}</span></li>`;
+    });
+    html += `</ul></div>`;
+  } else if (sec.type === "tokens") {
+    html += `<div class="info-box" style="background:none;border:none;padding:0;">`;
+    html += `<div class="tokens">`;
+    sec.items.forEach(t => {
+      html += `<span class="token ${t.cls}">${t.text}</span>`;
+    });
+    html += `</div></div>`;
+  } else if (sec.type === "mapping") {
+    html += `<div class="info-box" style="padding:0;overflow:hidden;">`;
+    html += `<table class="map-table" style="padding:12px 18px;display:block;">`;
+    html += `<thead><tr><th>Entity / Column</th><th></th><th>Maps to</th><th>Reason</th></tr></thead><tbody>`;
+    sec.rows.forEach(r => {
+      html += `<tr>
+        <td><code>${r.from}</code></td>
+        <td class="arrow-cell">${r.arrow}</td>
+        <td><code>${r.to}</code></td>
+        <td style="color:#6b7280;font-size:0.8rem">${r.note}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  } else if (sec.type === "sql") {
+    html += `<div class="sql-block">${sec.sql}</div>`;
+  } else if (sec.type === "checks") {
+    html += `<div class="check-list">`;
+    sec.items.forEach(c => {
+      html += `<div class="check-item">
+        <div class="check-icon ${c.pass ? 'pass' : 'fail'}">${c.pass ? '✓' : '✗'}</div>
+        <span>${c.label}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  } else if (sec.type === "result-table") {
+    html += `<div style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">`;
+    html += `<table class="result-table">
+      <thead><tr><th>Name</th><th>Gender</th><th>Age</th><th>Location</th><th>Dengue</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>A</td><td>Female</td><td>35</td><td>Dhaka</td>
+          <td><span class="badge-positive">Positive</span></td>
+        </tr>
+        <tr>
+          <td>C</td><td>Female</td><td>42</td><td>Dhaka</td>
+          <td><span class="badge-positive">Positive</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <div style="margin-top:12px;font-size:0.82rem;color:#6b7280;">
+      2 rows matched out of 3 total. Row B (Male, age 28, Chattogram) did not satisfy any filter.
+    </div>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+// ─── Render step ──────────────────────────────────────────────────────────────
+
+function renderStep(idx) {
+  const s = STEPS[idx];
+
+  let html = `<div class="step-panel">`;
+
+  // File badge
+  html += `<div class="file-badge">
+    <div class="file-icon" style="background:${s.color}">${s.icon}</div>
+    <span class="file-name">${s.file}</span>
+    <span class="file-role">· Step ${idx + 1}</span>
+  </div>`;
+
+  // Heading
+  html += `<div class="step-num">Step ${idx + 1} of ${STEPS.length}</div>`;
+  html += `<div class="step-heading">${s.title}</div>`;
+  html += `<div class="step-why">${s.why}</div>`;
+
+  // Sections
+  html += `<div class="info-grid">`;
+  s.sections.forEach(sec => { html += renderSection(sec); });
+  html += `</div>`;
+
+  // Next file
+  if (s.next) {
+    html += `<div class="next-file">
+      <span class="arrow">↓</span>
+      <span>Calls next:</span>
+      <strong>${s.next}</strong>
+    </div>`;
+  } else {
+    html += `<div class="next-file" style="color:#22c55e;">
+      <span>✓</span>
+      <span>Pipeline complete — result delivered to browser.</span>
+    </div>`;
+  }
+
+  html += `</div>`;
+  document.getElementById("step-panel").innerHTML = html;
+}
+
+// ─── Render pipeline map ──────────────────────────────────────────────────────
+
+function renderPipelineMap() {
+  const map = document.getElementById("pipeline-map");
+  let html = "";
+  STEPS.forEach((s, i) => {
+    const cls = i < current ? "done" : i === current ? "active" : "";
+    html += `<div class="map-node ${cls}" onclick="goTo(${i})" title="${s.file}">
+      <div class="map-dot">${i + 1}</div>
+      <div class="map-label">${s.file.replace(".py","")}</div>
+    </div>`;
+    if (i < STEPS.length - 1) {
+      html += `<div class="map-arrow ${i < current ? 'done' : ''}">›</div>`;
+    }
+  });
+  map.innerHTML = html;
+
+  // Scroll active node into view
+  const activeNode = map.querySelectorAll(".map-node")[current];
+  if (activeNode) activeNode.scrollIntoView({ inline: "center", behavior: "smooth", block: "nearest" });
+}
+
+// ─── Render nav dots ──────────────────────────────────────────────────────────
+
+function renderNavDots() {
+  const dots = document.getElementById("nav-dots");
+  let html = "";
+  STEPS.forEach((_, i) => {
+    const cls = i < current ? "done" : i === current ? "active" : "";
+    html += `<div class="nav-dot ${cls}" onclick="goTo(${i})"></div>`;
+  });
+  dots.innerHTML = html;
+}
+
+// ─── Render file list (sidebar) ───────────────────────────────────────────────
+
+function renderFileList() {
+  const el = document.getElementById("file-list");
+  let html = "";
+  MODULES.forEach((m, i) => {
+    const isDone   = m.stepIdx < current;
+    const isActive = m.stepIdx === current;
+    const cls = isActive ? "active" : isDone ? "done" : "idle";
+    const check = isActive ? "▶" : isDone ? "✓" : "·";
+    html += `<div class="file-row ${cls}" onclick="goTo(${m.stepIdx})">
+      <div class="f-icon" style="background:${isActive || isDone ? m.color : '#d1d5db'}">${m.name.slice(0,2).toUpperCase()}</div>
+      <span class="f-name">${m.name}</span>
+      <span class="f-check">${check}</span>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+// ─── Render dataset highlight ─────────────────────────────────────────────────
+
+function renderDataset() {
+  const rows = document.querySelectorAll("#dataset-body tr");
+  rows.forEach(r => r.classList.remove("hl"));
+  if (current === 9) {
+    // Highlight matching rows A and C
+    rows[0].classList.add("hl");
+    rows[2].classList.add("hl");
+  }
+}
+
+// ─── Counter ──────────────────────────────────────────────────────────────────
+
+function renderCounter() {
+  document.getElementById("counter-cur").textContent = current + 1;
+  document.getElementById("counter-tot").textContent = STEPS.length;
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+
+function update() {
+  renderStep(current);
+  renderPipelineMap();
+  renderNavDots();
+  renderFileList();
+  renderDataset();
+  renderCounter();
+  document.getElementById("prev-btn").disabled = current === 0;
+  document.getElementById("next-btn").disabled = current === STEPS.length - 1;
+  document.getElementById("next-btn").textContent = current === STEPS.length - 1 ? "Done ✓" : "Next →";
+}
+
+function navigate(dir) {
+  const next = current + dir;
+  if (next < 0 || next >= STEPS.length) return;
+  current = next;
+  update();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function goTo(idx) {
+  current = idx;
+  update();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ─── Keyboard navigation ──────────────────────────────────────────────────────
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") navigate(1);
+  if (e.key === "ArrowLeft"  || e.key === "ArrowUp")   navigate(-1);
+});
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+
+update();
+</script>
+</body>
+</html>
