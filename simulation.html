@@ -74,7 +74,7 @@
       border: 2px solid #d1d5db;
       background: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem; font-weight: 700;
+      font-size: 0.65rem; font-weight: 700;
       color: #9ca3af;
       transition: all 0.25s;
       flex-shrink: 0;
@@ -87,10 +87,12 @@
       background: #22c55e; border-color: #22c55e; color: #fff;
     }
     .map-label {
-      font-size: 0.62rem; color: #9ca3af;
+      font-size: 0.6rem; color: #9ca3af;
       font-family: "SFMono-Regular", Consolas, monospace;
       white-space: nowrap;
       transition: color 0.25s;
+      max-width: 72px;
+      overflow: hidden; text-overflow: ellipsis;
     }
     .map-node.active .map-label { color: #111; font-weight: 700; }
     .map-node.done  .map-label  { color: #22c55e; }
@@ -101,11 +103,26 @@
     }
     .map-arrow.done { color: #22c55e; }
 
+    /* Phase divider in pipeline map */
+    .map-phase {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 3px; flex-shrink: 0; padding: 0 8px;
+    }
+    .map-phase-line {
+      width: 2px; height: 32px;
+      background: linear-gradient(to bottom, transparent, #d1d5db, transparent);
+    }
+    .map-phase-label {
+      font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #9ca3af;
+      white-space: nowrap;
+    }
+
     /* ─── Main layout ─── */
     .main {
       display: grid;
       grid-template-columns: 1fr 340px;
-      min-height: calc(100vh - 180px);
+      min-height: calc(100vh - 200px);
     }
     @media (max-width: 860px) {
       .main { grid-template-columns: 1fr; }
@@ -126,6 +143,14 @@
     @keyframes fadeSlide {
       from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Phase tag */
+    .phase-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 3px 10px;
+      border-radius: 20px; margin-bottom: 14px;
     }
 
     /* File badge */
@@ -177,7 +202,7 @@
     .info-box.code {
       background: #1e1e2e; border-color: #2d2d3d;
       font-family: "SFMono-Regular", Consolas, monospace;
-      color: #cdd6f4;
+      color: #cdd6f4; white-space: pre;
     }
     .info-box ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
     .info-box li { display: flex; align-items: baseline; gap: 8px; }
@@ -256,6 +281,18 @@
       border-radius: 4px; padding: 2px 8px;
     }
 
+    /* JSON preview box */
+    .json-box {
+      background: #1e1e2e; border-radius: 10px; padding: 16px 20px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.82rem; line-height: 1.7; color: #cdd6f4;
+      white-space: pre;
+    }
+    .json-box .jk { color: #89b4fa; }
+    .json-box .jv { color: #a6e3a1; }
+    .json-box .js { color: #f38ba8; }
+    .json-box .jn { color: #fab387; }
+
     /* Next file indicator */
     .next-file {
       display: inline-flex; align-items: center; gap: 8px;
@@ -326,12 +363,12 @@
     .query-box p { padding-left: 14px; }
 
     /* File list */
-    .file-list { display: flex; flex-direction: column; gap: 6px; }
+    .file-list { display: flex; flex-direction: column; gap: 4px; }
     .file-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 12px; border-radius: 8px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px; border-radius: 7px;
       border: 1px solid transparent;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       transition: all 0.2s;
     }
     .file-row.active {
@@ -342,12 +379,17 @@
     }
     .file-row.idle { color: #9ca3af; border-color: #f3f4f6; }
     .file-row .f-icon {
-      width: 18px; height: 18px; border-radius: 3px;
+      width: 16px; height: 16px; border-radius: 3px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.58rem; font-weight: 800; color: #fff; flex-shrink: 0;
+      font-size: 0.52rem; font-weight: 800; color: #fff; flex-shrink: 0;
     }
     .file-row .f-name { font-family: monospace; font-weight: 600; flex: 1; }
-    .file-row .f-check { font-size: 0.75rem; }
+    .file-row .f-check { font-size: 0.72rem; }
+    .file-group-label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: #d1d5db;
+      padding: 6px 10px 2px;
+    }
 
     /* ─── Navigation ─── */
     .nav-bar {
@@ -373,13 +415,14 @@
     .nav-btn.next:hover:not(:disabled) { background: #333; }
     .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .nav-progress {
-      display: flex; gap: 6px; align-items: center;
+      display: flex; gap: 4px; align-items: center; flex-wrap: wrap;
+      max-width: 340px; justify-content: center;
     }
     .nav-dot {
-      width: 7px; height: 7px; border-radius: 50%;
+      width: 6px; height: 6px; border-radius: 50%;
       background: #e5e7eb; transition: all 0.25s;
     }
-    .nav-dot.active { background: #111; transform: scale(1.3); }
+    .nav-dot.active { background: #111; transform: scale(1.4); }
     .nav-dot.done   { background: #22c55e; }
 
     /* ─── Responsive ─── */
@@ -399,10 +442,10 @@
     <a class="back-btn" href="/">← Back to App</a>
     <div>
       <div class="page-title">NL2SQL Pipeline Simulation</div>
-      <div class="page-sub">Developer learning tool · Fixed example walkthrough</div>
+      <div class="page-sub">All project files · execution order · why each runs</div>
     </div>
   </div>
-  <div class="step-counter">Step <span id="counter-cur">1</span> of <span id="counter-tot">10</span></div>
+  <div class="step-counter">Step <span id="counter-cur">1</span> of <span id="counter-tot">?</span></div>
 </header>
 
 <!-- Pipeline map -->
@@ -427,7 +470,7 @@
     </div>
 
     <div class="sidebar-section">
-      <div class="sidebar-title">Dataset</div>
+      <div class="sidebar-title">Dataset (sample.csv)</div>
       <table class="ds-table">
         <thead>
           <tr><th>Name</th><th>Gender</th><th>Age</th><th>Location</th><th>Dengue</th></tr>
@@ -441,7 +484,7 @@
     </div>
 
     <div class="sidebar-section">
-      <div class="sidebar-title">Module Execution Status</div>
+      <div class="sidebar-title">All Project Files</div>
       <div class="file-list" id="file-list"></div>
     </div>
 
@@ -456,45 +499,207 @@
 </nav>
 
 <script>
-// ─── Step definitions ────────────────────────────────────────────────────────
+// ─── Phase definitions ────────────────────────────────────────────────────────
+
+const PHASES = {
+  offline: { label: "Phase 0 · Offline Training", color: "#78716c", bg: "#f5f5f4" },
+  upload:  { label: "Phase 1 · CSV Upload",        color: "#0ea5e9", bg: "#f0f9ff" },
+  query:   { label: "Phase 2 · Query Pipeline",    color: "#8b5cf6", bg: "#f5f3ff" },
+  cli:     { label: "Phase 3 · CLI Alternative",   color: "#64748b", bg: "#f8fafc" },
+};
+
+// ─── Step definitions (ALL project files) ────────────────────────────────────
 
 const STEPS = [
+
+  // ── PHASE 0: Offline training ──────────────────────────────────────────────
   {
-    file:  "app.py",
-    color: "#6366f1",
-    icon:  "PY",
-    title: "Request Entry Point",
-    why:   "app.py is the Flask web server that receives every HTTP request. When the user submits a question, app.py accepts the POST request on the <code>/ask</code> route, retrieves the session state (loaded CSV + schema), and orchestrates calls to every pipeline module in sequence.",
+    phase: "offline",
+    file:  "models/train_intent.py",
+    color: "#78716c",
+    icon:  "TR",
+    title: "Model Training (Offline, One-Time)",
+    why:   "train_intent.py runs <strong>once offline</strong> — not at request time. It reads the 100,000-row labelled CSV from <code>training_data/intent_dataset.csv</code>, trains a TF-IDF vectorizer and a Multinomial Naive Bayes classifier, then saves two binary files to disk. Every query at runtime loads these saved files instead of retraining.",
     sections: [
       {
-        label: "Input received",
+        label: "Input",
         type:  "box",
-        content: `HTTP POST /ask<br>Body: { "question": "Show female patients older than 30 from Dhaka." }`
+        content: `training_data/intent_dataset.csv — 100,000 rows, columns: question, intent<br>
+Intents: SELECT · COUNT · AVG · MAX · MIN · SUM`
       },
       {
         label: "Processing",
         type:  "list",
         items: [
-          "Validates that a dataset is already uploaded in the session.",
-          "Extracts the raw question string from the JSON body.",
-          "Loads the trained intent model from disk (intent_model.pkl + vectorizer.pkl).",
-          "Calls each pipeline module in order, threading outputs as inputs to the next."
+          "Read CSV with pandas, split into X (questions) and y (intent labels).",
+          "Fit TfidfVectorizer on all questions → vocabulary of n-gram features.",
+          "Train MultinomialNB on the TF-IDF matrix → learns P(intent | features).",
+          "Serialise both objects with pickle and write them to models/.",
+        ]
+      },
+      {
+        label: "Output — saved to disk",
+        type:  "tokens",
+        items: [
+          { text: "models/vectorizer.pkl",   cls: "val" },
+          { text: "models/intent_model.pkl", cls: "kw"  },
+        ]
+      }
+    ],
+    next: "app.py (server startup)"
+  },
+
+  // ── PHASE 1: CSV upload ────────────────────────────────────────────────────
+  {
+    phase: "upload",
+    file:  "app.py",
+    color: "#6366f1",
+    icon:  "PY",
+    title: "Flask Server — CSV Upload Route",
+    why:   "app.py is the Flask web server. Before any NL query can run, the user must upload a CSV. The <code>/upload</code> route receives the multipart file, hands it to <code>dataset_loader.py</code> to load into a database, then stores the resulting schema in the Flask session so every later query can use it.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `HTTP POST /upload\nMultipart body: file = "sample.csv"`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Validate file extension is .csv and size ≤ 50 MB.",
+          "Save uploaded bytes to a NamedTemporaryFile.",
+          "Call dataset_loader.load_dataset(path) to ingest CSV into DB.",
+          "Call schema_reader.read_schema(df) to extract column metadata.",
+          "Store schema + db connection info in session.",
+          "Return JSON { success: true, columns: [...] } to browser."
         ]
       },
       {
         label: "Output",
         type:  "box",
-        content: `Passes question string → <strong>tokenizer.py</strong>`
+        content: `Session now holds: schema, db_path\nBrowser receives: { "success": true, "columns": ["Name","Gender","Age","Location","Dengue"] }`
       }
     ],
-    next: "tokenizer.py"
+    next: "dataset_loader.py"
   },
   {
-    file:  "tokenizer.py",
+    phase: "upload",
+    file:  "core/dataset_loader.py",
+    color: "#0ea5e9",
+    icon:  "DL",
+    title: "CSV → Database Loader",
+    why:   "dataset_loader.py converts the raw CSV file into a queryable database table. In development it creates a SQLite database in a temp directory; in production it uses PostgreSQL (via DATABASE_URL). This is where the raw data becomes something SQL can run against.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `File path: /tmp/upload_xyz.csv\nUSE_POSTGRES = False  (SQLite in development)`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Read CSV with pandas.read_csv() → DataFrame.",
+          "Sanitise column names: strip whitespace, remove special characters.",
+          "Create SQLAlchemy engine: SQLite (dev) or PostgreSQL (prod).",
+          "Write DataFrame to table named \"data\" using df.to_sql().",
+          "Return (engine, dataframe) tuple to app.py."
+        ]
+      },
+      {
+        label: "Output",
+        type:  "tokens",
+        items: [
+          { text: "SQLite table: \"data\" (5 cols, 3 rows)", cls: "kw"  },
+          { text: "DataFrame returned for schema extraction",  cls: "val" },
+        ]
+      }
+    ],
+    next: "schema_reader.py"
+  },
+  {
+    phase: "upload",
+    file:  "core/schema_reader.py",
+    color: "#0ea5e9",
+    icon:  "SR",
+    title: "Schema Extraction",
+    why:   "schema_reader.py inspects the loaded DataFrame and builds a metadata dict that every downstream module depends on. Without knowing column names, data types, and sample values, the pipeline cannot match user-mentioned words to columns or extract categorical filter values.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `pandas DataFrame (5 columns, 3 rows)`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Iterate each column in the DataFrame.",
+          "Record dtype string: 'object', 'int64', 'float64', etc.",
+          "Collect up to 10 unique non-null sample values per column.",
+          "Build schema dict: { col_name: { dtype, sample_values } }.",
+          "Separate helper functions: get_numeric_columns() and get_text_columns()."
+        ]
+      },
+      {
+        label: "Output — schema dict",
+        type:  "code",
+        content: `{
+  "Name":     { "dtype": "object", "sample_values": ["A","B","C"] },
+  "Gender":   { "dtype": "object", "sample_values": ["Female","Male"] },
+  "Age":      { "dtype": "int64",  "sample_values": [35, 28, 42] },
+  "Location": { "dtype": "object", "sample_values": ["Dhaka","Chattogram"] },
+  "Dengue":   { "dtype": "object", "sample_values": ["Positive","Negative"] }
+}`
+      }
+    ],
+    next: "app.py (/ask route)"
+  },
+
+  // ── PHASE 2: Query pipeline ────────────────────────────────────────────────
+  {
+    phase: "query",
+    file:  "app.py",
+    color: "#6366f1",
+    icon:  "PY",
+    title: "Flask Server — Query Route",
+    why:   "app.py receives the natural language question on the <code>/ask</code> route. It retrieves the session schema and database connection, then calls each pipeline module in sequence, threading the output of one as the input to the next.",
+    sections: [
+      {
+        label: "Input received",
+        type:  "box",
+        content: `HTTP POST /ask\nBody: { "question": "Show female patients older than 30 from Dhaka." }`
+      },
+      {
+        label: "Processing — calls in order",
+        type:  "list",
+        items: [
+          "Retrieve schema and db_engine from session.",
+          "Load ML model: intent_detector.load_model() → (model, vectorizer).",
+          "Predict intent: intent_detector.predict_intent(question, model, vectorizer).",
+          "Build internal query dict: sql_generator.build_query(question, schema, intent).",
+          "Generate SQL string: sql_generator.query_to_sql(query_dict).",
+          "Validate: sql_validator.validate_sql(sql, schema).",
+          "Execute: sql_executor.execute_query(sql, engine).",
+          "Serialise result and return JSON response."
+        ]
+      },
+      {
+        label: "Output",
+        type:  "box",
+        content: `Passes question → tokenizer.py (via sql_generator.build_query)`
+      }
+    ],
+    next: "core/tokenizer.py"
+  },
+  {
+    phase: "query",
+    file:  "core/tokenizer.py",
     color: "#f59e0b",
     icon:  "TK",
     title: "Text Cleaning & Tokenization",
-    why:   "tokenizer.py normalises the raw question so downstream modules work with clean, comparable tokens. It strips punctuation, lowercases text, and removes common stopwords that add no meaning to the query.",
+    why:   "tokenizer.py normalises the raw question so downstream modules work with clean, comparable tokens. It lowercases text, strips punctuation, splits into words, and removes stopwords that carry no SQL meaning. It also loads <code>knowledge/stopwords.json</code> from disk at this point.",
     sections: [
       {
         label: "Input received",
@@ -505,11 +710,12 @@ const STEPS = [
         label: "Processing",
         type:  "list",
         items: [
-          "Lowercase the entire string.",
-          "Remove punctuation (the trailing period).",
-          "Split into individual word tokens.",
-          "Remove stopwords defined in knowledge/stopwords.json (show, from, than).",
-          "Return both the cleaned token list and the original lowercased string for phrase matching."
+          "Load knowledge/stopwords.json → set of words to remove.",
+          "Lowercase the entire string → \"show female patients older than 30 from dhaka.\"",
+          "Strip punctuation (trailing period).",
+          "Split into tokens by whitespace.",
+          "Remove stopwords: [show, from] are filtered.",
+          "Return cleaned token list + original lowercased string."
         ]
       },
       {
@@ -517,22 +723,59 @@ const STEPS = [
         type:  "tokens",
         items: [
           { text: "female",   cls: "cat" },
-          { text: "patients", cls: "" },
-          { text: "older",    cls: "op" },
-          { text: "than",     cls: "op" },
+          { text: "patients", cls: ""    },
+          { text: "older",    cls: "op"  },
+          { text: "than",     cls: "op"  },
           { text: "30",       cls: "val" },
-          { text: "dhaka",    cls: "cat" }
+          { text: "dhaka",    cls: "cat" },
         ]
       }
     ],
-    next: "intent_detector.py"
+    next: "knowledge/stopwords.json"
   },
   {
-    file:  "intent_detector.py",
+    phase: "query",
+    file:  "knowledge/stopwords.json",
+    color: "#d97706",
+    icon:  "SW",
+    title: "Stopword List (Resource File)",
+    why:   "stopwords.json is a curated JSON array of common English words — 'show', 'from', 'the', 'a', 'what', 'which', 'of', 'in', 'are', 'is', etc. — that are filtered out during tokenization and column-matching. Without removing them, the fuzzy matcher would try to match 'from' or 'show' as column names, producing noise.",
+    sections: [
+      {
+        label: "Loaded by",
+        type:  "tokens",
+        items: [
+          { text: "tokenizer.py",         cls: "val" },
+          { text: "attribute_matcher.py", cls: "val" },
+        ]
+      },
+      {
+        label: "Content (excerpt)",
+        type:  "code",
+        content: `[ "show", "display", "list", "give", "find", "get",
+  "from", "in", "of", "the", "a", "an", "all",
+  "which", "what", "where", "who", "whose",
+  "is", "are", "was", "were", "has", "have",
+  "with", "for", "and", "or", "not", "by",
+  "than", "that", "their", "its" ... ]`
+      },
+      {
+        label: "Effect",
+        type:  "box",
+        content: `"show female patients older than 30 from dhaka"
+  → after stopword removal for column matching:
+  → ["female", "patients", "older", "30", "dhaka"]`
+      }
+    ],
+    next: "core/intent_detector.py"
+  },
+  {
+    phase: "query",
+    file:  "core/intent_detector.py",
     color: "#3b82f6",
     icon:  "ML",
     title: "Query Intent Classification",
-    why:   "intent_detector.py determines what kind of SQL query the user wants. It uses a TF-IDF vectorizer and a Multinomial Naive Bayes classifier trained on 100,000 labelled examples. Without knowing the intent, the SQL generator cannot know whether to write SELECT *, COUNT(*), AVG(), etc.",
+    why:   "intent_detector.py determines what kind of SQL query the user wants — SELECT, COUNT, AVG, MAX, MIN, or SUM. It loads the two pre-trained model files from disk, transforms the question with TF-IDF, and feeds the feature vector to the Naive Bayes classifier. Without knowing the intent, sql_generator.py cannot write the correct SELECT clause.",
     sections: [
       {
         label: "Input received",
@@ -543,11 +786,11 @@ const STEPS = [
         label: "Processing",
         type:  "list",
         items: [
-          "Load pre-trained TF-IDF vectorizer (vectorizer.pkl).",
-          "Transform the cleaned question into a numeric TF-IDF feature vector.",
-          "Feed vector into the Naive Bayes model (intent_model.pkl).",
-          "Rule-based override: question contains 'show' without a count phrase → confirm SELECT.",
-          "Return the predicted intent class."
+          "load_model() → deserialise models/vectorizer.pkl + models/intent_model.pkl.",
+          "vectorizer.transform([question]) → sparse TF-IDF feature matrix.",
+          "model.predict(features) → raw prediction = \"SELECT\".",
+          "Rule-based override check: contains 'show'/'list'/'display' and no count/agg word → confirm SELECT.",
+          "Return predicted intent string."
         ]
       },
       {
@@ -558,49 +801,174 @@ const STEPS = [
         ]
       }
     ],
-    next: "attribute_matcher.py"
+    next: "models/vectorizer.pkl"
   },
   {
-    file:  "attribute_matcher.py",
+    phase: "query",
+    file:  "models/vectorizer.pkl",
+    color: "#3b82f6",
+    icon:  "VK",
+    title: "TF-IDF Vectorizer (Trained Model File)",
+    why:   "vectorizer.pkl is the fitted TfidfVectorizer serialised by train_intent.py. It holds the complete vocabulary learned from 100,000 training questions and knows the IDF weight for every n-gram. When intent_detector.py calls <code>vectorizer.transform(question)</code>, this file does the text → numeric feature conversion.",
+    sections: [
+      {
+        label: "Created by",
+        type:  "tokens",
+        items: [{ text: "models/train_intent.py  (offline)", cls: "val" }]
+      },
+      {
+        label: "Loaded by",
+        type:  "tokens",
+        items: [{ text: "core/intent_detector.py  (every query)", cls: "kw" }]
+      },
+      {
+        label: "What it contains",
+        type:  "list",
+        items: [
+          "Vocabulary: mapping of each n-gram → feature index.",
+          "IDF weights: how rare/informative each n-gram is across training data.",
+          "Ngram range and other fitted hyperparameters.",
+          "File is binary (pickle) — do not edit manually."
+        ]
+      },
+      {
+        label: "Example transform",
+        type:  "box",
+        content: `Input:  "show female patients older than 30 from dhaka"
+Output: sparse vector of shape (1, vocab_size)
+        e.g. feature[42]=0.31, feature[118]=0.47, ...`
+      }
+    ],
+    next: "models/intent_model.pkl"
+  },
+  {
+    phase: "query",
+    file:  "models/intent_model.pkl",
+    color: "#3b82f6",
+    icon:  "MK",
+    title: "Naive Bayes Classifier (Trained Model File)",
+    why:   "intent_model.pkl is the serialised MultinomialNB classifier. Given the TF-IDF feature vector produced by vectorizer.pkl, it returns the intent class with the highest posterior probability. Trained on 100,000 labelled examples across 6 intent classes.",
+    sections: [
+      {
+        label: "Created by",
+        type:  "tokens",
+        items: [{ text: "models/train_intent.py  (offline)", cls: "val" }]
+      },
+      {
+        label: "Loaded by",
+        type:  "tokens",
+        items: [{ text: "core/intent_detector.py  (every query)", cls: "kw" }]
+      },
+      {
+        label: "Classes it can predict",
+        type:  "tokens",
+        items: [
+          { text: "SELECT", cls: "kw"  },
+          { text: "COUNT",  cls: "val" },
+          { text: "AVG",    cls: "op"  },
+          { text: "MAX",    cls: "op"  },
+          { text: "MIN",    cls: "op"  },
+          { text: "SUM",    cls: "op"  },
+        ]
+      },
+      {
+        label: "How it decides",
+        type:  "list",
+        items: [
+          "Applies Bayes' theorem: P(intent | features) ∝ P(features | intent) × P(intent).",
+          "Picks the intent class with the highest posterior probability.",
+          "Smoothing parameter α prevents zero-probability issues for unseen n-grams."
+        ]
+      }
+    ],
+    next: "core/attribute_matcher.py"
+  },
+  {
+    phase: "query",
+    file:  "core/attribute_matcher.py",
     color: "#8b5cf6",
     icon:  "AM",
-    title: "Entity & Column Extraction",
-    why:   "attribute_matcher.py identifies which columns the user is referring to. Users rarely type the exact column name — they say 'age' when the column is 'Age', or 'location' when it's 'Location'. This module resolves that gap using fuzzy string matching and a synonym dictionary.",
+    title: "Entity & Column Matching",
+    why:   "attribute_matcher.py identifies which dataset columns the user is referring to. Users say 'age' when the column is 'Age', 'location' when it's 'Location', 'older' when they mean the Age column. This module resolves that gap using a sliding-window fuzzy match (RapidFuzz) and a synonym dictionary loaded from disk.",
     sections: [
       {
         label: "Input received",
         type:  "box",
-        content: `Tokens: [female, patients, older, 30, dhaka]<br>Schema columns: [Name, Gender, Age, Location, Dengue]`
+        content: `Tokens: [female, patients, older, 30, dhaka]
+Schema columns: [Name, Gender, Age, Location, Dengue]`
       },
       {
         label: "Processing",
         type:  "list",
         items: [
-          "Normalise each column name (lowercase, remove underscores, remove brackets).",
-          "Expand synonyms via knowledge/synonyms.json: 'location' → 'Location', 'older' → 'Age'.",
-          "Slide a window of n tokens across the question and compare each window to each column name using RapidFuzz token_sort_ratio.",
-          "Scan schema sample values — 'Female' matches Gender column, 'Dhaka' matches Location column.",
-          "Assign each matched entity to its best-fit column."
+          "Load knowledge/synonyms.json and knowledge/stopwords.json.",
+          "Normalise each column name: lowercase, replace underscores, strip brackets.",
+          "Build sliding window of n tokens (n = 1..max_col_words) across the question.",
+          "For each window × column: score = RapidFuzz token_sort_ratio.",
+          "Expand synonyms: 'older' → 'age' → matches column 'Age'.",
+          "Scan schema sample values: 'female' → Gender, 'dhaka' → Location.",
+          "Return list of {column, position, score} sorted by score desc."
         ]
       },
       {
         label: "Output — entity → column mapping",
         type:  "mapping",
         rows: [
-          { from: "female",    arrow: "→", to: "Gender", note: "categorical sample match" },
-          { from: "older than 30", arrow: "→", to: "Age",    note: "synonym + numeric" },
-          { from: "dhaka",    arrow: "→", to: "Location", note: "categorical sample match" }
+          { from: "female",       arrow: "→", to: "Gender",   note: "categorical sample match" },
+          { from: "older than 30",arrow: "→", to: "Age",      note: "synonym expansion + numeric" },
+          { from: "dhaka",        arrow: "→", to: "Location", note: "categorical sample match" }
         ]
       }
     ],
-    next: "operator_detector.py"
+    next: "knowledge/synonyms.json"
   },
   {
-    file:  "operator_detector.py",
+    phase: "query",
+    file:  "knowledge/synonyms.json",
+    color: "#7c3aed",
+    icon:  "SY",
+    title: "Synonym Dictionary (Resource File)",
+    why:   "synonyms.json is a hand-curated JSON dict with 300+ domain-specific mappings that let users phrase questions naturally. Without it, 'older' would not match the 'Age' column, 'location' would not match 'Location', 'salary' would not match a 'Salary' column, etc.",
+    sections: [
+      {
+        label: "Loaded by",
+        type:  "tokens",
+        items: [
+          { text: "core/attribute_matcher.py", cls: "val" },
+        ]
+      },
+      {
+        label: "Content (excerpt — domains covered)",
+        type:  "code",
+        content: `{
+  "older":       "age",        // medical / demographics
+  "younger":     "age",
+  "location":    "location",
+  "city":        "location",
+  "district":    "location",
+  "salary":      "salary",     // HR / employees
+  "pay":         "salary",
+  "income":      "salary",
+  "score":       "marks",      // education
+  "grade":       "marks",
+  "marks":       "marks",
+  "goals":       "goals",      // sports
+  "runs":        "runs",
+  "revenue":     "sales",      // business
+  "purchases":   "sales"
+  ... 300+ total entries
+}`
+      }
+    ],
+    next: "core/operator_detector.py"
+  },
+  {
+    phase: "query",
+    file:  "core/operator_detector.py",
     color: "#f97316",
     icon:  "OP",
     title: "SQL Operator Detection",
-    why:   "operator_detector.py converts natural language comparison phrases into SQL operator symbols. The question says 'older than 30' — that phrase must become the SQL operator <code>&gt;</code>. Without this step, the SQL generator would not know the comparison direction.",
+    why:   "operator_detector.py converts natural language comparison phrases into SQL operator symbols. The phrase 'older than' must become <code>&gt;</code>, 'at most' must become <code>&lt;=</code>, 'between' must become <code>BETWEEN</code>. Without this step, sql_generator.py would not know the comparison direction for numeric filters.",
     sections: [
       {
         label: "Input received",
@@ -611,46 +979,90 @@ const STEPS = [
         label: "Processing",
         type:  "list",
         items: [
-          "Load phrase dictionary from knowledge/operators.json.",
-          "Sort all phrases by descending length (greedy longest-match).",
-          "Scan the question for each phrase using word-boundary matching.",
-          "Record matched phrase, SQL operator symbol, and character position.",
-          "Prevent overlapping matches using a used-positions set."
+          "Load knowledge/operators.json → phrase → symbol mapping.",
+          "Sort all phrases by descending length (greedy longest-match first).",
+          "Scan question for each phrase using word-boundary regex.",
+          "Record matched phrase, SQL symbol, and character position.",
+          "Prevent overlapping matches with a used-positions set.",
+          "Return list of {phrase, symbol, position}."
         ]
       },
       {
         label: "Output",
         type:  "mapping",
         rows: [
-          { from: '"older than"', arrow: "→", to: ">", note: "SQL comparison operator" },
-          { from: '"female"',     arrow: "→", to: "=", note: "equality (categorical)" },
-          { from: '"dhaka"',      arrow: "→", to: "=", note: "equality (categorical)" }
+          { from: '"older than"', arrow: "→", to: ">", note: "numeric comparison" },
+          { from: '"female"',     arrow: "→", to: "=", note: "categorical equality" },
+          { from: '"dhaka"',      arrow: "→", to: "=", note: "categorical equality" }
         ]
       }
     ],
-    next: "value_matcher.py"
+    next: "knowledge/operators.json"
   },
   {
-    file:  "value_matcher.py",
+    phase: "query",
+    file:  "knowledge/operators.json",
+    color: "#ea580c",
+    icon:  "OJ",
+    title: "Operator Phrase Map (Resource File)",
+    why:   "operators.json is a JSON dict mapping every recognised NL comparison phrase to its SQL operator symbol. It covers comparative adjectives ('older than' → >), superlatives ('highest' → MAX/DESC), range phrases ('between X and Y' → BETWEEN), and null checks ('is empty' → IS NULL).",
+    sections: [
+      {
+        label: "Loaded by",
+        type:  "tokens",
+        items: [{ text: "core/operator_detector.py", cls: "val" }]
+      },
+      {
+        label: "Content (excerpt)",
+        type:  "code",
+        content: `{
+  "greater than":     ">",
+  "more than":        ">",
+  "older than":       ">",
+  "above":            ">",
+  "less than":        "<",
+  "younger than":     "<",
+  "below":            "<",
+  "at least":         ">=",
+  "at most":          "<=",
+  "equal to":         "=",
+  "not equal":        "!=",
+  "between":          "BETWEEN",
+  "is null":          "IS NULL",
+  "is empty":         "IS NULL",
+  "is not null":      "IS NOT NULL",
+  "contains":         "LIKE",
+  "starts with":      "LIKE"
+}`
+      }
+    ],
+    next: "core/value_matcher.py"
+  },
+  {
+    phase: "query",
+    file:  "core/value_matcher.py",
     color: "#06b6d4",
     icon:  "VM",
-    title: "Value Extraction",
-    why:   "value_matcher.py extracts the actual filter values — the concrete numbers and category strings the WHERE clause will compare against. Operators and columns are now known; this module finds what to put on the right-hand side of each condition.",
+    title: "Filter Value Extraction",
+    why:   "value_matcher.py extracts the actual values to put on the right-hand side of each WHERE condition. Operators and columns are known; this module finds '30' for the Age > condition and 'Female'/'Dhaka' for the equality conditions. An ambiguity guard (added to fix a bug) ensures shared Yes/No values are only matched for explicitly mentioned columns.",
     sections: [
       {
         label: "Input received",
         type:  "box",
-        content: `Question: "show female patients older than 30 from dhaka"<br>Schema sample values: Gender=[Male, Female], Age=[35, 28, 42], Location=[Dhaka, Chattogram]`
+        content: `Question: "show female patients older than 30 from dhaka"
+Schema sample values: Gender=[Male,Female], Age=[35,28,42], Location=[Dhaka,Chattogram]
+Columns mentioned in question: {Gender, Age, Location}`
       },
       {
         label: "Processing",
         type:  "list",
         items: [
-          "Numeric extraction: regex \\b\\d+(?:\\.\\d+)?\\b → finds '30' at position 34.",
-          "Categorical extraction: iterate schema sample values, test each against the question using word-boundary regex.",
+          "extract_numbers(): regex \\b\\d+(?:\\.\\d+)?\\b → finds '30' at position 34.",
+          "match_categorical_values(): iterate schema columns, test each sample value against question via word-boundary regex.",
+          "Ambiguity guard: if a value (e.g. 'Yes') appears in multiple columns, only match it for columns found in the question.",
           "'Female' matches question → value for Gender column.",
           "'Dhaka' matches question → value for Location column.",
-          "Pair each value with the nearest column and operator by character proximity."
+          "Pair each value with nearest column by character position."
         ]
       },
       {
@@ -663,28 +1075,31 @@ const STEPS = [
         ]
       }
     ],
-    next: "sql_generator.py"
+    next: "core/sql_generator.py"
   },
   {
-    file:  "sql_generator.py",
+    phase: "query",
+    file:  "core/sql_generator.py",
     color: "#22c55e",
     icon:  "GN",
-    title: "SQL Query Generation",
-    why:   "sql_generator.py assembles the final SQL string from the structured query dictionary built by all previous modules. All column and table identifiers are double-quoted to safely handle names that contain spaces, hyphens, or SQL reserved words.",
+    title: "SQL Query Assembly",
+    why:   "sql_generator.py has two public functions: <code>build_query()</code> orchestrates all the extraction steps (calling attribute_matcher, operator_detector, value_matcher internally) and produces a structured query dict; <code>query_to_sql()</code> renders that dict as a valid SQL string. All identifiers are double-quoted to handle spaces and reserved words.",
     sections: [
       {
-        label: "Input received — internal query dict",
+        label: "Input — internal query dict",
         type:  "code",
         content: `{
-  "intent":   "SELECT",
-  "filters":  [
-    { "column": "Gender",   "op": "=", "value": "'Female'" },
-    { "column": "Age",      "op": ">", "value": 30 },
-    { "column": "Location", "op": "=", "value": "'Dhaka'" }
+  "intent":     "SELECT",
+  "filters": [
+    { "column": "Gender",   "operator": "=", "value": "Female" },
+    { "column": "Age",      "operator": ">", "value": "30" },
+    { "column": "Location", "operator": "=", "value": "Dhaka" }
   ],
-  "group_by": null,
-  "order_by": null,
-  "limit":    null
+  "agg_column": null,
+  "group_by":   null,
+  "order_by":   null,
+  "order_dir":  "DESC",
+  "limit":      null
 }`
       },
       {
@@ -692,43 +1107,44 @@ const STEPS = [
         type:  "list",
         items: [
           "Intent = SELECT → SELECT * clause.",
-          "Wrap table name and column names in double quotes.",
-          "Build WHERE clause: join all filters with AND.",
-          "No GROUP BY / ORDER BY / LIMIT in this query.",
-          "Return complete SQL string."
+          "Double-quote table name and all column names.",
+          "Build WHERE clause: join all filter conditions with AND.",
+          "String values wrapped in single quotes; numeric values left bare.",
+          "No GROUP BY / ORDER BY / LIMIT in this query."
         ]
       },
       {
         label: "Output — generated SQL",
         type:  "sql",
-        sql:   `<span class="kw">SELECT</span> *
-<span class="kw">FROM</span>   <span class="tbl">"patients"</span>
+        sql: `<span class="kw">SELECT</span> *
+<span class="kw">FROM</span>   <span class="tbl">"data"</span>
 <span class="kw">WHERE</span>  <span class="col">"Gender"</span>   = <span class="str">'Female'</span>
   <span class="kw">AND</span>  <span class="col">"Age"</span>      > <span class="num">30</span>
   <span class="kw">AND</span>  <span class="col">"Location"</span> = <span class="str">'Dhaka'</span>;`
       }
     ],
-    next: "sql_validator.py"
+    next: "core/sql_validator.py"
   },
   {
-    file:  "sql_validator.py",
+    phase: "query",
+    file:  "core/sql_validator.py",
     color: "#ef4444",
     icon:  "VL",
     title: "SQL Safety Validation",
-    why:   "sql_validator.py is a security and correctness gate. Before any SQL reaches the database engine, the validator confirms it is a safe read-only query, contains no injection attempts, and only references columns that actually exist in the uploaded dataset.",
+    why:   "sql_validator.py is a security and correctness gate. Before the SQL touches the database, the validator confirms it is a safe read-only SELECT, contains no injection attempts, has no dangerous keywords, and only references columns that actually exist in the uploaded dataset schema.",
     sections: [
       {
         label: "Input received",
         type:  "box",
-        content: `SELECT * FROM "patients" WHERE "Gender" = 'Female' AND "Age" > 30 AND "Location" = 'Dhaka'`
+        content: `SELECT * FROM "data" WHERE "Gender" = 'Female' AND "Age" > 30 AND "Location" = 'Dhaka'`
       },
       {
         label: "Validation checks",
         type:  "checks",
         items: [
-          { label: "Query starts with SELECT (read-only)", pass: true },
+          { label: "Query starts with SELECT (read-only enforcement)", pass: true },
           { label: "No dangerous keywords: DROP, DELETE, UPDATE, INSERT, ALTER, TRUNCATE", pass: true },
-          { label: "No extra semicolons (multi-statement injection)", pass: true },
+          { label: "No extra semicolons (blocks multi-statement injection)", pass: true },
           { label: "All WHERE columns exist in schema: Gender ✓  Age ✓  Location ✓", pass: true }
         ]
       },
@@ -740,27 +1156,29 @@ const STEPS = [
         ]
       }
     ],
-    next: "sql_executor.py"
+    next: "core/sql_executor.py"
   },
   {
-    file:  "sql_executor.py",
+    phase: "query",
+    file:  "core/sql_executor.py",
     color: "#64748b",
     icon:  "EX",
     title: "SQL Execution",
-    why:   "sql_executor.py sends the validated SQL to the database engine and returns the result as (column_names, rows). In development the engine is SQLite; in production it is PostgreSQL (Neon). The dataset was loaded into this engine when the CSV was uploaded.",
+    why:   "sql_executor.py sends the validated SQL to the database engine and returns the result as a (column_names, rows) tuple. In development the engine is SQLite; in production it is PostgreSQL (Neon). The dataset was loaded into the engine when the CSV was uploaded.",
     sections: [
       {
         label: "Input received",
         type:  "box",
-        content: `SELECT * FROM "patients" WHERE "Gender" = 'Female' AND "Age" > 30 AND "Location" = 'Dhaka'`
+        content: `SQL: SELECT * FROM "data" WHERE "Gender" = 'Female' AND "Age" > 30 AND "Location" = 'Dhaka'
+Engine: SQLite (dev) | PostgreSQL (prod via DATABASE_URL)`
       },
       {
         label: "Processing",
         type:  "list",
         items: [
-          "Connect to SQLite (dev) or PostgreSQL via DATABASE_URL (prod).",
-          "Execute the SQL string using a parameterised connection.",
-          "Fetch all result rows via cursor.fetchall().",
+          "Connect to SQLite (dev) or PostgreSQL via DATABASE_URL / NEON_DATABASE_URL.",
+          "Execute SQL string using SQLAlchemy connection.",
+          "Fetch all result rows: cursor.fetchall().",
           "Extract column names from cursor.description.",
           "Return (column_names, rows) tuple to app.py."
         ]
@@ -778,20 +1196,21 @@ rows    = [
     next: "app.py (response)"
   },
   {
+    phase: "query",
     file:  "app.py",
     color: "#6366f1",
     icon:  "PY",
-    title: "Final Result Returned",
-    why:   "app.py receives the (columns, rows) tuple from sql_executor.py, serialises it as JSON, and sends the HTTP response back to the browser. The frontend JavaScript then renders the results table and the generated SQL.",
+    title: "Flask Server — JSON Response",
+    why:   "app.py receives the (columns, rows) tuple from sql_executor.py, serialises it as JSON, and sends the HTTP 200 response back to the browser. The frontend JavaScript (static/js/app.js) then renders the results table and the generated SQL.",
     sections: [
       {
         label: "JSON response sent to browser",
         type:  "code",
         content: `{
-  "sql":     "SELECT * FROM \\"patients\\" WHERE ...",
+  "sql":     "SELECT * FROM \\"data\\" WHERE ...",
   "intent":  "SELECT",
   "columns": ["Name", "Gender", "Age", "Location", "Dengue"],
-  "rows":    [
+  "rows": [
     ["A", "Female", 35, "Dhaka", "Positive"],
     ["C", "Female", 42, "Dhaka", "Positive"]
   ],
@@ -804,22 +1223,113 @@ rows    = [
       }
     ],
     next: null
+  },
+
+  // ── PHASE 3: CLI alternative ───────────────────────────────────────────────
+  {
+    phase: "cli",
+    file:  "main.py",
+    color: "#475569",
+    icon:  "CLI",
+    title: "CLI Entry Point (Alternative to Web UI)",
+    why:   "main.py is a command-line interface for the same NL2SQL pipeline. Instead of HTTP requests, it accepts a CSV path and question as command-line arguments (or enters an interactive loop). It calls the same core modules — dataset_loader, schema_reader, intent_detector, sql_generator, sql_validator, sql_executor — and formats the result using response.py for terminal output.",
+    sections: [
+      {
+        label: "How to run",
+        type:  "code",
+        content: `python main.py data/sample.csv
+> Enter question: Show female patients older than 30 from Dhaka`
+      },
+      {
+        label: "Processing",
+        type:  "list",
+        items: [
+          "Parse CLI args: csv_path and optional question string.",
+          "Call dataset_loader.load_dataset(csv_path) → (engine, df).",
+          "Call schema_reader.read_schema(df) → schema dict.",
+          "Enter REPL loop: prompt user for NL question.",
+          "Run same pipeline: intent → build_query → query_to_sql → validate → execute.",
+          "Call response.format_result(columns, rows) → print pretty table to terminal.",
+          "Loop until user types 'exit' or 'quit'."
+        ]
+      },
+      {
+        label: "Difference from web flow",
+        type:  "tokens",
+        items: [
+          { text: "No Flask / HTTP",    cls: "op"  },
+          { text: "No session state",   cls: "op"  },
+          { text: "Uses response.py",   cls: "val" },
+          { text: "Interactive REPL",   cls: "kw"  },
+        ]
+      }
+    ],
+    next: "core/response.py"
+  },
+  {
+    phase: "cli",
+    file:  "core/response.py",
+    color: "#475569",
+    icon:  "RS",
+    title: "CLI Result Formatter",
+    why:   "response.py formats the (columns, rows) tuple as a human-readable table for terminal output. It calculates column widths, pads values with spaces, and draws ASCII box borders — the same data that the web UI renders as an HTML table, response.py renders as a pretty-printed terminal table.",
+    sections: [
+      {
+        label: "Called only by",
+        type:  "tokens",
+        items: [{ text: "main.py  (CLI mode)", cls: "val" }]
+      },
+      {
+        label: "Input received",
+        type:  "code",
+        content: `columns = ["Name", "Gender", "Age", "Location", "Dengue"]
+rows    = [("A","Female",35,"Dhaka","Positive"),
+           ("C","Female",42,"Dhaka","Positive")]`
+      },
+      {
+        label: "Terminal output",
+        type:  "code",
+        content: `┌──────┬────────┬─────┬──────────┬──────────┐
+│ Name │ Gender │ Age │ Location │ Dengue   │
+├──────┼────────┼─────┼──────────┼──────────┤
+│ A    │ Female │  35 │ Dhaka    │ Positive │
+│ C    │ Female │  42 │ Dhaka    │ Positive │
+└──────┴────────┴─────┴──────────┴──────────┘
+2 rows returned.`
+      }
+    ],
+    next: null
   }
 ];
 
-// ─── Module list (sidebar) ────────────────────────────────────────────────────
+// ─── Module list for sidebar (all files) ─────────────────────────────────────
 
 const MODULES = [
-  { name: "app.py",              color: "#6366f1", stepIdx: 0 },
-  { name: "tokenizer.py",        color: "#f59e0b", stepIdx: 1 },
-  { name: "intent_detector.py",  color: "#3b82f6", stepIdx: 2 },
-  { name: "attribute_matcher.py",color: "#8b5cf6", stepIdx: 3 },
-  { name: "operator_detector.py",color: "#f97316", stepIdx: 4 },
-  { name: "value_matcher.py",    color: "#06b6d4", stepIdx: 5 },
-  { name: "sql_generator.py",    color: "#22c55e", stepIdx: 6 },
-  { name: "sql_validator.py",    color: "#ef4444", stepIdx: 7 },
-  { name: "sql_executor.py",     color: "#64748b", stepIdx: 8 },
-  { name: "app.py (response)",   color: "#6366f1", stepIdx: 9 },
+  // Phase 0
+  { group: "Phase 0 · Offline",  name: "train_intent.py",    color: "#78716c", stepIdx: 0  },
+  // Phase 1
+  { group: "Phase 1 · Upload",   name: "app.py (upload)",    color: "#6366f1", stepIdx: 1  },
+  { group: null,                  name: "dataset_loader.py",  color: "#0ea5e9", stepIdx: 2  },
+  { group: null,                  name: "schema_reader.py",   color: "#0ea5e9", stepIdx: 3  },
+  // Phase 2
+  { group: "Phase 2 · Query",    name: "app.py (/ask)",      color: "#6366f1", stepIdx: 4  },
+  { group: null,                  name: "tokenizer.py",       color: "#f59e0b", stepIdx: 5  },
+  { group: null,                  name: "stopwords.json",     color: "#d97706", stepIdx: 6  },
+  { group: null,                  name: "intent_detector.py", color: "#3b82f6", stepIdx: 7  },
+  { group: null,                  name: "vectorizer.pkl",     color: "#3b82f6", stepIdx: 8  },
+  { group: null,                  name: "intent_model.pkl",   color: "#3b82f6", stepIdx: 9  },
+  { group: null,                  name: "attribute_matcher.py",color:"#8b5cf6", stepIdx: 10 },
+  { group: null,                  name: "synonyms.json",      color: "#7c3aed", stepIdx: 11 },
+  { group: null,                  name: "operator_detector.py",color:"#f97316", stepIdx: 12 },
+  { group: null,                  name: "operators.json",     color: "#ea580c", stepIdx: 13 },
+  { group: null,                  name: "value_matcher.py",   color: "#06b6d4", stepIdx: 14 },
+  { group: null,                  name: "sql_generator.py",   color: "#22c55e", stepIdx: 15 },
+  { group: null,                  name: "sql_validator.py",   color: "#ef4444", stepIdx: 16 },
+  { group: null,                  name: "sql_executor.py",    color: "#64748b", stepIdx: 17 },
+  { group: null,                  name: "app.py (response)",  color: "#6366f1", stepIdx: 18 },
+  // Phase 3
+  { group: "Phase 3 · CLI",      name: "main.py",            color: "#475569", stepIdx: 19 },
+  { group: null,                  name: "response.py",        color: "#475569", stepIdx: 20 },
 ];
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -894,7 +1404,7 @@ function renderSection(sec) {
       </tbody>
     </table></div>
     <div style="margin-top:12px;font-size:0.82rem;color:#6b7280;">
-      2 rows matched out of 3 total. Row B (Male, age 28, Chattogram) did not satisfy any filter.
+      2 rows matched out of 3 total. Row B (Male, age 28, Chattogram) failed all filters.
     </div>`;
   }
 
@@ -906,14 +1416,20 @@ function renderSection(sec) {
 
 function renderStep(idx) {
   const s = STEPS[idx];
+  const phase = PHASES[s.phase];
 
   let html = `<div class="step-panel">`;
+
+  // Phase tag
+  html += `<div class="phase-tag" style="background:${phase.bg};color:${phase.color};border:1px solid ${phase.color}33;">
+    ${phase.label}
+  </div><br>`;
 
   // File badge
   html += `<div class="file-badge">
     <div class="file-icon" style="background:${s.color}">${s.icon}</div>
     <span class="file-name">${s.file}</span>
-    <span class="file-role">· Step ${idx + 1}</span>
+    <span class="file-role">· Step ${idx + 1} of ${STEPS.length}</span>
   </div>`;
 
   // Heading
@@ -934,9 +1450,10 @@ function renderStep(idx) {
       <strong>${s.next}</strong>
     </div>`;
   } else {
-    html += `<div class="next-file" style="color:#22c55e;">
-      <span>✓</span>
-      <span>Pipeline complete — result delivered to browser.</span>
+    const isCliEnd = s.phase === "cli";
+    html += `<div class="next-file" style="color:${isCliEnd ? '#64748b' : '#22c55e'};">
+      <span>${isCliEnd ? '■' : '✓'}</span>
+      <span>${isCliEnd ? 'CLI flow complete — result printed to terminal.' : 'Web pipeline complete — result delivered to browser.'}</span>
     </div>`;
   }
 
@@ -950,10 +1467,19 @@ function renderPipelineMap() {
   const map = document.getElementById("pipeline-map");
   let html = "";
   STEPS.forEach((s, i) => {
+    // Phase divider
+    if (i === 1 || i === 4 || i === 19) {
+      const labels = { 1: "Upload", 4: "Query", 19: "CLI" };
+      html += `<div class="map-phase">
+        <div class="map-phase-line"></div>
+        <div class="map-phase-label">${labels[i]}</div>
+        <div class="map-phase-line"></div>
+      </div>`;
+    }
     const cls = i < current ? "done" : i === current ? "active" : "";
     html += `<div class="map-node ${cls}" onclick="goTo(${i})" title="${s.file}">
       <div class="map-dot">${i + 1}</div>
-      <div class="map-label">${s.file.replace(".py","")}</div>
+      <div class="map-label">${s.file.replace("core/","").replace("models/","").replace("knowledge/","")}</div>
     </div>`;
     if (i < STEPS.length - 1) {
       html += `<div class="map-arrow ${i < current ? 'done' : ''}">›</div>`;
@@ -973,7 +1499,7 @@ function renderNavDots() {
   let html = "";
   STEPS.forEach((_, i) => {
     const cls = i < current ? "done" : i === current ? "active" : "";
-    html += `<div class="nav-dot ${cls}" onclick="goTo(${i})"></div>`;
+    html += `<div class="nav-dot ${cls}" onclick="goTo(${i})" title="Step ${i+1}"></div>`;
   });
   dots.innerHTML = html;
 }
@@ -983,12 +1509,18 @@ function renderNavDots() {
 function renderFileList() {
   const el = document.getElementById("file-list");
   let html = "";
-  MODULES.forEach((m, i) => {
-    const isDone   = m.stepIdx < current;
-    const isActive = m.stepIdx === current;
-    const cls = isActive ? "active" : isDone ? "done" : "idle";
+  let lastGroup = null;
+  MODULES.forEach((m) => {
+    if (m.group && m.group !== lastGroup) {
+      html += `<div class="file-group-label">${m.group}</div>`;
+      lastGroup = m.group;
+    }
+    const idx      = m.stepIdx;
+    const isDone   = idx < current;
+    const isActive = idx === current;
+    const cls   = isActive ? "active" : isDone ? "done" : "idle";
     const check = isActive ? "▶" : isDone ? "✓" : "·";
-    html += `<div class="file-row ${cls}" onclick="goTo(${m.stepIdx})">
+    html += `<div class="file-row ${cls}" onclick="goTo(${idx})">
       <div class="f-icon" style="background:${isActive || isDone ? m.color : '#d1d5db'}">${m.name.slice(0,2).toUpperCase()}</div>
       <span class="f-name">${m.name}</span>
       <span class="f-check">${check}</span>
@@ -1002,8 +1534,8 @@ function renderFileList() {
 function renderDataset() {
   const rows = document.querySelectorAll("#dataset-body tr");
   rows.forEach(r => r.classList.remove("hl"));
-  if (current === 9) {
-    // Highlight matching rows A and C
+  // Highlight matching rows on the final result step (step index 18)
+  if (current === 18) {
     rows[0].classList.add("hl");
     rows[2].classList.add("hl");
   }
@@ -1027,7 +1559,8 @@ function update() {
   renderCounter();
   document.getElementById("prev-btn").disabled = current === 0;
   document.getElementById("next-btn").disabled = current === STEPS.length - 1;
-  document.getElementById("next-btn").textContent = current === STEPS.length - 1 ? "Done ✓" : "Next →";
+  document.getElementById("next-btn").textContent =
+    current === STEPS.length - 1 ? "Done ✓" : "Next →";
 }
 
 function navigate(dir) {

@@ -180,9 +180,15 @@ def build_query(question, schema, intent,
     text_columns    = set(get_text_columns(schema))
 
     column_matches = find_columns_with_positions(question, schema, synonyms_path)
+    matched_column_names = {m["column"] for m in column_matches}
 
     # Step 1: Categorical filters
-    for match in match_categorical_values(question, schema):
+    # Pass the set of columns found in the question so that ambiguous values
+    # (e.g. "Yes" shared by Attrition AND OverTime) are only matched for the
+    # column(s) the user actually mentioned.  Unambiguous values are still
+    # matched even when their column wasn't named explicitly.
+    for match in match_categorical_values(question, schema,
+                                          allowed_columns=matched_column_names):
         col = match["column"]
         if col not in filtered_columns:
             filters.append({"column": col, "operator": "=", "value": match["value"]})
