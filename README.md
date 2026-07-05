@@ -1,4 +1,4 @@
-# nl2sql-ai-cse366
+# nl2sql-ai-cse366 — Natural Language to SQL Query Generation System
 
 A hybrid Natural Language to SQL system that converts plain-English questions into executable SQL queries against any CSV dataset — no SQL knowledge required.
 
