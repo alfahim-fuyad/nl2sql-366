@@ -8,7 +8,7 @@ A hybrid Natural Language to SQL system that converts plain-English questions in
 
 **nl2sql-ai-366** combines a supervised machine learning model for intent classification with a deterministic rule-based pipeline for column, operator, and value extraction. The system is fully dataset-independent: upload any CSV and start querying immediately.
 
-**Live demo:** [nl2sql-ai-cse366 on Render](https://nl2sql-ai-366.onrender.com)
+**Live demo:** [nl2sql-ai-366 on Render](https://nl2sql-ai-366.onrender.com)
 
 ---
 
