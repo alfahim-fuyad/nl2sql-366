@@ -1,9 +1,4 @@
-"""
-Interactive CLI for the NL2SQL pipeline.
-
-Loads a CSV or Excel dataset and ML model once, then accepts repeated natural language
-questions until the user exits or switches to a different dataset.
-"""
+# main.py
 
 import sys
 import os
@@ -21,7 +16,6 @@ from response import print_result
 
 def run_pipeline(df, schema, question, model, vectorizer,
                  db_path="data/database.db", table_name="data"):
-    """Run the full NL2SQL pipeline for a single question and print the result."""
     intent = predict_intent(question, model, vectorizer)
     query  = build_query(question, schema, intent)
 

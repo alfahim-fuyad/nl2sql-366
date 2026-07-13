@@ -1,17 +1,10 @@
-"""
-Detects SQL comparison operators from natural language phrases.
-
-Scans the question for phrases defined in operators.json (e.g. "older than" → ">"),
-using greedy longest-first matching to avoid shorter phrases shadowing longer ones.
-Also supports symbolic operators such as >, <, >=, <=, =, !=.
-"""
+# core/operator_detector.py
 
 import re
 import json
 
 
 def load_operators(path="knowledge/operators.json"):
-    """Load the phrase-to-operator mapping from the JSON knowledge file."""
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
     data.pop("_comment", None)
@@ -19,24 +12,12 @@ def load_operators(path="knowledge/operators.json"):
 
 
 def detect_operators(text, operators_path="knowledge/operators.json"):
-    """
-    Find all SQL operators referenced in the question, with their positions.
-
-    Supports both natural language operators and symbolic operators.
-
-    Returns:
-        List of dicts: [{"symbol": ">", "position": 10}, ...]
-        Sorted by ascending position in the original text.
-    """
     operators = load_operators(operators_path)
     text_lower = text.lower()
 
     found = []
     used_positions = set()
 
-    # -----------------------------
-    # Step 1: Detect symbolic operators
-    # -----------------------------
     symbol_pattern = r"(>=|<=|!=|<>|>|<|=)"
 
     for match in re.finditer(symbol_pattern, text):
@@ -50,9 +31,6 @@ def detect_operators(text, operators_path="knowledge/operators.json"):
 
         used_positions.update(range(start, end))
 
-    # -----------------------------
-    # Step 2: Detect phrase operators
-    # -----------------------------
     sorted_phrases = sorted(operators.keys(), key=len, reverse=True)
 
     for phrase in sorted_phrases:

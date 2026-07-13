@@ -1,16 +1,7 @@
-"""
-Formats SQL query results as a human-readable ASCII table for CLI output.
-"""
+# core/response.py
 
 
 def format_result(column_names, rows):
-    """
-    Render query results as a column-aligned text table.
-
-    Column widths are computed from the maximum of the header length
-    and the longest value in each column. Returns a "no results" message
-    if the row list is empty.
-    """
     if not rows:
         return "No results found."
 
@@ -32,5 +23,4 @@ def format_result(column_names, rows):
 
 
 def print_result(column_names, rows):
-    """Print the formatted result table to stdout."""
     print(format_result(column_names, rows))

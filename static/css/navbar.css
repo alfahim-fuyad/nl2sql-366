@@ -1,0 +1,154 @@
+/* static/css/navbar.css */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 900px;
+  margin: 0 auto 32px;
+  padding-bottom: 0;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+}
+
+.navbar .logo {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+.navbar .logo .lo-nl {
+  color: #111;
+}
+.navbar .logo .lo-2 {
+  color: #999;
+  margin: 0 1px;
+  font-weight: 600;
+}
+.navbar .logo .lo-sql {
+  color: #111;
+}
+.navbar .logo .lo-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  margin-left: 6px;
+  transform: translateY(-6px);
+}
+
+.navbar .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+.navbar .nav-links button {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #555;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+  white-space: nowrap;
+}
+.navbar .nav-links button:hover {
+  background: #ececec;
+  color: #111;
+}
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 8px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #333;
+  border-radius: 2px;
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease;
+  transform-origin: center;
+}
+.navbar.nav-open .nav-hamburger span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.navbar.nav-open .nav-hamburger span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.navbar.nav-open .nav-hamburger span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    align-items: center;
+    padding-bottom: 0;
+  }
+
+  .navbar .logo {
+    margin-bottom: 0;
+    padding: 12px 0;
+  }
+  .nav-hamburger {
+    display: flex;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 8px;
+  }
+
+  .navbar .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-bottom: 0;
+    padding: 8px 0 12px;
+    border-top: 1px solid #eee;
+    gap: 2px;
+  }
+  .navbar .nav-links button {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  .navbar.nav-open .nav-links {
+    display: flex;
+  }
+
+  .navbar {
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 24px;
+  }
+}

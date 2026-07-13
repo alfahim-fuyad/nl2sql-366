@@ -1,13 +1,4 @@
-"""
-Trains and saves the intent classification model.
-
-Uses TF-IDF feature extraction with a Multinomial Naive Bayes classifier.
-The trained model and vectorizer are saved as pickle files and loaded by
-the application at startup.
-
-Usage:
-    python3 models/train_intent.py
-"""
+# models/train_intent.py
 
 import pickle
 import pandas as pd
@@ -22,7 +13,6 @@ def train_and_save(
     model_path="models/intent_model.pkl",
     vectorizer_path="models/vectorizer.pkl",
 ):
-    """Train the intent classifier and save the model and vectorizer to disk."""
     data      = pd.read_csv(csv_path)
     questions = data["question"]
     intents   = data["intent"]

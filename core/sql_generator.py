@@ -1,28 +1,4 @@
-"""
-Builds an internal query representation and converts it to a SQL string.
-
-The pipeline has two stages:
-    1. build_query()  — produces a structured dict from the question + schema
-    2. query_to_sql() — renders that dict as a valid SQL string
-
-Internal query format:
-    {
-        "intent":     "SELECT",         # SELECT | COUNT | AVG | MAX | MIN | SUM
-        "filters":    [                 # WHERE conditions
-            {"column": "Gender",  "operator": "=",       "value": "Female"},
-            {"column": "Age",     "operator": ">",        "value": "30"},
-            {"column": "Score",   "operator": "BETWEEN",  "value": "5", "value2": "9"},
-        ],
-        "agg_column": None,             # column for AVG / MAX / MIN / SUM
-        "group_by":   None,             # column for GROUP BY
-        "order_by":   None,             # column for ORDER BY
-        "order_dir":  "DESC",           # "DESC" or "ASC"
-        "limit":      None,             # integer row limit
-    }
-
-All SQL identifiers are double-quoted to safely handle column names that
-contain spaces, hyphens, or reserved SQL keywords.
-"""
+# core/sql_generator.py
 
 import re
 
@@ -31,8 +7,6 @@ from attribute_matcher import find_columns_with_positions
 from value_matcher import extract_numbers, match_categorical_values
 from schema_reader import get_numeric_columns, get_text_columns
 
-
-# ── Constants ──────────────────────────────────────────────────────────────────
 
 _AGGREGATE_INTENTS = {"AVG", "MAX", "MIN", "SUM"}
 
@@ -57,20 +31,11 @@ _BOTTOM_PATTERN = re.compile(
 )
 
 
-# ── Helpers ────────────────────────────────────────────────────────────────────
-
 def _quote_identifier(name):
-    """Wrap an identifier in double quotes, escaping any embedded double quotes."""
     return f'"{name.replace(chr(34), chr(34) + chr(34))}"'
 
 
 def _nearest_column(ref_pos, column_matches, allowed=None, exclude=None):
-    """
-    Return the column whose matched position is closest to ref_pos.
-
-    allowed  — if provided, only consider columns in this set
-    exclude  — if provided, skip columns already used as filters
-    """
     candidates = column_matches
     if allowed is not None:
         candidates = [c for c in candidates if c["column"] in allowed]
@@ -85,13 +50,6 @@ def _nearest_column(ref_pos, column_matches, allowed=None, exclude=None):
 
 
 def _find_agg_column(question, column_matches, numeric_columns):
-    """
-    Identify the numeric column to aggregate (AVG / MAX / MIN / SUM).
-
-    Picks the numeric column whose matched position is closest to the
-    aggregate keyword in the question. Returns None if no numeric column
-    is found, so the caller can surface a clear error instead of guessing.
-    """
     if not numeric_columns:
         return None
 
@@ -115,11 +73,6 @@ def _find_agg_column(question, column_matches, numeric_columns):
 
 
 def _detect_group_by(question, column_matches):
-    """
-    Detect a GROUP BY column from a pattern like "… by <column>".
-
-    Returns the column name string, or None if no pattern is found.
-    """
     m = re.search(r"\bby\b", question, re.IGNORECASE)
     if not m:
         return None
@@ -131,11 +84,6 @@ def _detect_group_by(question, column_matches):
 
 
 def _detect_order_limit(question, column_matches, numeric_columns):
-    """
-    Detect ORDER BY + LIMIT intent from "top N" or "lowest/bottom N" patterns.
-
-    Returns: (column_name, direction, limit) or (None, None, None)
-    """
     def _column_near(pos):
         candidates = [c for c in column_matches
                       if c["column"] in numeric_columns and c["position"] >= pos]
@@ -156,23 +104,9 @@ def _detect_order_limit(question, column_matches, numeric_columns):
     return None, None, None
 
 
-# ── Public API ─────────────────────────────────────────────────────────────────
-
 def build_query(question, schema, intent,
                 operators_path="knowledge/operators.json",
                 synonyms_path="knowledge/synonyms.json"):
-    """
-    Parse a natural language question into an internal query representation.
-
-    Steps:
-        1. Match categorical values  → WHERE = filters
-        2. Detect operators + numbers → WHERE numeric filters
-        3. Detect GROUP BY column
-        4. Detect ORDER BY + LIMIT
-        5. Identify aggregate column (for AVG / MAX / MIN / SUM)
-
-    Returns a dict compatible with query_to_sql().
-    """
     filters          = []
     filtered_columns = set()
 
@@ -182,11 +116,6 @@ def build_query(question, schema, intent,
     column_matches = find_columns_with_positions(question, schema, synonyms_path)
     matched_column_names = {m["column"] for m in column_matches}
 
-    # Step 1: Categorical filters
-    # Pass the set of columns found in the question so that ambiguous values
-    # (e.g. "Yes" shared by Attrition AND OverTime) are only matched for the
-    # column(s) the user actually mentioned.  Unambiguous values are still
-    # matched even when their column wasn't named explicitly.
     for match in match_categorical_values(question, schema,
                                           allowed_columns=matched_column_names):
         col = match["column"]
@@ -194,7 +123,6 @@ def build_query(question, schema, intent,
             filters.append({"column": col, "operator": "=", "value": match["value"]})
             filtered_columns.add(col)
 
-    # Step 2: Numeric / operator-based filters
     operators    = detect_operators(question, operators_path)
     all_numbers  = extract_numbers(question)
     used_num_ids = set()
@@ -274,15 +202,12 @@ def build_query(question, schema, intent,
                 filtered_columns.add(col)
                 used_num_ids.add(id(nearest_num))
 
-    # Step 3: GROUP BY
     group_by_col = _detect_group_by(question, column_matches)
 
-    # Step 4: ORDER BY + LIMIT
     order_col, order_dir, limit = _detect_order_limit(
         question, column_matches, numeric_columns
     )
 
-    # Step 5: Aggregate column
     agg_col = None
     if intent in _AGGREGATE_INTENTS:
         agg_col = _find_agg_column(question, column_matches, numeric_columns)
@@ -299,15 +224,6 @@ def build_query(question, schema, intent,
 
 
 def query_to_sql(query, table_name="data"):
-    """
-    Render an internal query dict as a SQL string.
-
-    Supports SELECT, COUNT, AVG, MAX, MIN, SUM with optional
-    WHERE, GROUP BY, ORDER BY, and LIMIT clauses.
-
-    Raises ValueError if an aggregate intent is used but no target
-    column could be resolved from the question.
-    """
     intent     = query["intent"]
     filters    = query.get("filters", [])
     agg_column = query.get("agg_column")
@@ -317,7 +233,6 @@ def query_to_sql(query, table_name="data"):
     limit      = query.get("limit")
     tbl        = _quote_identifier(table_name)
 
-    # When a LIMIT is requested without GROUP BY, treat as SELECT * (ranked rows)
     agg_overridden = limit is not None and group_by is None and intent in _AGGREGATE_INTENTS
 
     if intent == "SELECT" or agg_overridden:
@@ -344,7 +259,6 @@ def query_to_sql(query, table_name="data"):
 
     sql = f"{select_part} FROM {tbl}"
 
-    # WHERE clause
     if filters:
         conditions = []
         for f in filters:
@@ -369,11 +283,9 @@ def query_to_sql(query, table_name="data"):
 
         sql += " WHERE " + " AND ".join(conditions)
 
-    # GROUP BY
     if group_by:
         sql += f" GROUP BY {_quote_identifier(group_by)}"
 
-    # ORDER BY + LIMIT
     if order_by:
         sql += f" ORDER BY {_quote_identifier(order_by)} {order_dir}"
     if limit:

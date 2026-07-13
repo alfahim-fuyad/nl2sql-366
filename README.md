@@ -1,4 +1,4 @@
-# nl2sql-ai-366 — Natural Language to SQL Query Generation System
+# nl2sql-366 — Natural Language to SQL Query Generation System
 
 A hybrid Natural Language to SQL system that converts plain-English questions into executable SQL queries against any CSV dataset — no SQL knowledge required.
 
@@ -6,9 +6,9 @@ A hybrid Natural Language to SQL system that converts plain-English questions in
 
 ## Overview
 
-**nl2sql-ai-366** combines a supervised machine learning model for intent classification with a deterministic rule-based pipeline for column, operator, and value extraction. The system is fully dataset-independent: upload any CSV and start querying immediately.
+**nl2sql-366** combines a supervised machine learning model for intent classification with a deterministic rule-based pipeline for column, operator, and value extraction. The system is fully dataset-independent: upload any CSV and start querying immediately.
 
-**Live demo:** [nl2sql-ai-366 on Render](https://nl2sql-ai-366.onrender.com)
+**Live demo:** [nl2sql-366 on Render](https://nl2sql-366.onrender.com)
 
 ---
 
@@ -42,7 +42,7 @@ A hybrid Natural Language to SQL system that converts plain-English questions in
 ## Project Structure
 
 ```
-nl2sql-ai/
+nl2sql-366/
 ├── app.py                        # Flask web server
 ├── main.py                       # Interactive CLI
 │
@@ -83,14 +83,31 @@ nl2sql-ai/
 │   └── test_validator.py
 │
 ├── templates/
-│   └── _navbar.html
-│   └── index.html                # Main web UI template
+│   ├── index.html                # Main web UI template (composes the partials below)
+│   └── partials/
+│       ├── navbar.html           # Top navbar + mobile hamburger menu
+│       ├── about_modal.html      # "About" modal content
+│       ├── help_modal.html       # "Help" modal content
+│       ├── upload_card.html      # Drag & drop upload card
+│       ├── preview_card.html     # Dataset preview table
+│       └── query_card.html       # Question input + SQL/results display
 │
 │── favicon.svg
 ├── static/
-│   ├── css/style.css
+│   ├── css/
+│   │   ├── base.css              # Reset, body, container, header, card
+│   │   ├── navbar.css            # Navbar + mobile hamburger menu
+│   │   ├── modal.css             # Modal shell + About modal styling
+│   │   ├── upload.css            # Drop zone, upload strip, data requirements
+│   │   └── query-results.css     # Ask row, SQL output, results table, spinner
 │   ├── images/ewu-logo.png
-│   └── js/app.js
+│   └── js/
+│       ├── dom.js                # Shared DOM element references
+│       ├── utils.js               # Shared UI helpers (errors, escaping)
+│       ├── upload.js             # Drag & drop / file upload logic
+│       ├── query.js              # Ask question + render results
+│       ├── navbar.js             # Logo reload + mobile hamburger menu
+│       └── modals.js             # About/Help modal open & close behavior
 │
 ├── data/
 │   └── sample.csv                # Sample dataset for testing
@@ -100,6 +117,8 @@ nl2sql-ai/
 ├── Procfile
 └── render.yaml
 ```
+
+Each CSS and JS file has a single responsibility and is loaded in dependency order directly by `templates/index.html` (no bundler or build step involved). The Jinja partials in `templates/partials/` are `{% include %}`-ed by `index.html` and keep the page markup organized by section; they aren't standalone routes.
 
 ---
 

@@ -1,4 +1,4 @@
-"""Tests for text tokenization and operator detection."""
+# tests/test_tokenizer_and_operator.py
 
 from tokenizer import tokenize, clean_text
 from operator_detector import detect_operators

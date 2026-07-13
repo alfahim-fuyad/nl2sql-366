@@ -1,4 +1,4 @@
-"""Tests for attribute matching and value extraction."""
+# tests/test_matchers.py
 
 from attribute_matcher import match_column
 from value_matcher import extract_numbers, match_categorical_values
@@ -30,7 +30,6 @@ def test_extract_numbers():
 
 
 def test_categorical_match_no_false_positive():
-    # "female" must not also match "Male"
     matches = match_categorical_values("show female patients", SCHEMA)
     values  = [m["value"] for m in matches]
     assert "Female" in values

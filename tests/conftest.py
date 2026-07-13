@@ -1,7 +1,4 @@
-"""
-Pytest configuration: adds the project root and core/ directory to sys.path
-so test files can import core modules directly.
-"""
+# tests/conftest.py
 
 import sys
 import os

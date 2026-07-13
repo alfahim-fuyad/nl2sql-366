@@ -1,4 +1,4 @@
-"""Tests for SQL validation — safety, correctness, and injection prevention."""
+# tests/test_validator.py
 
 from sql_validator import validate_sql
 

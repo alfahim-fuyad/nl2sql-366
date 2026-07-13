@@ -1,4 +1,4 @@
-"""End-to-end tests for SQL generation and execution."""
+# tests/test_sql_generation_and_execution.py
 
 from dataset_loader import load_dataset
 from schema_reader import read_schema

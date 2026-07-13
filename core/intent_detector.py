@@ -1,11 +1,4 @@
-"""
-Predicts the SQL intent of a natural language question.
-
-Loads a pre-trained Naive Bayes classifier and applies rule-based post-processing
-to correct common misclassifications (e.g. "show all..." should always be SELECT).
-
-Supported intents: SELECT, COUNT, AVG, MAX, MIN, SUM
-"""
+# core/intent_detector.py
 
 import re
 import pickle
@@ -25,13 +18,6 @@ _RANK_TRIGGERS = re.compile(
 
 
 def _override_intent(text, ml_intent):
-    """
-    Apply rule-based corrections to the ML model's intent prediction.
-
-    Rules:
-        - "top N / bottom N" patterns → SELECT (uses ORDER BY + LIMIT)
-        - "show / list / display" without count keywords → SELECT
-    """
     if _RANK_TRIGGERS.search(text):
         return "SELECT"
 
@@ -43,7 +29,6 @@ def _override_intent(text, ml_intent):
 
 def load_model(model_path="models/intent_model.pkl",
                vectorizer_path="models/vectorizer.pkl"):
-    """Load and return the saved (model, vectorizer) pair."""
     with open(model_path, "rb") as f:
         model = pickle.load(f)
     with open(vectorizer_path, "rb") as f:
@@ -52,12 +37,6 @@ def load_model(model_path="models/intent_model.pkl",
 
 
 def predict_intent(text, model, vectorizer):
-    """
-    Predict the SQL intent for a natural language question.
-
-    Returns one of: SELECT, COUNT, AVG, MAX, MIN, SUM.
-    The ML prediction is post-processed by rule-based overrides.
-    """
     text_vec  = vectorizer.transform([text])
     ml_intent = model.predict(text_vec)[0]
     return _override_intent(text, ml_intent)

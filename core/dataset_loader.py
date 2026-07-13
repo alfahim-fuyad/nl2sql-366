@@ -1,10 +1,4 @@
-"""
-Loads a CSV or Excel file into a pandas DataFrame and persists it to a database.
-
-Backend selection:
-    - If DATABASE_URL or NEON_DATABASE_URL is set → PostgreSQL (production)
-    - Otherwise → SQLite (local development)
-"""
+# core/dataset_loader.py
 
 import os
 import sqlite3
@@ -12,9 +6,6 @@ import pandas as pd
 
 
 def load_dataset_file(file_path):
-    """
-    Read a CSV or Excel file and return a DataFrame.
-    """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Dataset file not found: {file_path}")
 
@@ -35,7 +26,6 @@ def load_dataset_file(file_path):
 
 
 def _get_database_url():
-    """Return the PostgreSQL connection URL from environment variables, or None."""
     return os.environ.get("DATABASE_URL") or os.environ.get("NEON_DATABASE_URL")
 
 
@@ -78,9 +68,6 @@ def save_to_sqlite(df, db_path, table_name="data"):
 
 
 def load_dataset(file_path, db_path="data/database.db", table_name="data"):
-    """
-    Load a CSV or Excel file and persist it to the appropriate database backend.
-    """
     df = load_dataset_file(file_path)
 
     database_url = _get_database_url()

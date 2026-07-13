@@ -1,0 +1,38 @@
+<!-- templates/partials/navbar.html -->
+    <div class="navbar" id="navbar">
+      <button class="logo" id="logo-btn" type="button" aria-label="Reload page">
+        <span class="lo-nl">nl</span>
+        <span class="lo-2">2</span>
+        <span class="lo-sql">sql-</span>
+        <span class="lo-2">366</span>
+      </button>
+
+      <button
+        class="nav-hamburger"
+        id="nav-hamburger"
+        type="button"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="nav-links" id="nav-links">
+        <button id="about-btn" type="button">About</button>
+        <button id="help-btn" type="button">Help</button>
+        <button type="button" onclick="window.location.href = '/simulator'">
+          Run Simulator
+        </button>
+        <button
+          type="button"
+          onclick="
+            window.open(
+              'https://github.com/fuad556805/nl2sql-ai-cse366',
+              '_blank',
+            )
+          "
+        >
+          GitHub
+        </button>
+      </div>
+    </div>

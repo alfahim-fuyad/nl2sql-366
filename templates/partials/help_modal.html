@@ -1,0 +1,41 @@
+<!-- templates/partials/help_modal.html -->
+    <div class="modal-overlay" id="help-modal">
+      <div class="modal-box">
+        <h2>Help &amp; Tips</h2>
+        <p><strong>1. Upload a dataset</strong></p>
+        <ul>
+          <li>
+            Drag &amp; drop or click to browse a <code>.csv</code>,
+            <code>.xlsx</code>, or <code>.xls</code> file.
+          </li>
+          <li>The first row must contain column headers.</li>
+        </ul>
+        <p><strong>2. Ask a question</strong></p>
+        <ul>
+          <li><code>show female patients older than 30</code></li>
+          <li><code>average purchase amount by location</code></li>
+          <li><code>top 5 highest salary</code></li>
+          <li><code>count students where district is Dhaka</code></li>
+        </ul>
+        <p><strong>3. Tips for best results</strong></p>
+        <ol>
+          <li>
+            Mention the column name in your question (e.g. "purchase amount",
+            "review score").
+          </li>
+          <li>
+            Use <code>average</code>, <code>total</code>, <code>maximum</code>,
+            <code>minimum</code> for aggregates.
+          </li>
+          <li>
+            Use <code>top N</code> / <code>lowest N</code> for ranked results.
+          </li>
+          <li>Use <code>by &lt;column&gt;</code> to group results.</li>
+        </ol>
+        <p>
+          If a question is too ambiguous, the app will show a clear error
+          instead of guessing.
+        </p>
+        <button class="modal-close" data-close="help-modal">Close</button>
+      </div>
+    </div>

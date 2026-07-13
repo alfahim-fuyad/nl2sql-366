@@ -1,4 +1,4 @@
-"""Tests for dataset loading and schema extraction."""
+# tests/test_dataset_and_schema.py
 
 from dataset_loader import load_dataset
 from schema_reader import read_schema, get_numeric_columns, get_text_columns

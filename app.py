@@ -1,10 +1,4 @@
-"""
-Flask web server for the NL2SQL AI application.
-
-Handles CSV and Excel upload, schema extraction, and natural language query execution.
-Uses PostgreSQL in production (DATABASE_URL or NEON_DATABASE_URL env var)
-and SQLite as a local development fallback.
-"""
+# app.py
 
 import os
 import sys
@@ -22,7 +16,7 @@ from sql_validator import validate_sql
 from sql_executor import execute_query
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50 MB
+app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-change-in-prod")
 
 USE_POSTGRES = bool(
@@ -35,7 +29,6 @@ TABLE_NAME = "data"
 if not USE_POSTGRES:
     os.makedirs("data", exist_ok=True)
 
-# In-memory application state (single-user; extend to sessions for multi-user)
 _state = {
     "df":         None,
     "schema":     None,
@@ -51,8 +44,6 @@ except FileNotFoundError:
     print("WARNING: Model files not found. Run: python3 models/train_intent.py")
 
 
-# ── Routes ────────────────────────────────────────────────────────────────────
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -60,7 +51,6 @@ def index():
 
 @app.route("/simulator")
 def simulator():
-    """Serve the standalone interactive pipeline simulation page."""
     return send_file(
         os.path.join(os.path.dirname(os.path.abspath(__file__)), "simulation.html")
     )
@@ -68,7 +58,6 @@ def simulator():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    """Accept a CSV or Excel file upload and return the schema and a row preview."""
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -127,7 +116,6 @@ def upload():
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    """Translate a natural language question to SQL, execute it, and return results."""
     if _state["df"] is None:
         return jsonify({"error": "No dataset loaded. Please upload a CSV or Excel file first."}), 400
 
@@ -192,7 +180,6 @@ def ask():
 
 @app.route("/health")
 def health():
-    """Health check endpoint for deployment monitoring."""
     return jsonify({
         "status":  "ok",
         "model":   _state["model"] is not None,
