@@ -1,6 +1,6 @@
 # nl2sql-366 — Natural Language to SQL Query Generation System
 
-A Natural Language to SQL (nl2sql-366) system that converts plain English questions into SQL queries for any CSV dataset. Users can upload a CSV/Excel file, ask questions in English, and get results without writing SQL.
+A Natural Language to SQL (nl2sql-366) system that converts plain English questions into SQL queries for any CSV/Excel dataset. Users can upload a CSV/Excel file, ask questions in English, and get results without writing SQL.
 
 ---
 
