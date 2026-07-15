@@ -115,9 +115,9 @@ nl2sql-366/
 │   └── sample.csv                # Sample dataset for testing
 │
 ├── simulation.html               # Interactive pipeline visualiser (learning tool)
-├── requirements.txt
-├── Procfile
-└── render.yaml
+├── requirements.txt              # List of required Python packages
+├── Procfile                      # Starts the Flask app on Render
+└── render.yaml                   # Render deployment settings
 ```
 
 Each CSS and JS file has a single responsibility and is loaded in dependency order directly by `templates/index.html` (no bundler or build step involved). The Jinja partials in `templates/partials/` are `{% include %}`-ed by `index.html` and keep the page markup organized by section; they aren't standalone routes.
