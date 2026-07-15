@@ -1,12 +1,14 @@
 # nl2sql-366 — Natural Language to SQL Query Generation System
 
-A hybrid Natural Language to SQL (NL2SQL) system that converts plain-English questions into executable SQL queries for any CSV dataset using a compositional AI pipeline. The system requires no prior SQL knowledge and automatically detects the uploaded dataset schema.
+A Natural Language to SQL (NL2SQL) system that converts plain English questions into SQL queries for any CSV dataset. Users can upload a CSV file, ask questions in English, and get results without writing SQL.
 
 ---
 
 ## Overview
 
-nl2sql-366 follows a compositional learning approach by decomposing a natural language question into multiple AI modules, including intent detection, attribute matching, operator detection, value extraction, SQL generation, validation, and execution. It combines a supervised machine learning model (TF-IDF + Naive Bayes) for intent classification with deterministic rule-based components for accurate and interpretable SQL generation. The system is fully dataset-independent—users can upload any CSV file and start querying immediately.
+nl2sql-366 uses a hybrid approach that combines Machine Learning (TF-IDF + Naive Bayes) with rule-based techniques. The system breaks a user's question into smaller parts, such as finding the intent, column names, operators, and values, and then combines them to generate the final SQL query. This follows a compositional approach, making the system simple, accurate, and easy to understand.
+
+The system works with any CSV dataset by automatically detecting its schema, so users can start querying immediately without changing the code.
 
 **Live demo:** [nl2sql-366 on Render](https://nl2sql-366.onrender.com)
 
