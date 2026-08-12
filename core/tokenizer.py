@@ -17,7 +17,11 @@ def clean_text(text):
 
     text = re.sub(r"(>=|<=|!=|>|<|=)", r" \1 ", text)
 
-    text = re.sub(r"[^a-z0-9\s><=!.]", " ", text)
+    # Keep comparison operators intact, but remove standalone punctuation.
+    # Decimal points between digits remain available for numeric matching.
+    text = re.sub(r"!(?!=)", " ", text)
+    text = re.sub(r"(?<!\d)\.(?!\d)", " ", text)
+    text = re.sub(r"[^a-z0-9\s><=]", " ", text)
 
     text = re.sub(r"\s+", " ", text).strip()
 

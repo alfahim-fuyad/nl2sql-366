@@ -29,6 +29,14 @@ _TOP_PATTERN    = re.compile(r"\btop\s+(\d+)\b", re.IGNORECASE)
 _BOTTOM_PATTERN = re.compile(
     r"\b(?:bottom|lowest|least|worst|minimum)\s+(\d+)\b", re.IGNORECASE
 )
+_RANK_WORD_PATTERN = re.compile(
+    r"\b(?:highest|maximum|max|largest|biggest|lowest|minimum|min|smallest|least)\b",
+    re.IGNORECASE,
+)
+_LOWEST_WORD_PATTERN = re.compile(
+    r"\b(?:lowest|minimum|min|smallest|least)\b",
+    re.IGNORECASE,
+)
 
 
 def _quote_identifier(name):
@@ -72,18 +80,57 @@ def _find_agg_column(question, column_matches, numeric_columns):
     )["column"]
 
 
-def _detect_group_by(question, column_matches):
+def _detect_group_by(question, column_matches, text_columns):
     m = re.search(r"\bby\b", question, re.IGNORECASE)
     if not m:
+        # Also support questions such as:
+        # "Which department has the highest average salary?"
+        # Here the grouping column appears before the aggregate phrase.
+        aggregate_match = re.search(
+            r"\b(?:avg|average|mean|max|maximum|highest|largest|biggest|"
+            r"min|minimum|lowest|smallest|sum|total)\b",
+            question,
+            re.IGNORECASE,
+        )
+        if not aggregate_match:
+            return None
+
+        leading_candidates = [
+            c for c in column_matches
+            if c["column"] in text_columns
+            and c["position"] < aggregate_match.start()
+        ]
+        if re.search(r"\b(?:which|what)\b", question, re.IGNORECASE) and leading_candidates:
+            return max(
+                leading_candidates,
+                key=lambda c: (c["position"], c["score"]),
+            )["column"]
+
+        # "average salary for each department" / "per department"
+        each_match = re.search(r"\b(?:each|every|per)\b", question, re.IGNORECASE)
+        if each_match:
+            candidates = [
+                c for c in column_matches
+                if c["column"] in text_columns and c["position"] >= each_match.end()
+            ]
+            if candidates:
+                return min(
+                    candidates,
+                    key=lambda c: (c["position"], -c["score"]),
+                )["column"]
         return None
+
     pos        = m.end()
     candidates = [c for c in column_matches if c["position"] >= pos]
     if not candidates:
         return None
+    text_candidates = [c for c in candidates if c["column"] in text_columns]
+    candidates = text_candidates or candidates
     return min(candidates, key=lambda c: (c["position"], -c["score"]))["column"]
 
 
-def _detect_order_limit(question, column_matches, numeric_columns):
+def _detect_order_limit(question, column_matches, numeric_columns,
+                        group_by=None, aggregate_column=None):
     def _column_near(pos):
         candidates = [c for c in column_matches
                       if c["column"] in numeric_columns and c["position"] >= pos]
@@ -99,7 +146,14 @@ def _detect_order_limit(question, column_matches, numeric_columns):
 
     bot_m = _BOTTOM_PATTERN.search(question)
     if bot_m:
-        return _column_near(bot_m.end()), "ASC", int(bot_m.group(1))
+        order_column = aggregate_column if group_by and aggregate_column else _column_near(bot_m.end())
+        return order_column, "ASC", int(bot_m.group(1))
+
+    # A grouped question asking for the "highest/lowest" group needs to rank
+    # the aggregate values and keep only the winning group.
+    if group_by and aggregate_column and _RANK_WORD_PATTERN.search(question):
+        direction = "ASC" if _LOWEST_WORD_PATTERN.search(question) else "DESC"
+        return aggregate_column, direction, 1
 
     return None, None, None
 
@@ -202,15 +256,17 @@ def build_query(question, schema, intent,
                 filtered_columns.add(col)
                 used_num_ids.add(id(nearest_num))
 
-    group_by_col = _detect_group_by(question, column_matches)
-
-    order_col, order_dir, limit = _detect_order_limit(
-        question, column_matches, numeric_columns
-    )
-
     agg_col = None
     if intent in _AGGREGATE_INTENTS:
         agg_col = _find_agg_column(question, column_matches, numeric_columns)
+
+    group_by_col = _detect_group_by(question, column_matches, text_columns)
+
+    order_col, order_dir, limit = _detect_order_limit(
+        question, column_matches, numeric_columns,
+        group_by=group_by_col,
+        aggregate_column=agg_col,
+    )
 
     return {
         "intent":     intent,
@@ -220,6 +276,9 @@ def build_query(question, schema, intent,
         "order_by":   order_col,
         "order_dir":  order_dir or "DESC",
         "limit":      limit,
+        "order_by_aggregate": bool(
+            group_by_col and agg_col and order_col == agg_col
+        ),
     }
 
 
@@ -232,6 +291,7 @@ def query_to_sql(query, table_name="data"):
     order_dir  = query.get("order_dir", "DESC")
     limit      = query.get("limit")
     tbl        = _quote_identifier(table_name)
+    aggregate_alias = None
 
     agg_overridden = limit is not None and group_by is None and intent in _AGGREGATE_INTENTS
 
@@ -251,7 +311,11 @@ def query_to_sql(query, table_name="data"):
             )
         col = _quote_identifier(agg_column)
         if group_by:
-            select_part = f"SELECT {_quote_identifier(group_by)}, {intent}({col})"
+            aggregate_alias = f"{intent.lower()}_{re.sub(r'[^a-zA-Z0-9]+', '_', agg_column).strip('_').lower()}"
+            select_part = (
+                f"SELECT {_quote_identifier(group_by)}, "
+                f"{intent}({col}) AS {_quote_identifier(aggregate_alias)}"
+            )
         else:
             select_part = f"SELECT {intent}({col})"
     else:
@@ -287,7 +351,12 @@ def query_to_sql(query, table_name="data"):
         sql += f" GROUP BY {_quote_identifier(group_by)}"
 
     if order_by:
-        sql += f" ORDER BY {_quote_identifier(order_by)} {order_dir}"
+        order_expression = (
+            _quote_identifier(aggregate_alias)
+            if query.get("order_by_aggregate") and aggregate_alias
+            else _quote_identifier(order_by)
+        )
+        sql += f" ORDER BY {order_expression} {order_dir}"
     if limit:
         sql += f" LIMIT {limit}"
 
