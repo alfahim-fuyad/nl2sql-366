@@ -100,17 +100,32 @@ _LOWEST_WORD_PATTERN = re.compile(
 # =========================================================
 # COLUMN COUNT PATTERN
 # =========================================================
+#
+# Examples supported:
+#
+# how many columns?
+# how many column are there?
+# how many columns are there?
+# how many columns does this dataset have?
+# number of columns
+# count of columns
+# total columns
+# how many fields?
+# number of fields
+# count of fields
+#
+# =========================================================
 
 _COLUMN_COUNT_PATTERN = re.compile(
     r"\b(?:"
     r"how\s+many\s+columns?|"
-    r"how\s+many\s+column|"
-    r"number\s+of\s+columns?|"
-    r"count\s+of\s+columns?|"
-    r"total\s+columns?|"
     r"how\s+many\s+fields?|"
+    r"number\s+of\s+columns?|"
     r"number\s+of\s+fields?|"
-    r"count\s+of\s+fields?"
+    r"count\s+of\s+columns?|"
+    r"count\s+of\s+fields?|"
+    r"total\s+columns?|"
+    r"total\s+fields?"
     r")\b",
     re.IGNORECASE,
 )
@@ -124,7 +139,14 @@ def _quote_identifier(name):
     """
     Safely quote SQLite identifiers.
     """
-    return f'"{name.replace(chr(34), chr(34) + chr(34))}"'
+
+    name = str(name)
+
+    return (
+        '"'
+        + name.replace('"', '""')
+        + '"'
+    )
 
 
 # =========================================================
@@ -137,9 +159,11 @@ def _nearest_column(
     allowed=None,
     exclude=None,
 ):
+
     candidates = column_matches
 
     if allowed is not None:
+
         candidates = [
             c
             for c in candidates
@@ -147,6 +171,7 @@ def _nearest_column(
         ]
 
     if exclude:
+
         candidates = [
             c
             for c in candidates
@@ -174,6 +199,7 @@ def _find_agg_column(
     column_matches,
     numeric_columns,
 ):
+
     if not numeric_columns:
         return None
 
@@ -183,8 +209,15 @@ def _find_agg_column(
         r"\S+",
         question.lower(),
     ):
-        if m.group() in _AGGREGATE_KEYWORDS:
+
+        word = m.group().strip(
+            ".,?!:;()[]{}"
+        )
+
+        if word in _AGGREGATE_KEYWORDS:
+
             agg_keyword_pos = m.start()
+
             break
 
     numeric_matches = [
@@ -197,8 +230,9 @@ def _find_agg_column(
         return None
 
     # No aggregate keyword:
-    # choose highest-scoring numeric column.
+    # use highest scoring numeric column.
     if agg_keyword_pos is None:
+
         return max(
             numeric_matches,
             key=lambda c: c["score"],
@@ -209,10 +243,7 @@ def _find_agg_column(
     return min(
         numeric_matches,
         key=lambda c: (
-            abs(
-                c["position"]
-                - agg_keyword_pos
-            ),
+            abs(c["position"] - agg_keyword_pos),
             -c["score"],
         ),
     )["column"]
@@ -227,6 +258,14 @@ def _detect_group_by(
     column_matches,
     text_columns,
 ):
+
+    # -----------------------------------------------------
+    # Explicit "by"
+    #
+    # Example:
+    # average salary by department
+    # count by category
+    # -----------------------------------------------------
 
     m = re.search(
         r"\bby\b",
@@ -258,8 +297,7 @@ def _detect_group_by(
             for c in column_matches
             if (
                 c["column"] in text_columns
-                and c["position"]
-                < aggregate_match.start()
+                and c["position"] < aggregate_match.start()
             )
         ]
 
@@ -271,6 +309,7 @@ def _detect_group_by(
             )
             and leading_candidates
         ):
+
             return max(
                 leading_candidates,
                 key=lambda c: (
@@ -280,10 +319,11 @@ def _detect_group_by(
             )["column"]
 
         # -------------------------------------------------
-        # Example:
+        # Examples:
         #
         # average salary for each department
         # average salary per department
+        # average salary for every department
         # -------------------------------------------------
 
         each_match = re.search(
@@ -299,12 +339,12 @@ def _detect_group_by(
                 for c in column_matches
                 if (
                     c["column"] in text_columns
-                    and c["position"]
-                    >= each_match.end()
+                    and c["position"] >= each_match.end()
                 )
             ]
 
             if candidates:
+
                 return min(
                     candidates,
                     key=lambda c: (
@@ -316,7 +356,7 @@ def _detect_group_by(
         return None
 
     # -----------------------------------------------------
-    # "by department"
+    # Explicit "by <column>"
     # -----------------------------------------------------
 
     pos = m.end()
@@ -387,9 +427,7 @@ def _detect_order_limit(
         return min(
             candidates,
             key=lambda c: (
-                abs(
-                    c["position"] - pos
-                ),
+                abs(c["position"] - pos),
                 -c["score"],
             ),
         )["column"]
@@ -405,13 +443,9 @@ def _detect_order_limit(
     if top_m:
 
         return (
-            _column_near(
-                top_m.end()
-            ),
+            _column_near(top_m.end()),
             "DESC",
-            int(
-                top_m.group(1)
-            ),
+            int(top_m.group(1)),
         )
 
     # -----------------------------------------------------
@@ -438,9 +472,7 @@ def _detect_order_limit(
         return (
             order_column,
             "ASC",
-            int(
-                bot_m.group(1)
-            ),
+            int(bot_m.group(1)),
         )
 
     # -----------------------------------------------------
@@ -450,16 +482,12 @@ def _detect_order_limit(
     if (
         group_by
         and aggregate_column
-        and _RANK_WORD_PATTERN.search(
-            question
-        )
+        and _RANK_WORD_PATTERN.search(question)
     ):
 
         direction = (
             "ASC"
-            if _LOWEST_WORD_PATTERN.search(
-                question
-            )
+            if _LOWEST_WORD_PATTERN.search(question)
             else "DESC"
         )
 
@@ -469,7 +497,11 @@ def _detect_order_limit(
             1,
         )
 
-    return None, None, None
+    return (
+        None,
+        None,
+        None,
+    )
 
 
 # =========================================================
@@ -484,23 +516,18 @@ def build_query(
     synonyms_path="knowledge/synonyms.json",
 ):
 
+    # Make sure question is always a string.
+    question = str(
+        question or ""
+    ).strip()
+
     filters = []
 
     filtered_columns = set()
 
-    # =====================================================
-    # COLUMN COUNT DETECTION
-    # =====================================================
-
-    is_column_count = bool(
-        _COLUMN_COUNT_PATTERN.search(
-            question
-        )
-    )
-
-    # =====================================================
+    # -----------------------------------------------------
     # GET COLUMN TYPES
-    # =====================================================
+    # -----------------------------------------------------
 
     numeric_columns = set(
         get_numeric_columns(
@@ -514,9 +541,9 @@ def build_query(
         )
     )
 
-    # =====================================================
+    # -----------------------------------------------------
     # FIND COLUMN MATCHES
-    # =====================================================
+    # -----------------------------------------------------
 
     column_matches = find_columns_with_positions(
         question,
@@ -529,71 +556,54 @@ def build_query(
         for m in column_matches
     }
 
-    # =====================================================
+    # -----------------------------------------------------
     # CATEGORICAL VALUES
-    # =====================================================
+    # -----------------------------------------------------
 
-    # Do not create accidental filters for column-count
-    # questions.
+    for match in match_categorical_values(
+        question,
+        schema,
+        allowed_columns=matched_column_names,
+    ):
 
-    if not is_column_count:
+        col = match["column"]
 
-        for match in match_categorical_values(
-            question,
-            schema,
-            allowed_columns=matched_column_names,
-        ):
+        if col not in filtered_columns:
 
-            col = match["column"]
+            filters.append(
+                {
+                    "column": col,
+                    "operator": "=",
+                    "value": match["value"],
+                }
+            )
 
-            if col not in filtered_columns:
+            filtered_columns.add(
+                col
+            )
 
-                filters.append(
-                    {
-                        "column": col,
-                        "operator": "=",
-                        "value": match["value"],
-                    }
-                )
-
-                filtered_columns.add(
-                    col
-                )
-
-    # =====================================================
+    # -----------------------------------------------------
     # DETECT OPERATORS
-    # =====================================================
+    # -----------------------------------------------------
 
-    if is_column_count:
+    operators = detect_operators(
+        question,
+        operators_path,
+    )
 
-        operators = []
-
-    else:
-
-        operators = detect_operators(
-            question,
-            operators_path,
-        )
-
-    # =====================================================
+    # -----------------------------------------------------
     # EXTRACT NUMBERS
-    # =====================================================
+    # -----------------------------------------------------
 
-    if is_column_count:
-
-        all_numbers = []
-
-    else:
-
-        all_numbers = extract_numbers(
-            question
-        )
+    all_numbers = extract_numbers(
+        question
+    )
 
     used_num_ids = set()
 
-    # =====================================================
+    # -----------------------------------------------------
     # PROCESS OPERATORS
-    # =====================================================
+    # -----------------------------------------------------
 
     for op in operators:
 
@@ -659,8 +669,7 @@ def build_query(
                     for n in all_numbers
                     if (
                         n["position"] > op_pos
-                        and id(n)
-                        not in used_num_ids
+                        and id(n) not in used_num_ids
                     )
                 ],
                 key=lambda n: n["position"],
@@ -721,6 +730,11 @@ def build_query(
 
                 val = words_after[0].group()
 
+                # Remove punctuation.
+                val = val.strip(
+                    ".,?!:;()[]{}"
+                )
+
                 col = (
                     _nearest_column(
                         op_pos,
@@ -767,8 +781,7 @@ def build_query(
                     for n in all_numbers
                     if (
                         n["position"] > op_pos
-                        and id(n)
-                        not in used_num_ids
+                        and id(n) not in used_num_ids
                     )
                 ],
                 key=lambda n: n["position"],
@@ -813,10 +826,7 @@ def build_query(
 
     agg_col = None
 
-    if (
-        not is_column_count
-        and intent in _AGGREGATE_INTENTS
-    ):
+    if intent in _AGGREGATE_INTENTS:
 
         agg_col = _find_agg_column(
             question,
@@ -828,48 +838,38 @@ def build_query(
     # GROUP BY
     # =====================================================
 
-    if is_column_count:
-
-        group_by_col = None
-
-    else:
-
-        group_by_col = _detect_group_by(
-            question,
-            column_matches,
-            text_columns,
-        )
+    group_by_col = _detect_group_by(
+        question,
+        column_matches,
+        text_columns,
+    )
 
     # =====================================================
     # ORDER BY + LIMIT
     # =====================================================
 
-    if is_column_count:
-
-        order_col = None
-        order_dir = None
-        limit = None
-
-    else:
-
-        (
-            order_col,
-            order_dir,
-            limit,
-        ) = _detect_order_limit(
-            question,
-            column_matches,
-            numeric_columns,
-            group_by=group_by_col,
-            aggregate_column=agg_col,
-        )
+    (
+        order_col,
+        order_dir,
+        limit,
+    ) = _detect_order_limit(
+        question,
+        column_matches,
+        numeric_columns,
+        group_by=group_by_col,
+        aggregate_column=agg_col,
+    )
 
     # =====================================================
     # RETURN QUERY OBJECT
     # =====================================================
 
+    # IMPORTANT:
+    # Keep the original question.
+    # query_to_sql() uses it to detect
+    # column-count questions.
+
     return {
-        # Keep the original question.
         "question": question,
 
         "intent": intent,
@@ -891,11 +891,6 @@ def build_query(
             and agg_col
             and order_col == agg_col
         ),
-
-        # IMPORTANT:
-        # Used by the executor to identify a column-count
-        # request.
-        "is_column_count": is_column_count,
     }
 
 
@@ -908,7 +903,14 @@ def query_to_sql(
     table_name="data",
 ):
 
-    intent = query["intent"]
+    # -----------------------------------------------------
+    # BASIC VALUES
+    # -----------------------------------------------------
+
+    intent = query.get(
+        "intent",
+        "SELECT",
+    )
 
     filters = query.get(
         "filters",
@@ -936,6 +938,14 @@ def query_to_sql(
         "limit"
     )
 
+    question = str(
+        query.get(
+            "question",
+            "",
+        )
+        or ""
+    ).strip()
+
     tbl = _quote_identifier(
         table_name
     )
@@ -948,50 +958,47 @@ def query_to_sql(
     #
     # IMPORTANT:
     #
-    # Never return a custom marker such as:
+    # This MUST happen BEFORE normal COUNT handling.
     #
-    # __COLUMN_COUNT__
+    # Example:
     #
-    # because the SQL validator only accepts SELECT
-    # statements.
+    # "how many column are there?"
     #
-    # Instead, generate a completely valid SELECT query.
+    # Generated SQL:
     #
-    # The executor can identify this request using:
+    # SELECT COUNT(*) AS column_count
+    # FROM pragma_table_info('data')
     #
-    # query["is_column_count"] == True
-    #
-    # and calculate the actual number of columns from
-    # the loaded schema.
+    # This is a valid SQLite SELECT query.
     #
     # =====================================================
 
-    question = query.get(
-        "question",
-        "",
-    )
+    if _COLUMN_COUNT_PATTERN.search(
+        question
+    ):
 
-    is_column_count = (
-        query.get(
-            "is_column_count",
-            False,
-        )
-        or
-        bool(
-            _COLUMN_COUNT_PATTERN.search(
-                question
+        safe_table_name = (
+            str(table_name)
+            .replace(
+                "'",
+                "''",
             )
         )
-    )
-
-    if is_column_count:
 
         return (
-            f"SELECT * FROM {tbl} LIMIT 1"
+            "SELECT COUNT(*) AS column_count "
+            "FROM pragma_table_info("
+            f"'{safe_table_name}'"
+            ")"
         )
 
     # =====================================================
     # AGGREGATE OVERRIDE
+    # =====================================================
+    #
+    # Example:
+    # "top 5 students by salary"
+    #
     # =====================================================
 
     agg_overridden = (
@@ -1051,15 +1058,23 @@ def query_to_sql(
             agg_column
         )
 
+        # -------------------------------------------------
+        # GROUPED AGGREGATE
+        # -------------------------------------------------
+
         if group_by:
 
             clean_column_name = re.sub(
                 r"[^a-zA-Z0-9]+",
                 "_",
-                agg_column,
+                str(agg_column),
             ).strip(
                 "_"
             ).lower()
+
+            # Prevent empty alias.
+            if not clean_column_name:
+                clean_column_name = "value"
 
             aggregate_alias = (
                 f"{intent.lower()}_"
@@ -1072,6 +1087,10 @@ def query_to_sql(
                 f"{intent}({col}) AS "
                 f"{_quote_identifier(aggregate_alias)}"
             )
+
+        # -------------------------------------------------
+        # NORMAL AGGREGATE
+        # -------------------------------------------------
 
         else:
 
@@ -1105,11 +1124,20 @@ def query_to_sql(
 
         for f in filters:
 
-            col_q = _quote_identifier(
-                f["column"]
+            column_name = f.get(
+                "column"
             )
 
-            operator = f["operator"]
+            operator = f.get(
+                "operator"
+            )
+
+            if not column_name or not operator:
+                continue
+
+            col_q = _quote_identifier(
+                column_name
+            )
 
             # -------------------------------------------------
             # NULL
@@ -1138,7 +1166,8 @@ def query_to_sql(
                 )
 
                 conditions.append(
-                    f"{col_q} {operator} "
+                    f"{col_q} "
+                    f"{operator} "
                     f"{v1} AND {v2}"
                 )
 
@@ -1156,13 +1185,22 @@ def query_to_sql(
                 )
 
                 # Numeric value
-                if value.replace(
-                    ".",
-                    "",
-                    1,
-                ).lstrip(
-                    "-"
-                ).isdigit():
+                try:
+
+                    float(
+                        value
+                    )
+
+                    is_numeric = True
+
+                except (
+                    ValueError,
+                    TypeError,
+                ):
+
+                    is_numeric = False
+
+                if is_numeric:
 
                     conditions.append(
                         f"{col_q} "
@@ -1170,7 +1208,6 @@ def query_to_sql(
                         f"{value}"
                     )
 
-                # Text value
                 else:
 
                     safe = value.replace(
@@ -1210,25 +1247,38 @@ def query_to_sql(
 
     if order_by:
 
-        order_expression = (
-            _quote_identifier(
-                aggregate_alias
+        if (
+            query.get(
+                "order_by_aggregate"
             )
-            if (
-                query.get(
-                    "order_by_aggregate"
+            and aggregate_alias
+        ):
+
+            order_expression = (
+                _quote_identifier(
+                    aggregate_alias
                 )
-                and aggregate_alias
             )
-            else _quote_identifier(
-                order_by
+
+        else:
+
+            order_expression = (
+                _quote_identifier(
+                    order_by
+                )
             )
+
+        # Only allow ASC / DESC.
+        safe_order_dir = (
+            "ASC"
+            if str(order_dir).upper() == "ASC"
+            else "DESC"
         )
 
         sql += (
             " ORDER BY "
             f"{order_expression} "
-            f"{order_dir}"
+            f"{safe_order_dir}"
         )
 
     # =====================================================
@@ -1237,9 +1287,24 @@ def query_to_sql(
 
     if limit is not None:
 
-        sql += (
-            f" LIMIT {int(limit)}"
-        )
+        try:
+
+            safe_limit = int(
+                limit
+            )
+
+            if safe_limit > 0:
+
+                sql += (
+                    f" LIMIT {safe_limit}"
+                )
+
+        except (
+            ValueError,
+            TypeError,
+        ):
+
+            pass
 
     # =====================================================
     # RETURN SQL
