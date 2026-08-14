@@ -3,10 +3,17 @@
 import os
 import sys
 import tempfile
+import re
 
 from flask import Flask, request, jsonify, render_template, send_file
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "core"))
+sys.path.insert(
+    0,
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "core"
+    )
+)
 
 from dataset_loader import load_dataset
 from schema_reader import read_schema
@@ -15,19 +22,46 @@ from sql_generator import build_query, query_to_sql
 from sql_validator import validate_sql
 from sql_executor import execute_query
 
+
+# =========================================================
+# FLASK APP
+# =========================================================
+
 app = Flask(__name__)
+
 app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-change-in-prod")
+
+app.secret_key = os.environ.get(
+    "SESSION_SECRET",
+    "dev-secret-change-in-prod"
+)
+
+
+# =========================================================
+# DATABASE CONFIGURATION
+# =========================================================
 
 USE_POSTGRES = bool(
-    os.environ.get("DATABASE_URL") or os.environ.get("NEON_DATABASE_URL")
+    os.environ.get("DATABASE_URL")
+    or
+    os.environ.get("NEON_DATABASE_URL")
 )
 
 DB_PATH = "data/database.db"
+
 TABLE_NAME = "data"
 
+
 if not USE_POSTGRES:
-    os.makedirs("data", exist_ok=True)
+    os.makedirs(
+        "data",
+        exist_ok=True
+    )
+
+
+# =========================================================
+# APPLICATION STATE
+# =========================================================
 
 _state = {
     "df":         None,
@@ -36,157 +70,554 @@ _state = {
     "vectorizer": None,
 }
 
-try:
-    _state["model"], _state["vectorizer"] = load_model(
-        "models/intent_model.pkl", "models/vectorizer.pkl"
-    )
-except FileNotFoundError:
-    print("WARNING: Model files not found. Run: python3 models/train_intent.py")
 
+# =========================================================
+# LOAD AI MODEL
+# =========================================================
+
+try:
+
+    _state["model"], _state["vectorizer"] = load_model(
+        "models/intent_model.pkl",
+        "models/vectorizer.pkl"
+    )
+
+except FileNotFoundError:
+
+    print(
+        "WARNING: Model files not found. "
+        "Run: python3 models/train_intent.py"
+    )
+
+
+# =========================================================
+# COLUMN COUNT PATTERN
+# =========================================================
+#
+# These questions are answered directly from schema.
+#
+# NO SQL GENERATION
+# NO SQL VALIDATION
+# NO DATABASE EXECUTION
+#
+# Example:
+#
+#   How many columns are there?
+#   How many columns?
+#   Number of columns?
+#   Count of columns?
+#   Total columns?
+#   How many fields?
+#
+# =========================================================
+
+COLUMN_COUNT_PATTERN = re.compile(
+    r"\b(?:"
+    r"how\s+many\s+columns?"
+    r"|how\s+many\s+colums?"
+    r"|number\s+of\s+columns?"
+    r"|count\s+of\s+columns?"
+    r"|total\s+columns?"
+    r"|columns?\s+count"
+    r"|how\s+many\s+fields?"
+    r"|number\s+of\s+fields?"
+    r"|count\s+of\s+fields?"
+    r"|total\s+fields?"
+    r")\b",
+    re.IGNORECASE,
+)
+
+
+# =========================================================
+# HOME
+# =========================================================
 
 @app.route("/")
 def index():
-    return render_template("index.html")
 
-
-@app.route("/simulator")
-def simulator():
-    return send_file(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "simulation.html")
+    return render_template(
+        "index.html"
     )
 
 
-@app.route("/upload", methods=["POST"])
+# =========================================================
+# SIMULATOR
+# =========================================================
+
+@app.route("/simulator")
+def simulator():
+
+    return send_file(
+        os.path.join(
+            os.path.dirname(
+                os.path.abspath(__file__)
+            ),
+            "simulation.html"
+        )
+    )
+
+
+# =========================================================
+# UPLOAD DATASET
+# =========================================================
+
+@app.route(
+    "/upload",
+    methods=["POST"]
+)
 def upload():
+
+    # -----------------------------------------------------
+    # CHECK FILE
+    # -----------------------------------------------------
+
     if "file" not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
+
+        return jsonify({
+            "error": "No file uploaded."
+        }), 400
+
 
     f = request.files["file"]
+
+
     if not f.filename:
-        return jsonify({"error": "Empty filename"}), 400
+
+        return jsonify({
+            "error": "Empty filename."
+        }), 400
+
 
     filename = f.filename.lower()
 
+
+    # -----------------------------------------------------
+    # CHECK EXTENSION
+    # -----------------------------------------------------
+
     if not (
-        filename.endswith(".csv") or
-        filename.endswith(".xlsx") or
+        filename.endswith(".csv")
+        or
+        filename.endswith(".xlsx")
+        or
         filename.endswith(".xls")
     ):
+
         return jsonify({
-            "error": "Only CSV and Excel (.csv, .xlsx, .xls) files are supported."
+            "error":
+                "Only CSV and Excel "
+                "(.csv, .xlsx, .xls) "
+                "files are supported."
         }), 400
 
-    extension = os.path.splitext(f.filename)[1].lower()
+
+    extension = os.path.splitext(
+        f.filename
+    )[1].lower()
+
+
+    # -----------------------------------------------------
+    # TEMPORARY FILE
+    # -----------------------------------------------------
 
     tmp = tempfile.NamedTemporaryFile(
         suffix=extension,
         delete=False,
         prefix="nl2sql_"
     )
+
+
     try:
-        f.save(tmp.name)
+
+        f.save(
+            tmp.name
+        )
+
         tmp.close()
 
+
+        # -------------------------------------------------
+        # LOAD DATASET
+        # -------------------------------------------------
+
         try:
-            df = load_dataset(tmp.name, DB_PATH, TABLE_NAME)
-            schema = read_schema(df)
+
+            df = load_dataset(
+                tmp.name,
+                DB_PATH,
+                TABLE_NAME
+            )
+
+            schema = read_schema(
+                df
+            )
+
         except Exception as e:
-            print(f"Upload error: {e}")
+
+            print(
+                f"Upload error: {e}"
+            )
+
             return jsonify({
-                "error": "Failed to parse the dataset. Ensure the CSV or Excel file is valid and contains a header row."
+                "error":
+                    "Failed to parse the dataset. "
+                    "Ensure the CSV or Excel file is valid "
+                    "and contains a header row."
             }), 500
+
+
     finally:
+
         try:
-            os.unlink(tmp.name)
+
+            os.unlink(
+                tmp.name
+            )
+
         except OSError:
+
             pass
 
+
+    # -----------------------------------------------------
+    # SAVE DATASET STATE
+    # -----------------------------------------------------
+
     _state["df"] = df
+
     _state["schema"] = schema
 
+
+    # -----------------------------------------------------
+    # UPLOAD RESPONSE
+    # -----------------------------------------------------
+
     return jsonify({
-        "success":  True,
+
+        "success": True,
+
         "filename": f.filename,
-        "rows":     len(df),
-        "columns":  list(df.columns),
-        "preview":  df.head(5).fillna("").values.tolist(),
-        "backend":  "postgresql" if USE_POSTGRES else "sqlite",
+
+        "rows": len(df),
+
+        "columns": list(
+            df.columns
+        ),
+
+        "preview":
+            df.head(5)
+            .fillna("")
+            .values
+            .tolist(),
+
+        "backend":
+            "postgresql"
+            if USE_POSTGRES
+            else "sqlite",
     })
 
 
-@app.route("/ask", methods=["POST"])
+# =========================================================
+# ASK QUESTION
+# =========================================================
+
+@app.route(
+    "/ask",
+    methods=["POST"]
+)
 def ask():
+
+    # =====================================================
+    # CHECK DATASET
+    # =====================================================
+
     if _state["df"] is None:
-        return jsonify({"error": "No dataset loaded. Please upload a CSV or Excel file first."}), 400
+
+        return jsonify({
+            "error":
+                "No dataset loaded. "
+                "Please upload a CSV or Excel file first."
+        }), 400
+
+
+    # =====================================================
+    # CHECK MODEL
+    # =====================================================
 
     if _state["model"] is None:
-        return jsonify({"error": "Model not loaded. Run: python3 models/train_intent.py"}), 500
 
-    data     = request.get_json(silent=True) or {}
-    question = (data.get("question") or "").strip()
+        return jsonify({
+            "error":
+                "Model not loaded. "
+                "Run: python3 models/train_intent.py"
+        }), 500
+
+
+    # =====================================================
+    # GET QUESTION
+    # =====================================================
+
+    data = (
+        request.get_json(
+            silent=True
+        )
+        or {}
+    )
+
+
+    question = (
+        data.get(
+            "question"
+        )
+        or ""
+    ).strip()
+
+
     if not question:
-        return jsonify({"error": "Question is empty"}), 400
 
-    df         = _state["df"]
-    schema     = _state["schema"]
-    model      = _state["model"]
+        return jsonify({
+            "error":
+                "Question is empty."
+        }), 400
+
+
+    # =====================================================
+    # GET CURRENT DATASET STATE
+    # =====================================================
+
+    df = _state["df"]
+
+    schema = _state["schema"]
+
+    model = _state["model"]
+
     vectorizer = _state["vectorizer"]
 
-    intent = predict_intent(question, model, vectorizer)
-    query  = build_query(question, schema, intent)
+
+    # =====================================================
+    # COLUMN COUNT
+    # =====================================================
+    #
+    # IMPORTANT:
+    #
+    # "How many columns are there?"
+    #
+    # does NOT need SQL.
+    #
+    # The number of columns is already available
+    # from the uploaded dataset schema.
+    #
+    # Therefore:
+    #
+    #     len(schema)
+    #
+    # gives the exact number of columns.
+    #
+    # We return the result directly.
+    #
+    # SQL generation is skipped.
+    # SQL validation is skipped.
+    # SQL execution is skipped.
+    #
+    # =====================================================
+
+    if COLUMN_COUNT_PATTERN.search(
+        question
+    ):
+
+        column_count = len(
+            schema
+        )
+
+
+        return jsonify({
+
+            "sql": None,
+
+            "intent":
+                "COLUMN_COUNT",
+
+            "error": None,
+
+            "columns":
+                ["column_count"],
+
+            "rows":
+                [[column_count]],
+
+            "count": 1,
+        })
+
+
+    # =====================================================
+    # NORMAL AI INTENT DETECTION
+    # =====================================================
+
+    intent = predict_intent(
+        question,
+        model,
+        vectorizer
+    )
+
+
+    # =====================================================
+    # BUILD QUERY OBJECT
+    # =====================================================
+
+    query = build_query(
+        question,
+        schema,
+        intent
+    )
+
+
+    # =====================================================
+    # GENERATE SQL
+    # =====================================================
 
     try:
-        sql = query_to_sql(query, TABLE_NAME)
+
+        sql = query_to_sql(
+            query,
+            TABLE_NAME
+        )
+
     except ValueError as e:
+
         return jsonify({
-            "sql":     None,
-            "intent":  intent,
-            "error":   str(e),
+
+            "sql": None,
+
+            "intent": intent,
+
+            "error": str(e),
+
             "columns": [],
-            "rows":    [],
+
+            "rows": [],
         })
 
-    is_valid, validation_msg = validate_sql(sql, schema, TABLE_NAME)
+
+    # =====================================================
+    # VALIDATE SQL
+    # =====================================================
+
+    is_valid, validation_msg = validate_sql(
+        sql,
+        schema,
+        TABLE_NAME
+    )
+
+
     if not is_valid:
+
         return jsonify({
-            "sql":     sql,
-            "intent":  intent,
-            "error":   f"SQL validation failed: {validation_msg}",
+
+            "sql": sql,
+
+            "intent": intent,
+
+            "error":
+                f"SQL validation failed: "
+                f"{validation_msg}",
+
             "columns": [],
-            "rows":    [],
+
+            "rows": [],
         })
+
+
+    # =====================================================
+    # EXECUTE SQL
+    # =====================================================
 
     try:
-        columns, rows = execute_query(sql, DB_PATH)
+
+        columns, rows = execute_query(
+            sql,
+            DB_PATH
+        )
+
     except Exception as e:
-        print(f"Query execution error: {e}")
+
+        print(
+            f"Query execution error: {e}"
+        )
+
         return jsonify({
-            "sql":     sql,
-            "intent":  intent,
-            "error":   "Query execution failed. The generated SQL could not be run.",
+
+            "sql": sql,
+
+            "intent": intent,
+
+            "error":
+                "Query execution failed. "
+                "The generated SQL could not be run.",
+
             "columns": [],
-            "rows":    [],
+
+            "rows": [],
         })
+
+
+    # =====================================================
+    # NORMAL RESPONSE
+    # =====================================================
 
     return jsonify({
-        "sql":     sql,
-        "intent":  intent,
-        "error":   None,
+
+        "sql": sql,
+
+        "intent": intent,
+
+        "error": None,
+
         "columns": columns,
-        "rows":    [list(r) for r in rows],
-        "count":   len(rows),
+
+        "rows":
+            [list(r) for r in rows],
+
+        "count":
+            len(rows),
     })
 
+
+# =========================================================
+# HEALTH CHECK
+# =========================================================
 
 @app.route("/health")
 def health():
+
     return jsonify({
-        "status":  "ok",
-        "model":   _state["model"] is not None,
-        "backend": "postgresql" if USE_POSTGRES else "sqlite",
+
+        "status": "ok",
+
+        "model":
+            _state["model"] is not None,
+
+        "backend":
+            "postgresql"
+            if USE_POSTGRES
+            else "sqlite",
     })
 
 
+# =========================================================
+# RUN APP
+# =========================================================
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+
+    port = int(
+        os.environ.get(
+            "PORT",
+            5000
+        )
+    )
+
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False
+    )
