@@ -38,7 +38,7 @@ _TOP_PATTERN = re.compile(r"\btop\s+(\d+)\b", re.IGNORECASE)
 
 _BOTTOM_PATTERN = re.compile(
     r"\b(?:bottom|lowest|least|worst|minimum)\s+(\d+)\b",
-    re.IGNORECASE
+    re.IGNORECASE,
 )
 
 _RANK_WORD_PATTERN = re.compile(
@@ -138,11 +138,7 @@ def _detect_group_by(question, column_matches, text_columns):
         ]
 
         if (
-            re.search(
-                r"\b(?:which|what)\b",
-                question,
-                re.IGNORECASE
-            )
+            re.search(r"\b(?:which|what)\b", question, re.IGNORECASE)
             and leading_candidates
         ):
             return max(
@@ -156,7 +152,7 @@ def _detect_group_by(question, column_matches, text_columns):
         each_match = re.search(
             r"\b(?:each|every|per)\b",
             question,
-            re.IGNORECASE
+            re.IGNORECASE,
         )
 
         if each_match:
@@ -199,7 +195,7 @@ def _detect_group_by(question, column_matches, text_columns):
         key=lambda c: (
             c["position"],
             -c["score"]
-        )
+        ),
     )["column"]
 
 
@@ -231,7 +227,7 @@ def _detect_order_limit(
             key=lambda c: (
                 abs(c["position"] - pos),
                 -c["score"]
-            )
+            ),
         )["column"]
 
     top_m = _TOP_PATTERN.search(question)
@@ -269,7 +265,11 @@ def _detect_order_limit(
             else "DESC"
         )
 
-        return aggregate_column, direction, 1
+        return (
+            aggregate_column,
+            direction,
+            1
+        )
 
     return None, None, None
 
@@ -342,7 +342,8 @@ def build_query(
                     allowed=numeric_columns,
                     exclude=filtered_columns
                 )
-                or _nearest_column(
+                or
+                _nearest_column(
                     op_pos,
                     column_matches,
                     exclude=filtered_columns
@@ -413,7 +414,8 @@ def build_query(
                         allowed=text_columns,
                         exclude=filtered_columns
                     )
-                    or _nearest_column(
+                    or
+                    _nearest_column(
                         op_pos,
                         column_matches,
                         exclude=filtered_columns
@@ -545,8 +547,13 @@ def query_to_sql(query, table_name="data"):
         if group_by:
             aggregate_alias = (
                 f"{intent.lower()}_"
-                f"{re.sub(r'[^a-zA-Z0-9]+', '_', agg_column)"
-                f".strip('_').lower()}"
+                f"{re.sub(r'[^a-zA-Z0-9]+', '_', agg_column)}"
+                f".strip('_').lower()"
+            )
+
+            aggregate_alias = (
+                f"{intent.lower()}_"
+                f"{re.sub(r'[^a-zA-Z0-9]+', '_', agg_column).strip('_').lower()}"
             )
 
             select_part = (
@@ -612,21 +619,27 @@ def query_to_sql(query, table_name="data"):
 
     if group_by:
         sql += (
-            f" GROUP BY {_quote_identifier(group_by)}"
+            f" GROUP BY "
+            f"{_quote_identifier(group_by)}"
         )
 
     if order_by:
-        order_expression = (
-            _quote_identifier(aggregate_alias)
-            if (
-                query.get("order_by_aggregate")
-                and aggregate_alias
+        if (
+            query.get("order_by_aggregate")
+            and aggregate_alias
+        ):
+            order_expression = _quote_identifier(
+                aggregate_alias
             )
-            else _quote_identifier(order_by)
-        )
+        else:
+            order_expression = _quote_identifier(
+                order_by
+            )
 
         sql += (
-            f" ORDER BY {order_expression} {order_dir}"
+            f" ORDER BY "
+            f"{order_expression} "
+            f"{order_dir}"
         )
 
     if limit:
