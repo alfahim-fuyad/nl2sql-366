@@ -34,26 +34,30 @@ _NULL_OPS = {"IS NULL", "IS NOT NULL"}
 _LIKE_OPS = {"LIKE"}
 _SKIP_OPS = {"IN", "NOT IN"}
 
-_TOP_PATTERN = re.compile(r"\btop\s+(\d+)\b", re.IGNORECASE)
+_TOP_PATTERN = re.compile(
+    r"\btop\s+(\d+)\b",
+    re.IGNORECASE
+)
 
 _BOTTOM_PATTERN = re.compile(
     r"\b(?:bottom|lowest|least|worst|minimum)\s+(\d+)\b",
-    re.IGNORECASE,
+    re.IGNORECASE
 )
 
 _RANK_WORD_PATTERN = re.compile(
     r"\b(?:highest|maximum|max|largest|biggest|lowest|minimum|min|smallest|least)\b",
-    re.IGNORECASE,
+    re.IGNORECASE
 )
 
 _LOWEST_WORD_PATTERN = re.compile(
     r"\b(?:lowest|minimum|min|smallest|least)\b",
-    re.IGNORECASE,
+    re.IGNORECASE
 )
 
 
 def _quote_identifier(name):
-    return f'"{name.replace(chr(34), chr(34) + chr(34))}"'
+    escaped = name.replace('"', '""')
+    return f'"{escaped}"'
 
 
 def _nearest_column(ref_pos, column_matches, allowed=None, exclude=None):
@@ -90,7 +94,9 @@ def _find_agg_column(question, column_matches, numeric_columns):
     agg_keyword_pos = None
 
     for m in re.finditer(r"\S+", question.lower()):
-        if m.group() in _AGGREGATE_KEYWORDS:
+        word = m.group().strip(".,?!")
+
+        if word in _AGGREGATE_KEYWORDS:
             agg_keyword_pos = m.start()
             break
 
@@ -118,7 +124,11 @@ def _find_agg_column(question, column_matches, numeric_columns):
 
 
 def _detect_group_by(question, column_matches, text_columns):
-    m = re.search(r"\bby\b", question, re.IGNORECASE)
+    m = re.search(
+        r"\bby\b",
+        question,
+        re.IGNORECASE
+    )
 
     if not m:
         aggregate_match = re.search(
@@ -138,7 +148,11 @@ def _detect_group_by(question, column_matches, text_columns):
         ]
 
         if (
-            re.search(r"\b(?:which|what)\b", question, re.IGNORECASE)
+            re.search(
+                r"\b(?:which|what)\b",
+                question,
+                re.IGNORECASE
+            )
             and leading_candidates
         ):
             return max(
@@ -195,7 +209,7 @@ def _detect_group_by(question, column_matches, text_columns):
         key=lambda c: (
             c["position"],
             -c["score"]
-        ),
+        )
     )["column"]
 
 
@@ -227,7 +241,7 @@ def _detect_order_limit(
             key=lambda c: (
                 abs(c["position"] - pos),
                 -c["score"]
-            ),
+            )
         )["column"]
 
     top_m = _TOP_PATTERN.search(question)
@@ -274,6 +288,84 @@ def _detect_order_limit(
     return None, None, None
 
 
+def _extract_implicit_numeric_filters(
+    question,
+    column_matches,
+    numeric_columns,
+    filtered_columns,
+    all_numbers,
+    used_num_ids
+):
+    filters = []
+
+    if not column_matches or not all_numbers:
+        return filters
+
+    lower_question = question.lower()
+
+    for column_match in column_matches:
+        column = column_match["column"]
+
+        if column not in numeric_columns:
+            continue
+
+        if column in filtered_columns:
+            continue
+
+        column_pos = column_match["position"]
+
+        candidates = [
+            n for n in all_numbers
+            if id(n) not in used_num_ids
+            and n["position"] > column_pos
+        ]
+
+        if not candidates:
+            continue
+
+        number = min(
+            candidates,
+            key=lambda n: n["position"]
+        )
+
+        number_pos = number["position"]
+
+        between_text = lower_question[
+            column_pos:number_pos
+        ]
+
+        if re.search(
+            r"\b(?:by|for|where|with|having)\b",
+            between_text
+        ):
+            continue
+
+        if re.search(
+            r"\b(?:top|bottom|lowest|highest|least|most)\b",
+            between_text
+        ):
+            continue
+
+        words_between = re.findall(
+            r"[a-zA-Z_]+",
+            between_text
+        )
+
+        if len(words_between) > 4:
+            continue
+
+        filters.append({
+            "column": column,
+            "operator": "=",
+            "value": number["value"]
+        })
+
+        filtered_columns.add(column)
+        used_num_ids.add(id(number))
+
+    return filters
+
+
 def build_query(
     question,
     schema,
@@ -303,11 +395,13 @@ def build_query(
         for m in column_matches
     }
 
-    for match in match_categorical_values(
+    categorical_matches = match_categorical_values(
         question,
         schema,
         allowed_columns=matched_column_names
-    ):
+    )
+
+    for match in categorical_matches:
         col = match["column"]
 
         if col not in filtered_columns:
@@ -405,7 +499,9 @@ def build_query(
             ]
 
             if words_after:
-                val = words_after[0].group()
+                val = words_after[0].group().strip(
+                    ".,?!"
+                )
 
                 col = (
                     _nearest_column(
@@ -463,7 +559,22 @@ def build_query(
                 })
 
                 filtered_columns.add(col)
-                used_num_ids.add(id(nearest_num))
+                used_num_ids.add(
+                    id(nearest_num)
+                )
+
+    implicit_filters = _extract_implicit_numeric_filters(
+        question,
+        column_matches,
+        numeric_columns,
+        filtered_columns,
+        all_numbers,
+        used_num_ids
+    )
+
+    filters.extend(
+        implicit_filters
+    )
 
     agg_col = None
 
@@ -510,10 +621,15 @@ def query_to_sql(query, table_name="data"):
     agg_column = query.get("agg_column")
     group_by = query.get("group_by")
     order_by = query.get("order_by")
-    order_dir = query.get("order_dir", "DESC")
+    order_dir = query.get(
+        "order_dir",
+        "DESC"
+    )
     limit = query.get("limit")
 
-    tbl = _quote_identifier(table_name)
+    tbl = _quote_identifier(
+        table_name
+    )
 
     aggregate_alias = None
 
@@ -529,7 +645,9 @@ def query_to_sql(query, table_name="data"):
     elif intent == "COUNT":
         if group_by:
             select_part = (
-                f"SELECT {_quote_identifier(group_by)}, COUNT(*)"
+                f"SELECT "
+                f"{_quote_identifier(group_by)}, "
+                f"COUNT(*)"
             )
         else:
             select_part = "SELECT COUNT(*)"
@@ -537,44 +655,57 @@ def query_to_sql(query, table_name="data"):
     elif intent in _AGGREGATE_INTENTS:
         if not agg_column:
             raise ValueError(
-                f"Could not determine which column to apply '{intent}' to. "
-                "Try rephrasing your question with the column name, "
-                f"e.g. 'average of <column name>'."
+                f"Could not determine which column to apply "
+                f"'{intent}' to. "
+                f"Try rephrasing your question with the "
+                f"column name, e.g. "
+                f"'average of <column name>'."
             )
 
-        col = _quote_identifier(agg_column)
+        col = _quote_identifier(
+            agg_column
+        )
 
         if group_by:
-            aggregate_alias = (
-                f"{intent.lower()}_"
-                f"{re.sub(r'[^a-zA-Z0-9]+', '_', agg_column)}"
-                f".strip('_').lower()"
-            )
+            alias_base = re.sub(
+                r"[^a-zA-Z0-9]+",
+                "_",
+                agg_column
+            ).strip("_").lower()
 
             aggregate_alias = (
-                f"{intent.lower()}_"
-                f"{re.sub(r'[^a-zA-Z0-9]+', '_', agg_column).strip('_').lower()}"
+                f"{intent.lower()}_{alias_base}"
             )
 
             select_part = (
-                f"SELECT {_quote_identifier(group_by)}, "
+                f"SELECT "
+                f"{_quote_identifier(group_by)}, "
                 f"{intent}({col}) AS "
                 f"{_quote_identifier(aggregate_alias)}"
             )
 
         else:
-            select_part = f"SELECT {intent}({col})"
+            select_part = (
+                f"SELECT "
+                f"{intent}({col})"
+            )
 
     else:
         select_part = "SELECT *"
 
-    sql = f"{select_part} FROM {tbl}"
+    sql = (
+        f"{select_part} "
+        f"FROM {tbl}"
+    )
 
     if filters:
         conditions = []
 
         for f in filters:
-            col_q = _quote_identifier(f["column"])
+            col_q = _quote_identifier(
+                f["column"]
+            )
+
             operator = f["operator"]
 
             if operator in _NULL_OPS:
@@ -583,26 +714,42 @@ def query_to_sql(query, table_name="data"):
                 )
 
             elif operator in _BETWEEN_OPS:
-                v1 = f.get("value", "")
-                v2 = f.get("value2", "")
+                v1 = f.get(
+                    "value",
+                    ""
+                )
+
+                v2 = f.get(
+                    "value2",
+                    ""
+                )
 
                 conditions.append(
-                    f"{col_q} {operator} {v1} AND {v2}"
+                    f"{col_q} {operator} "
+                    f"{v1} AND {v2}"
                 )
 
             else:
                 value = str(
-                    f.get("value", "")
+                    f.get(
+                        "value",
+                        ""
+                    )
                 )
 
-                if value.replace(
-                    ".",
-                    "",
-                    1
-                ).lstrip("-").isdigit():
+                numeric_value = (
+                    value.replace(
+                        ".",
+                        "",
+                        1
+                    ).lstrip("-").isdigit()
+                )
 
+                if numeric_value:
                     conditions.append(
-                        f"{col_q} {operator} {value}"
+                        f"{col_q} "
+                        f"{operator} "
+                        f"{value}"
                     )
 
                 else:
@@ -612,15 +759,20 @@ def query_to_sql(query, table_name="data"):
                     )
 
                     conditions.append(
-                        f"{col_q} {operator} '{safe}'"
+                        f"{col_q} "
+                        f"{operator} "
+                        f"'{safe}'"
                     )
 
-        sql += " WHERE " + " AND ".join(conditions)
+        sql += (
+            " WHERE "
+            + " AND ".join(conditions)
+        )
 
     if group_by:
         sql += (
-            f" GROUP BY "
-            f"{_quote_identifier(group_by)}"
+            " GROUP BY "
+            + _quote_identifier(group_by)
         )
 
     if order_by:
@@ -643,6 +795,8 @@ def query_to_sql(query, table_name="data"):
         )
 
     if limit:
-        sql += f" LIMIT {limit}"
+        sql += (
+            f" LIMIT {limit}"
+        )
 
     return sql
