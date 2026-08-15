@@ -639,7 +639,14 @@ def query_to_sql(query, table_name="data"):
         and intent in _AGGREGATE_INTENTS
     )
 
-    if intent == "SELECT" or agg_overridden:
+    if intent == "SELECT" and group_by:
+        select_part = (
+            f"SELECT "
+            f"{_quote_identifier(group_by)}, "
+            f"COUNT(*)"
+        )
+
+    elif intent == "SELECT" or agg_overridden:
         select_part = "SELECT *"
 
     elif intent == "COUNT":
