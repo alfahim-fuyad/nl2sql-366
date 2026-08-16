@@ -1,49 +1,122 @@
 # nl2sql-366 — Natural Language to SQL Query Generation System
 
-A Natural Language to SQL (nl2sql-366) system that converts plain English questions into SQL queries for any CSV/Excel dataset. Users can upload a CSV/Excel file, ask questions in English, and get results without writing SQL.
+A lightweight **Natural Language to SQL (NL2SQL)** system that converts plain-English questions into SQL queries for **single-table CSV/Excel datasets**. Users can upload a dataset, ask questions in English, and view the generated SQL and results without writing SQL manually.
 
 ---
 
 ## Overview
 
-nl2sql-366 uses a hybrid approach that combines Machine Learning (TF-IDF + Naive Bayes) with rule-based techniques. The system breaks a user's question into smaller parts, such as finding the intent, column names, operators, and values, and then combines them to generate the final SQL query. This follows a compositional approach, making the system simple, accurate, and easy to understand.
+nl2sql-366 uses a **hybrid approach** combining **TF-IDF + Multinomial Naive Bayes** with rule-based techniques.
 
-The system works with any CSV/Excel dataset by automatically detecting its schema, so users can start querying immediately without changing the code.
+The system processes a question through several stages: intent detection, column matching, operator detection, value extraction, SQL generation, validation, and execution. This compositional design keeps the system modular, transparent, and easy to evaluate.
 
-**Live demo:** [nl2sql-366 on Render](https://nl2sql-366.onrender.com)
+The schema of an uploaded dataset is detected automatically, allowing the same system to work across different single-table CSV/Excel datasets within its supported query capabilities.
+
+**Live demo:** [nl2sql-366 on Render](https://nl2sql-366.onrender.com/)
 
 ---
 
 ## Features
 
-- Upload any CSV — schema is detected automatically
-- Supports six query types: `SELECT`, `COUNT`, `AVG`, `MAX`, `MIN`, `SUM`
-- `GROUP BY` aggregation: `"average salary by department"`
-- `ORDER BY + LIMIT` ranking: `"top 5 highest salary"`
-- `BETWEEN` range filters: `"age between 25 and 40"`
-- 300+ domain synonym dictionary (students, employees, health, sales, sports, …)
-- Fuzzy column matching with underscore-to-space normalization
-- SQL injection prevention and schema-level validation
-- Flask web UI with drag-and-drop CSV upload
-- SQLite locally, PostgreSQL in production
+* Upload CSV/Excel datasets with automatic schema detection
+* Six query types: `SELECT`, `COUNT`, `AVG`, `MAX`, `MIN`, `SUM`
+* `GROUP BY` aggregation
+* `ORDER BY + LIMIT` ranking
+* `BETWEEN` range filters
+* Multiple `AND`-connected conditions
+* 300+ domain synonym mappings
+* Fuzzy column matching with underscore-to-space normalization
+* Natural-language operator detection
+* Numeric and categorical value matching
+* SQL safety and schema-level validation
+* Flask web UI with drag-and-drop upload
+* SQLite for local execution
+* PostgreSQL for production
 
 ---
 
 ## Example Queries
 
-| Question | Generated SQL |
-|----------|---------------|
-| `show female patients older than 30` | `SELECT * FROM "data" WHERE "Gender" = 'Female' AND "Age" > 30` |
-| `average salary by department` | `SELECT "Department", AVG("Salary") FROM "data" GROUP BY "Department"` |
-| `top 5 highest salary` | `SELECT * FROM "data" ORDER BY "Salary" DESC LIMIT 5` |
-| `how many students from Dhaka` | `SELECT COUNT(*) FROM "data" WHERE "District" = 'Dhaka'` |
-| `total sales by region` | `SELECT "Region", SUM("Sales") FROM "data" GROUP BY "Region"` |
+| Question                             | Generated SQL                                                          |
+| ------------------------------------ | ---------------------------------------------------------------------- |
+| `show female patients older than 30` | `SELECT * FROM "data" WHERE "Gender" = 'Female' AND "Age" > 30`        |
+| `average salary by department`       | `SELECT "Department", AVG("Salary") FROM "data" GROUP BY "Department"` |
+| `top 5 highest salary`               | `SELECT * FROM "data" ORDER BY "Salary" DESC LIMIT 5`                  |
+| `how many students from Dhaka`       | `SELECT COUNT(*) FROM "data" WHERE "District" = 'Dhaka'`               |
+| `total sales by region`              | `SELECT "Region", SUM("Sales") FROM "data" GROUP BY "Region"`          |
+
+---
+
+## Benchmark & Evaluation
+
+The repository includes a reproducible **100-query benchmark** using **five previously unseen single-table domains**:
+
+* Students — 20 queries
+* Employees — 20 queries
+* Healthcare — 20 queries
+* Sales — 20 queries
+* Sports — 20 queries
+
+**Total: 100 natural-language queries.**
+
+The benchmark covers all six supported intents, grouped aggregation, ordering and limits, range filters, categorical filters, and `AND`-connected conditions.
+
+Execution accuracy is measured by comparing the results of generated SQL with the results of gold SQL queries rather than by comparing SQL strings alone.
+
+### Latest Results
+
+| Method                     | Intent Accuracy | Execution Accuracy | Execution F1 | Valid SQL   |
+| -------------------------- | --------------- | ------------------ | ------------ | ----------- |
+| Rule-based intent baseline | 86.00%          | 96.00%             | 0.960        | 100.00%     |
+| TF-IDF + Naive Bayes only  | 90.00%          | 100.00%            | 1.000        | 100.00%     |
+| **Proposed Hybrid**        | **100.00%**     | **100.00%**        | **1.000**    | **100.00%** |
+
+The proposed hybrid achieved **100% execution accuracy across all five benchmark domains**.
+
+The intent classifier was independently evaluated on a **20,000-example holdout set** from the 100,000-example intent dataset:
+
+| Metric             | Result     |
+| ------------------ | ---------- |
+| Accuracy           | **99.48%** |
+| Weighted Precision | **99.49%** |
+| Weighted Recall    | **99.48%** |
+| Weighted F1        | **99.47%** |
+
+### Security & Latency
+
+* SQL validator: **8/8 security/correctness cases passed**
+* Mean end-to-end latency: **3.524 ms**
+* Median latency: **3.326 ms**
+* P95 latency: **5.023 ms**
+
+The validator tests included rejection of `DROP`, `DELETE`, `UPDATE`, `INSERT`, unknown columns, unknown tables, and multiple statements.
+
+Latency values were measured on the local SQLite/Replit development environment and are **environment-specific measurements, not hardware-independent guarantees**.
+
+### Synonym Ablation
+
+Removing the synonym dictionary still resulted in **100/100** on this benchmark because the benchmark questions explicitly use the schema attributes.
+
+Therefore, this result does **not** show that the synonym dictionary is unnecessary. A dedicated synonym-focused challenge set would provide a stronger evaluation.
+
+Run the benchmark with:
+
+```bash
+python benchmark/run_benchmark.py
+```
+
+Results are written to:
+
+```text
+benchmark/results/latest.json
+benchmark/results/latest.md
+```
 
 ---
 
 ## Project Structure
 
-```
+```text
 nl2sql-366/
 ├── app.py                        # Flask web server
 ├── main.py                       # Interactive CLI
@@ -62,19 +135,19 @@ nl2sql-366/
 │   └── value_matcher.py          # Number + categorical extraction
 │
 ├── knowledge/
-│   ├── operators.json            # NL phrase → SQL operator mapping
-│   ├── stopwords.json            # Words to ignore during matching
-│   └── synonyms.json             # Domain synonym dictionary (300+ entries)
+│   ├── operators.json
+│   ├── stopwords.json
+│   └── synonyms.json
 │
 ├── models/
-│   ├── intent_model.pkl          # Trained Naive Bayes classifier
-│   ├── vectorizer.pkl            # Fitted TF-IDF vectorizer
-│   └── train_intent.py           # Training script
+│   ├── intent_model.pkl
+│   ├── vectorizer.pkl
+│   └── train_intent.py
 │
 ├── training_data/
-│   ├── intent_dataset.csv        # 100,000 labelled training examples
-│   ├── generate_dataset.py       # Synthetic dataset generator
-│   └── convert_wikisql.py        # WikiSQL → intent format converter
+│   ├── intent_dataset.csv        # 100,000 labelled examples
+│   ├── generate_dataset.py
+│   └── convert_wikisql.py
 │
 ├── tests/
 │   ├── conftest.py
@@ -84,58 +157,50 @@ nl2sql-366/
 │   ├── test_tokenizer_and_operator.py
 │   └── test_validator.py
 │
-├── templates/
-│   ├── index.html                # Main web UI template (composes the partials below)
-│   └── partials/
-│       ├── navbar.html           # Top navbar + mobile hamburger menu
-│       ├── about_modal.html      # "About" modal content
-│       ├── help_modal.html       # "Help" modal content
-│       ├── upload_card.html      # Drag & drop upload card
-│       ├── preview_card.html     # Dataset preview table
-│       └── query_card.html       # Question input + SQL/results display
+├── benchmark/
+│   ├── fixtures.py
+│   ├── run_benchmark.py
+│   ├── generated_datasets/
+│   └── results/
 │
-│── favicon.svg
+├── templates/
+│   ├── index.html
+│   └── partials/
+│       ├── navbar.html
+│       ├── about_modal.html
+│       ├── help_modal.html
+│       ├── upload_card.html
+│       ├── preview_card.html
+│       └── query_card.html
+│
 ├── static/
 │   ├── css/
-│   │   ├── base.css              # Reset, body, container, header, card
-│   │   ├── navbar.css            # Navbar + mobile hamburger menu
-│   │   ├── modal.css             # Modal shell + About modal styling
-│   │   ├── upload.css            # Drop zone, upload strip, data requirements
-│   │   └── query-results.css     # Ask row, SQL output, results table, spinner
-│   ├── images/ewu-logo.png
+│   ├── images/
 │   └── js/
-│       ├── dom.js                # Shared DOM element references
-│       ├── utils.js               # Shared UI helpers (errors, escaping)
-│       ├── upload.js             # Drag & drop / file upload logic
-│       ├── query.js              # Ask question + render results
-│       ├── navbar.js             # Logo reload + mobile hamburger menu
-│       └── modals.js             # About/Help modal open & close behavior
 │
 ├── data/
-│   └── sample.csv                # Sample dataset for testing
+│   └── sample.csv
 │
-├── simulation.html               # Interactive pipeline visualiser (learning tool)
-├── requirements.txt              # List of required Python packages
-├── Procfile                      # Starts the Flask app on Render
-└── render.yaml                   # Render deployment settings
+├── simulation.html
+├── requirements.txt
+├── Procfile
+└── render.yaml
 ```
-
-Each CSS and JS file has a single responsibility and is loaded in dependency order directly by `templates/index.html` (no bundler or build step involved). The Jinja partials in `templates/partials/` are `{% include %}`-ed by `index.html` and keep the page markup organized by section; they aren't standalone routes.
 
 ---
 
 ## Technology Stack
 
-| Technology | Purpose |
-|------------|---------|
-| Python 3.8+ | Core language |
-| Flask | Web framework |
-| pandas | CSV loading and DataFrame operations |
-| SQLite / PostgreSQL | Query execution backend |
-| scikit-learn | TF-IDF vectorizer + Naive Bayes classifier |
-| RapidFuzz | Fuzzy string matching for column name resolution |
-| SQLAlchemy | PostgreSQL persistence |
-| pytest | Test suite |
+| Technology          | Purpose                        |
+| ------------------- | ------------------------------ |
+| Python 3.8+         | Core language                  |
+| Flask               | Web framework                  |
+| pandas              | Dataset loading and processing |
+| SQLite / PostgreSQL | Query execution                |
+| scikit-learn        | TF-IDF + Naive Bayes           |
+| RapidFuzz           | Fuzzy column matching          |
+| SQLAlchemy          | PostgreSQL persistence         |
+| pytest              | Automated testing              |
 
 ---
 
@@ -153,7 +218,7 @@ pip install -r requirements.txt
 python3 models/train_intent.py
 ```
 
-The pre-trained `.pkl` files are already included, so this step is only needed if you want to retrain on updated data.
+Pre-trained `.pkl` files are already included. Retraining is only necessary when the training data or training configuration changes.
 
 ### 3. Run the web app
 
@@ -161,9 +226,13 @@ The pre-trained `.pkl` files are already included, so this step is only needed i
 python3 app.py
 ```
 
-Open [http://localhost:5000](http://localhost:5000) in your browser.
+Open:
 
-### 4. Or use the CLI
+```text
+http://localhost:5000
+```
+
+### 4. Or run the CLI
 
 ```bash
 python3 main.py
@@ -177,62 +246,94 @@ python3 main.py
 pytest tests/
 ```
 
-All 33 tests should pass.
+The current test suite contains **35 unit and integration tests** covering dataset loading, schema processing, matching, tokenization, SQL generation, execution, and validation.
 
 ---
 
-## Deployment (Render + Neon DB)
+## Deployment — Render + Neon
 
-The project is configured for deployment on [Render](https://render.com) with a [Neon](https://neon.tech) PostgreSQL database.
+The project is configured for deployment on [Render](https://render.com/) with [Neon](https://neon.tech/) PostgreSQL.
 
 1. Create a Render web service from this repository.
-2. Set the `DATABASE_URL` environment variable to your Neon connection string.
-3. Set `SESSION_SECRET` to a random secret string.
-4. Render will run `gunicorn app:app` automatically via the `Procfile`.
+2. Set `DATABASE_URL` to your Neon PostgreSQL connection string.
+3. Set `SESSION_SECRET` to a random secret.
+4. Render starts the application using the `Procfile`.
 
 ---
 
 ## Pipeline Architecture
 
-```
+```text
 User Question
       │
       ▼
-Intent Detector      ← TF-IDF + Naive Bayes → SELECT / COUNT / AVG / MAX / MIN / SUM
+Intent Detector      ← TF-IDF + Naive Bayes
       │
       ▼
-Attribute Matcher    ← Fuzzy match + synonyms → column name(s)
+Attribute Matcher    ← Fuzzy matching + synonyms
       │
       ▼
-Operator Detector    ← Phrase dictionary → SQL operator symbol (>, <, =, …)
+Operator Detector    ← Natural language → SQL operators
       │
       ▼
-Value Matcher        ← Regex (numbers) + schema sample lookup (categoricals)
+Value Matcher        ← Numbers + categorical values
       │
       ▼
-SQL Generator        ← Internal query dict → SQL string (double-quoted identifiers)
+SQL Generator        ← Internal query → SQL
       │
       ▼
-SQL Validator        ← Safety check + schema column verification
+SQL Validator        ← Safety + schema validation
       │
       ▼
-SQL Executor         ← SQLite / PostgreSQL → (columns, rows)
+SQL Executor         ← SQLite / PostgreSQL
+      │
+      ▼
+Query Results
 ```
 
 ---
 
 ## Known Limitations
 
-| Limitation | Details |
-|------------|---------|
-| OR / IN filters | Only AND-connected conditions are supported |
-| Nested conditions | Parenthesized logic like `(A OR B) AND C` is not supported |
-| JOINs | Only single-table queries are supported |
-| Date expressions | Natural language dates ("last month") are not resolved |
-| Language | English only |
+| Limitation        | Details                                                        |
+| ----------------- | -------------------------------------------------------------- |
+| OR / IN filters   | Only `AND`-connected conditions are supported                  |
+| Nested conditions | `(A OR B) AND C` is not supported                              |
+| JOINs             | Only single-table queries are supported                        |
+| Date expressions  | Natural-language dates such as `"last month"` are not resolved |
+| Language          | English queries only                                           |
+
+---
+
+## Reproducibility
+
+The repository includes the main artifacts required to reproduce the reported evaluation:
+
+* 100,000-example intent dataset
+* Trained model artifacts
+* Model training scripts
+* WikiSQL conversion script
+* Deterministic benchmark fixtures
+* 100-query benchmark
+* Benchmark execution script
+* Per-query JSON results
+* Unit and integration tests
+
+Run the benchmark with:
+
+```bash
+python benchmark/run_benchmark.py
+```
+
+Results are written to:
+
+```text
+benchmark/results/latest.json
+benchmark/results/latest.md
+```
 
 ---
 
 ## License
 
-This project was developed as part of the CSE366 (Artificial Intelligence) course at East West University.
+This project was developed as part of the **CSE366 (Artificial Intelligence)** course at **East West University**.
