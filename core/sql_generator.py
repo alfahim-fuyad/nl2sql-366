@@ -1,9 +1,10 @@
 # core/sql_generator.py
 import re
+import calendar
 
 from operator_detector import detect_operators
 from attribute_matcher import find_columns_with_positions
-from value_matcher import extract_numbers, match_categorical_values
+from value_matcher import extract_numbers, match_categorical_values, _MONTH_MAP
 from schema_reader import get_numeric_columns, get_text_columns
 
 
@@ -26,6 +27,14 @@ _AGGREGATE_KEYWORDS = {
     "sum": "SUM",
     "total": "SUM",
     "aggregate": "SUM",
+}
+
+# Map intent to the keywords that should be used to find the aggregate column
+_INTENT_KEYWORDS = {
+    "AVG": ["avg", "average", "mean"],
+    "MAX": ["max", "maximum", "highest", "largest", "biggest", "top"],
+    "MIN": ["min", "minimum", "lowest", "smallest", "least"],
+    "SUM": ["sum", "total", "aggregate"],
 }
 
 _SIMPLE_OPS = {">", "<", ">=", "<=", "=", "!=", "<>"}
@@ -53,6 +62,10 @@ _LOWEST_WORD_PATTERN = re.compile(
     r"\b(?:lowest|minimum|min|smallest|least)\b",
     re.IGNORECASE
 )
+
+# Month-related columns (case-insensitive check)
+_MONTH_COLUMNS = {"month", "months"}
+_YEAR_COLUMNS = {"year", "years"}
 
 
 def _quote_identifier(name):
@@ -87,16 +100,27 @@ def _nearest_column(ref_pos, column_matches, allowed=None, exclude=None):
     )["column"]
 
 
-def _find_agg_column(question, column_matches, numeric_columns):
+def _find_agg_column(question, column_matches, numeric_columns, intent=None):
+    """
+    Find the column to apply an aggregate function to.
+    When intent is known, use intent-specific keywords to find the right column.
+    E.g., for AVG intent with "highest average rainfall",
+    we should find "average" (not "highest") and match to the nearest numeric column.
+    """
     if not numeric_columns:
         return None
 
     agg_keyword_pos = None
 
+    # Determine which keywords to look for based on intent
+    if intent and intent in _INTENT_KEYWORDS:
+        target_keywords = _INTENT_KEYWORDS[intent]
+    else:
+        target_keywords = list(_AGGREGATE_KEYWORDS.keys())
+
     for m in re.finditer(r"\S+", question.lower()):
         word = m.group().strip(".,?!")
-
-        if word in _AGGREGATE_KEYWORDS:
+        if word in target_keywords:
             agg_keyword_pos = m.start()
             break
 
@@ -123,7 +147,14 @@ def _find_agg_column(question, column_matches, numeric_columns):
     )["column"]
 
 
-def _detect_group_by(question, column_matches, text_columns):
+def _detect_group_by(question, column_matches, text_columns, numeric_columns=None):
+    """
+    Detect GROUP BY column from the question.
+    Enhanced to also detect grouping on numeric dimension columns (Year, Month).
+    """
+    if numeric_columns is None:
+        numeric_columns = set()
+
     m = re.search(
         r"\bby\b",
         question,
@@ -141,20 +172,27 @@ def _detect_group_by(question, column_matches, text_columns):
         if not aggregate_match:
             return None
 
+        # Check for "which/what" pattern - indicates GROUP BY
+        has_which = re.search(
+            r"\b(?:which|what)\b",
+            question,
+            re.IGNORECASE
+        )
+
+        # Leading candidates before aggregate keyword
+        # Include both text columns AND numeric dimension columns (Year, Month)
+        dimension_cols = text_columns | {
+            c for c in numeric_columns
+            if c.lower() in _MONTH_COLUMNS | _YEAR_COLUMNS
+        }
+
         leading_candidates = [
             c for c in column_matches
-            if c["column"] in text_columns
+            if c["column"] in dimension_cols
             and c["position"] < aggregate_match.start()
         ]
 
-        if (
-            re.search(
-                r"\b(?:which|what)\b",
-                question,
-                re.IGNORECASE
-            )
-            and leading_candidates
-        ):
+        if has_which and leading_candidates:
             return max(
                 leading_candidates,
                 key=lambda c: (
@@ -163,6 +201,7 @@ def _detect_group_by(question, column_matches, text_columns):
                 ),
             )["column"]
 
+        # "each/every/per" pattern
         each_match = re.search(
             r"\b(?:each|every|per)\b",
             question,
@@ -172,7 +211,7 @@ def _detect_group_by(question, column_matches, text_columns):
         if each_match:
             candidates = [
                 c for c in column_matches
-                if c["column"] in text_columns
+                if c["column"] in (dimension_cols if dimension_cols else text_columns)
                 and c["position"] >= each_match.end()
             ]
 
@@ -288,6 +327,105 @@ def _detect_order_limit(
     return None, None, None
 
 
+def _extract_month_filter(question, schema, column_matches, filtered_columns, all_numbers, used_num_ids):
+    """
+    Special handling for month names in queries.
+    If a month name appears (converted to number by extract_numbers),
+    and there's a Month/year column in the schema, create a filter.
+    """
+    filters = []
+    lower_question = question.lower()
+
+    # Check if any month name appears in the question
+    month_found = False
+    month_num = None
+    month_position = None
+    for month_name, num_str in _MONTH_MAP.items():
+        if len(month_name) > 2:  # Skip abbreviated months for position tracking
+            pattern = r"\b" + re.escape(month_name) + r"\b"
+            m = re.search(pattern, lower_question)
+            if m:
+                month_found = True
+                month_num = num_str
+                month_position = m.start()
+                break
+
+    if not month_found:
+        return filters
+
+    # Find a Month column in the schema
+    month_col = None
+    for col in schema.keys():
+        if col.lower() in _MONTH_COLUMNS and col not in filtered_columns:
+            month_col = col
+            break
+
+    if not month_col:
+        return filters
+
+    # Check if this month number was already extracted and used
+    month_num_used = False
+    for n in all_numbers:
+        if n["value"] == month_num and id(n) in used_num_ids:
+            month_num_used = True
+            break
+
+    if not month_num_used:
+        filters.append({
+            "column": month_col,
+            "operator": "=",
+            "value": month_num
+        })
+        filtered_columns.add(month_col)
+
+        # Mark the corresponding number as used
+        for n in all_numbers:
+            if n["value"] == month_num and id(n) not in used_num_ids:
+                used_num_ids.add(id(n))
+                break
+
+    return filters
+
+
+def _extract_year_filter(question, schema, column_matches, filtered_columns, all_numbers, used_num_ids):
+    """
+    Special handling for year values in queries.
+    If a 4-digit number that looks like a year appears, and there's a Year column,
+    associate it with that column.
+    """
+    filters = []
+
+    # Find a Year column in the schema
+    year_col = None
+    for col in schema.keys():
+        if col.lower() in _YEAR_COLUMNS and col not in filtered_columns:
+            year_col = col
+            break
+
+    if not year_col:
+        return filters
+
+    # Look for 4-digit numbers that could be years (1800-2100 range)
+    for n in all_numbers:
+        if id(n) in used_num_ids:
+            continue
+        try:
+            val = int(n["value"])
+            if 1800 <= val <= 2100:
+                filters.append({
+                    "column": year_col,
+                    "operator": "=",
+                    "value": n["value"]
+                })
+                filtered_columns.add(year_col)
+                used_num_ids.add(id(n))
+                break  # Only one year filter
+        except (ValueError, TypeError):
+            continue
+
+    return filters
+
+
 def _extract_implicit_numeric_filters(
     question,
     column_matches,
@@ -302,68 +440,101 @@ def _extract_implicit_numeric_filters(
         return filters
 
     lower_question = question.lower()
+    dimension_cols = {c for c in numeric_columns if c.lower() in _MONTH_COLUMNS | _YEAR_COLUMNS}
 
+    # --- Pass 1: Numbers AFTER column (original logic) ---
     for column_match in column_matches:
         column = column_match["column"]
-
-        if column not in numeric_columns:
-            continue
-
-        if column in filtered_columns:
+        if column not in numeric_columns or column in filtered_columns or column in dimension_cols:
             continue
 
         column_pos = column_match["position"]
-
-        candidates = [
-            n for n in all_numbers
-            if id(n) not in used_num_ids
-            and n["position"] > column_pos
-        ]
-
+        candidates = [n for n in all_numbers if id(n) not in used_num_ids and n["position"] > column_pos]
         if not candidates:
             continue
 
-        number = min(
-            candidates,
-            key=lambda n: n["position"]
-        )
-
+        number = min(candidates, key=lambda n: n["position"])
         number_pos = number["position"]
+        between_text = lower_question[column_pos:number_pos]
 
-        between_text = lower_question[
-            column_pos:number_pos
-        ]
-
-        if re.search(
-            r"\b(?:by|for|where|with|having)\b",
-            between_text
-        ):
+        if re.search(r"\b(?:by|for|where|with|having)\b", between_text):
+            continue
+        if re.search(r"\b(?:top|bottom|lowest|highest|least|most)\b", between_text):
+            continue
+        if len(re.findall(r"[a-zA-Z_]+", between_text)) > 4:
             continue
 
-        if re.search(
-            r"\b(?:top|bottom|lowest|highest|least|most)\b",
-            between_text
-        ):
+        operator = _detect_implicit_operator(question, number_pos, column_pos, column, lower_question)
+        filters.append({"column": column, "operator": operator, "value": number["value"]})
+        filtered_columns.add(column)
+        used_num_ids.add(id(number))
+
+    # --- Pass 2: Numbers BEFORE column ("have 2 parking", "exactly 3 bedrooms") ---
+    for column_match in column_matches:
+        column = column_match["column"]
+        if column not in numeric_columns or column in filtered_columns or column in dimension_cols:
             continue
 
-        words_between = re.findall(
-            r"[a-zA-Z_]+",
-            between_text
-        )
-
-        if len(words_between) > 4:
+        column_pos = column_match["position"]
+        candidates = [n for n in all_numbers if id(n) not in used_num_ids and n["position"] < column_pos]
+        if not candidates:
             continue
 
-        filters.append({
-            "column": column,
-            "operator": "=",
-            "value": number["value"]
-        })
+        number = max(candidates, key=lambda n: n["position"])
+        number_pos = number["position"]
+        between_text = lower_question[number_pos:column_pos]
 
+        if len(re.findall(r"[a-zA-Z_]+", between_text)) > 5:
+            continue
+        if re.search(r"\b(?:where|having|group|order)\b", between_text):
+            continue
+
+        operator = _detect_implicit_operator_before(question, number_pos, column_pos, column, lower_question)
+        filters.append({"column": column, "operator": operator, "value": number["value"]})
         filtered_columns.add(column)
         used_num_ids.add(id(number))
 
     return filters
+
+
+def _detect_implicit_operator(question, number_pos, column_pos, column_name, lower_question):
+    """Detect operator when column appears BEFORE number. E.g. "price over 5000" -> ">" """
+    between = lower_question[column_pos:number_pos]
+    if re.search(r"\b(?:more than|greater than|higher than|larger than|over|above|exceeding|older than)\b", between):
+        return ">"
+    if re.search(r"\b(?:less than|lower than|smaller than|under|below|fewer than|younger than)\b", between):
+        return "<"
+    if re.search(r"\b(?:at least|or more|>=|greater than or equal)\b", between):
+        return ">="
+    if re.search(r"\b(?:at most|or less|or fewer|<=|less than or equal)\b", between):
+        return "<="
+    if re.search(r"\b(?:exactly|equal to|equals)\b", between):
+        return "="
+    return "="
+
+
+def _detect_implicit_operator_before(question, number_pos, column_pos, column_name, lower_question):
+    """Detect operator when number appears BEFORE column. E.g. "exactly 3 bedrooms" -> "=", "4 or more bedrooms" -> ">=" """
+    between = lower_question[number_pos:column_pos]
+    if re.search(r"\b(?:or more|at least|or greater)\b", between):
+        return ">="
+    if re.search(r"\b(?:or less|at most|or fewer)\b", between):
+        return "<="
+    if re.search(r"\b(?:more than|greater than|higher than|over|above|exceeding)\b", between):
+        return ">"
+    if re.search(r"\b(?:less than|lower than|smaller than|under|below|fewer than)\b", between):
+        return "<"
+    if re.search(r"\b(?:exactly|equal to|equals|precisely)\b", between):
+        return "="
+    if re.search(r"\b(?:no|zero|without)\b", between):
+        return "="
+    # Check after column too for "4 or more bedrooms"
+    after_col = lower_question[column_pos:column_pos+30]
+    if re.search(r"\b(?:or more|at least)\b", after_col):
+        return ">="
+    if re.search(r"\b(?:or less|at most)\b", after_col):
+        return "<="
+    return "="
 
 
 def build_query(
@@ -563,6 +734,20 @@ def build_query(
                     id(nearest_num)
                 )
 
+    # --- Month filter (before implicit numeric filters) ---
+    month_filters = _extract_month_filter(
+        question, schema, column_matches, filtered_columns,
+        all_numbers, used_num_ids
+    )
+    filters.extend(month_filters)
+
+    # --- Year filter ---
+    year_filters = _extract_year_filter(
+        question, schema, column_matches, filtered_columns,
+        all_numbers, used_num_ids
+    )
+    filters.extend(year_filters)
+
     implicit_filters = _extract_implicit_numeric_filters(
         question,
         column_matches,
@@ -582,13 +767,15 @@ def build_query(
         agg_col = _find_agg_column(
             question,
             column_matches,
-            numeric_columns
+            numeric_columns,
+            intent=intent
         )
 
     group_by_col = _detect_group_by(
         question,
         column_matches,
-        text_columns
+        text_columns,
+        numeric_columns=numeric_columns
     )
 
     order_col, order_dir, limit = _detect_order_limit(

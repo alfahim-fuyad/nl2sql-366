@@ -21,8 +21,13 @@ The system works with any CSV/Excel dataset by automatically detecting its schem
 - `GROUP BY` aggregation: `"average salary by department"`
 - `ORDER BY + LIMIT` ranking: `"top 5 highest salary"`
 - `BETWEEN` range filters: `"age between 25 and 40"`
-- 300+ domain synonym dictionary (students, employees, health, sales, sports, …)
+- 380+ domain synonym dictionary (students, employees, health, sales, sports, weather, …)
 - Fuzzy column matching with underscore-to-space normalization
+- Month name resolution ("June" → Month=6, "January" → Month=1)
+- Binary column pattern matching ("have air conditioning" → yes, "without basement" → no)
+- Comma-separated number parsing ("5,000,000" → 5000000)
+- Two-pass implicit numeric filter (numbers before AND after column mentions)
+- Intent-aware aggregate column detection ("highest average rainfall" → AVG on rain, not Year)
 - SQL injection prevention and schema-level validation
 - Flask web UI with drag-and-drop CSV upload
 - SQLite locally, PostgreSQL in production
@@ -38,6 +43,9 @@ The system works with any CSV/Excel dataset by automatically detecting its schem
 | `top 5 highest salary` | `SELECT * FROM "data" ORDER BY "Salary" DESC LIMIT 5` |
 | `how many students from Dhaka` | `SELECT COUNT(*) FROM "data" WHERE "District" = 'Dhaka'` |
 | `total sales by region` | `SELECT "Region", SUM("Sales") FROM "data" GROUP BY "Region"` |
+| `houses with air conditioning` | `SELECT COUNT(*) FROM "data" WHERE "airconditioning" = 'yes'` |
+| `average temperature for June` | `SELECT AVG("tem") FROM "data" WHERE "Month" = 6` |
+| `which year had the highest average rainfall` | `SELECT "Year", AVG("rain") AS avg_rain FROM "data" GROUP BY "Year" ORDER BY avg_rain DESC LIMIT 1` |
 
 ---
 
@@ -59,12 +67,12 @@ nl2sql-366/
 │   ├── sql_generator.py          # Internal query → SQL string
 │   ├── sql_validator.py          # Safety + correctness checks
 │   ├── tokenizer.py              # Text cleaning utilities
-│   └── value_matcher.py          # Number + categorical extraction
+│   └── value_matcher.py          # Number + categorical + month extraction
 │
 ├── knowledge/
 │   ├── operators.json            # NL phrase → SQL operator mapping
 │   ├── stopwords.json            # Words to ignore during matching
-│   └── synonyms.json             # Domain synonym dictionary (300+ entries)
+│   └── synonyms.json             # Domain synonym dictionary (380+ entries)
 │
 ├── models/
 │   ├── intent_model.pkl          # Trained Naive Bayes classifier
@@ -230,6 +238,35 @@ SQL Executor         ← SQLite / PostgreSQL → (columns, rows)
 | JOINs | Only single-table queries are supported |
 | Date expressions | Natural language dates ("last month") are not resolved |
 | Language | English only |
+
+---
+
+## Benchmark Evaluation
+
+The project includes a research-grade benchmark suite (`benchmark/`) that evaluates the NL2SQL pipeline on **271 queries across 5 real-world datasets** (Housing, Student Performance, Temperature & Rain, Dengue, Employee). Evaluation is **result-based** (not string-based) — two SQL queries are correct if they produce the same database result.
+
+### Latest Benchmark Results
+
+| Metric | Score |
+|--------|-------|
+| Result Match Accuracy | **55.35%** |
+| Intent Classification Accuracy | 90.04% |
+| Valid SQL Rate | 97.42% |
+| Macro F1 | 70.49% |
+| Passed Queries | 150 / 271 |
+| Total Runtime | 2.36 s |
+
+**Per-Dataset Breakdown:**
+
+| Dataset | Queries | Result Match |
+|---------|---------|-------------|
+| Housing | 67 | 65.67% |
+| Employee | 32 | 78.12% |
+| Dengue | 50 | 44.00% |
+| Student Performance | 63 | 33.33% |
+| Temperature & Rain | 59 | 64.41% |
+
+Run with `python benchmark/run_benchmark.py` — see [`benchmark/README.md`](benchmark/README.md) for full documentation.
 
 ---
 

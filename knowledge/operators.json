@@ -38,12 +38,12 @@
   "ends with":                "LIKE",
   "contains":                 "LIKE",
   "includes":                 "LIKE",
+  "similar to":               "LIKE",
 
   "between":                  "BETWEEN",
   "ranging from":             "BETWEEN",
   "in the range":             "BETWEEN",
   "in range":                 "BETWEEN",
-  "from":                     "BETWEEN",
 
   "in":                       "IN",
 
@@ -82,6 +82,5 @@
   "was":                      "=",
   "are":                      "=",
 
-  "like":                     "LIKE",
   "not":                      "!="
 }

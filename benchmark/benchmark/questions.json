@@ -1,0 +1,2402 @@
+[
+  {
+    "id": 1,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have air conditioning?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE airconditioning='yes'",
+    "expected_answer": 172
+  },
+  {
+    "id": 2,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Can you tell me how many properties are priced above 5,000,000?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE price>5000000",
+    "expected_answer": 195
+  },
+  {
+    "id": 3,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses are over the 10,000,000 mark?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE price>10000000",
+    "expected_answer": 8
+  },
+  {
+    "id": 4,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "I'd like to know how many houses have exactly 3 bedrooms.",
+    "sql": "SELECT COUNT(*) FROM housing WHERE bedrooms=3",
+    "expected_answer": 300
+  },
+  {
+    "id": 5,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Could you check how many houses have 4 or more bedrooms?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE bedrooms>=4",
+    "expected_answer": 107
+  },
+  {
+    "id": 6,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the number of houses without a basement?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE basement='no'",
+    "expected_answer": 354
+  },
+  {
+    "id": 7,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have a basement?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE basement='yes'",
+    "expected_answer": 191
+  },
+  {
+    "id": 8,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Can you tell me how many houses are on the main road?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE mainroad='yes'",
+    "expected_answer": 468
+  },
+  {
+    "id": 9,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have hot water heating installed?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE hotwaterheating='yes'",
+    "expected_answer": 25
+  },
+  {
+    "id": 10,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many properties are located in a preferred area?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE prefarea='yes'",
+    "expected_answer": 128
+  },
+  {
+    "id": 11,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have a guest room?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE guestroom='yes'",
+    "expected_answer": 97
+  },
+  {
+    "id": 12,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses are fully furnished?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE furnishingstatus='furnished'",
+    "expected_answer": 140
+  },
+  {
+    "id": 13,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses are semi-furnished?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE furnishingstatus='semi-furnished'",
+    "expected_answer": 227
+  },
+  {
+    "id": 14,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses are completely unfurnished?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE furnishingstatus='unfurnished'",
+    "expected_answer": 178
+  },
+  {
+    "id": 15,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Can you find how many houses have no parking space at all?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE parking=0",
+    "expected_answer": 299
+  },
+  {
+    "id": 16,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have 2 parking spots?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE parking=2",
+    "expected_answer": 108
+  },
+  {
+    "id": 17,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have exactly 2 stories?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE stories=2",
+    "expected_answer": 238
+  },
+  {
+    "id": 18,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have air conditioning and are also on the main road?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE airconditioning='yes' AND mainroad='yes'",
+    "expected_answer": 157
+  },
+  {
+    "id": 19,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses cost between 3,000,000 and 6,000,000?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE price BETWEEN 3000000 AND 6000000",
+    "expected_answer": 357
+  },
+  {
+    "id": 20,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have an area between 4000 and 8000 square feet?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE area BETWEEN 4000 AND 8000",
+    "expected_answer": 296
+  },
+  {
+    "id": 21,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average house price?",
+    "sql": "SELECT AVG(price) FROM housing",
+    "expected_answer": 4766729.2477
+  },
+  {
+    "id": 22,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "On average, how much do houses with air conditioning cost?",
+    "sql": "SELECT AVG(price) FROM housing WHERE airconditioning='yes'",
+    "expected_answer": 6013220.5814
+  },
+  {
+    "id": 23,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "On average, how much do houses without air conditioning cost?",
+    "sql": "SELECT AVG(price) FROM housing WHERE airconditioning='no'",
+    "expected_answer": 4191939.6783
+  },
+  {
+    "id": 24,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Can you find the average area of the houses?",
+    "sql": "SELECT AVG(area) FROM housing",
+    "expected_answer": 5150.5413
+  },
+  {
+    "id": 25,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average number of bedrooms across all houses?",
+    "sql": "SELECT AVG(bedrooms) FROM housing",
+    "expected_answer": 2.9651
+  },
+  {
+    "id": 26,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "On average, how many bathrooms do these houses have?",
+    "sql": "SELECT AVG(bathrooms) FROM housing",
+    "expected_answer": 1.2862
+  },
+  {
+    "id": 27,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average price of furnished houses?",
+    "sql": "SELECT AVG(price) FROM housing WHERE furnishingstatus='furnished'",
+    "expected_answer": 5495696
+  },
+  {
+    "id": 28,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average price of unfurnished houses?",
+    "sql": "SELECT AVG(price) FROM housing WHERE furnishingstatus='unfurnished'",
+    "expected_answer": 4013831.4607
+  },
+  {
+    "id": 29,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "On average, how much does a house in a preferred area cost?",
+    "sql": "SELECT AVG(price) FROM housing WHERE prefarea='yes'",
+    "expected_answer": 5879045.7031
+  },
+  {
+    "id": 30,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average area of houses that have a basement?",
+    "sql": "SELECT AVG(area) FROM housing WHERE basement='yes'",
+    "expected_answer": 5290.5026
+  },
+  {
+    "id": 31,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the highest house price?",
+    "sql": "SELECT MAX(price) FROM housing",
+    "expected_answer": 13300000
+  },
+  {
+    "id": 32,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Which house has the lowest price?",
+    "sql": "SELECT MIN(price) FROM housing",
+    "expected_answer": 1750000
+  },
+  {
+    "id": 33,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the largest house area in the dataset?",
+    "sql": "SELECT MAX(area) FROM housing",
+    "expected_answer": 16200
+  },
+  {
+    "id": 34,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the smallest house area recorded?",
+    "sql": "SELECT MIN(area) FROM housing",
+    "expected_answer": 1650
+  },
+  {
+    "id": 35,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the maximum number of bedrooms any house has?",
+    "sql": "SELECT MAX(bedrooms) FROM housing",
+    "expected_answer": 6
+  },
+  {
+    "id": 36,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the maximum number of stories a house has?",
+    "sql": "SELECT MAX(stories) FROM housing",
+    "expected_answer": 4
+  },
+  {
+    "id": 37,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the highest price among unfurnished houses?",
+    "sql": "SELECT MAX(price) FROM housing WHERE furnishingstatus='unfurnished'",
+    "expected_answer": 10150000
+  },
+  {
+    "id": 38,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the lowest price among houses with air conditioning?",
+    "sql": "SELECT MIN(price) FROM housing WHERE airconditioning='yes'",
+    "expected_answer": 2233000
+  },
+  {
+    "id": 39,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How much do all the house prices add up to?",
+    "sql": "SELECT SUM(price) FROM housing",
+    "expected_answer": 2597867440
+  },
+  {
+    "id": 40,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Can you calculate the total area covered by all the houses combined?",
+    "sql": "SELECT SUM(area) FROM housing",
+    "expected_answer": 2807045
+  },
+  {
+    "id": 41,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the combined price of all furnished houses?",
+    "sql": "SELECT SUM(price) FROM housing WHERE furnishingstatus='furnished'",
+    "expected_answer": 769397440
+  },
+  {
+    "id": 42,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the total number of parking spots across all houses?",
+    "sql": "SELECT SUM(parking) FROM housing",
+    "expected_answer": 378
+  },
+  {
+    "id": 43,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Which furnishing status appears most often in the dataset?",
+    "sql": "SELECT furnishingstatus FROM housing GROUP BY furnishingstatus ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": "semi-furnished"
+  },
+  {
+    "id": 44,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many bedrooms does the most common house configuration have?",
+    "sql": "SELECT bedrooms FROM housing GROUP BY bedrooms ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": 3
+  },
+  {
+    "id": 45,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Which number of parking spaces is most common among these houses?",
+    "sql": "SELECT parking FROM housing GROUP BY parking ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": 0
+  },
+  {
+    "id": 46,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Can you show me the price of the most expensive house?",
+    "sql": "SELECT price FROM housing ORDER BY price DESC LIMIT 1",
+    "expected_answer": 13300000
+  },
+  {
+    "id": 47,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the area of the cheapest house in the dataset?",
+    "sql": "SELECT area FROM housing ORDER BY price ASC LIMIT 1",
+    "expected_answer": 3620
+  },
+  {
+    "id": 48,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many distinct furnishing statuses are there?",
+    "sql": "SELECT COUNT(DISTINCT furnishingstatus) FROM housing",
+    "expected_answer": 3
+  },
+  {
+    "id": 49,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many different bedroom counts appear in the dataset?",
+    "sql": "SELECT COUNT(DISTINCT bedrooms) FROM housing",
+    "expected_answer": 6
+  },
+  {
+    "id": 50,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have both a guest room and a basement?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE guestroom='yes' AND basement='yes'",
+    "expected_answer": 71
+  },
+  {
+    "id": 51,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have neither air conditioning nor hot water heating?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE airconditioning='no' AND hotwaterheating='no'",
+    "expected_answer": 349
+  },
+  {
+    "id": 52,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses priced under 2,500,000 are there?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE price<2500000",
+    "expected_answer": 32
+  },
+  {
+    "id": 53,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have fewer than 2 bathrooms?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE bathrooms<2",
+    "expected_answer": 401
+  },
+  {
+    "id": 54,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have more than one bathroom?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE bathrooms>1",
+    "expected_answer": 144
+  },
+  {
+    "id": 55,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average price of houses with 2 or fewer parking spots?",
+    "sql": "SELECT AVG(price) FROM housing WHERE parking<=2",
+    "expected_answer": 4741953.9212
+  },
+  {
+    "id": 56,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many semi-furnished houses have air conditioning?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE furnishingstatus='semi-furnished' AND airconditioning='yes'",
+    "expected_answer": 65
+  },
+  {
+    "id": 57,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average area of houses priced above 7,000,000?",
+    "sql": "SELECT AVG(area) FROM housing WHERE price>7000000",
+    "expected_answer": 7065.5
+  },
+  {
+    "id": 58,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have 3 stories or more?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE stories>=3",
+    "expected_answer": 80
+  },
+  {
+    "id": 59,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the total number of houses in the dataset?",
+    "sql": "SELECT COUNT(*) FROM housing",
+    "expected_answer": 545
+  },
+  {
+    "id": 60,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses are not located in a preferred area?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE prefarea='no'",
+    "expected_answer": 417
+  },
+  {
+    "id": 61,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average number of stories for furnished houses?",
+    "sql": "SELECT AVG(stories) FROM housing WHERE furnishingstatus='furnished'",
+    "expected_answer": 1.9429
+  },
+  {
+    "id": 62,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "Could you show me the highest price among houses with 2 stories?",
+    "sql": "SELECT MAX(price) FROM housing WHERE stories=2",
+    "expected_answer": 12250000
+  },
+  {
+    "id": 63,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses have 5 or 6 bedrooms?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE bedrooms IN (5,6)",
+    "expected_answer": 12
+  },
+  {
+    "id": 64,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the minimum area among houses that are on the main road?",
+    "sql": "SELECT MIN(area) FROM housing WHERE mainroad='yes'",
+    "expected_answer": 1700
+  },
+  {
+    "id": 65,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many unfurnished houses lack a main road connection?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE furnishingstatus='unfurnished' AND mainroad='no'",
+    "expected_answer": 37
+  },
+  {
+    "id": 66,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "What's the average price of houses with exactly 1 story?",
+    "sql": "SELECT AVG(price) FROM housing WHERE stories=1",
+    "expected_answer": 4170658.5903
+  },
+  {
+    "id": 67,
+    "dataset": "housing",
+    "type": "sql",
+    "question": "How many houses cost more than 5,000,000 and have air conditioning?",
+    "sql": "SELECT COUNT(*) FROM housing WHERE price>5000000 AND airconditioning='yes'",
+    "expected_answer": 110
+  },
+  {
+    "id": 68,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students are there in total?",
+    "sql": "SELECT COUNT(*) FROM student_performance",
+    "expected_answer": 2392
+  },
+  {
+    "id": 69,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "I'd like to know the number of students with a GPA above 3.",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE GPA>3",
+    "expected_answer": 321
+  },
+  {
+    "id": 70,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have a GPA below 2?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE GPA<2",
+    "expected_answer": 1274
+  },
+  {
+    "id": 71,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "Can you tell me how many students receive tutoring?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Tutoring=1",
+    "expected_answer": 721
+  },
+  {
+    "id": 72,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students do not receive tutoring?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Tutoring=0",
+    "expected_answer": 1671
+  },
+  {
+    "id": 73,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students participate in extracurricular activities?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Extracurricular=1",
+    "expected_answer": 917
+  },
+  {
+    "id": 74,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students play sports?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Sports=1",
+    "expected_answer": 726
+  },
+  {
+    "id": 75,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "Could you check how many students are involved in music?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Music=1",
+    "expected_answer": 471
+  },
+  {
+    "id": 76,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students do volunteering work?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Volunteering=1",
+    "expected_answer": 376
+  },
+  {
+    "id": 77,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have more than 10 absences?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Absences>10",
+    "expected_answer": 1547
+  },
+  {
+    "id": 78,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have fewer than 5 absences?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Absences<5",
+    "expected_answer": 369
+  },
+  {
+    "id": 79,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have zero absences?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Absences=0",
+    "expected_answer": 67
+  },
+  {
+    "id": 80,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students fall into GradeClass 4 (the lowest grade)?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE GradeClass=4",
+    "expected_answer": 1211
+  },
+  {
+    "id": 81,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students are in GradeClass 0, the top grade band?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE GradeClass=0",
+    "expected_answer": 107
+  },
+  {
+    "id": 82,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students study more than 15 hours a week?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE StudyTimeWeekly>15",
+    "expected_answer": 535
+  },
+  {
+    "id": 83,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students study less than 5 hours a week?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE StudyTimeWeekly<5",
+    "expected_answer": 595
+  },
+  {
+    "id": 84,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students are 18 years old?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Age=18",
+    "expected_answer": 582
+  },
+  {
+    "id": 85,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students are younger than 16?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Age<16",
+    "expected_answer": 630
+  },
+  {
+    "id": 86,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have the highest level of parental support (level 4)?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE ParentalSupport=4",
+    "expected_answer": 254
+  },
+  {
+    "id": 87,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students report no parental support at all?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE ParentalSupport=0",
+    "expected_answer": 212
+  },
+  {
+    "id": 88,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the average GPA across all students?",
+    "sql": "SELECT AVG(GPA) FROM student_performance",
+    "expected_answer": 1.9062
+  },
+  {
+    "id": 89,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "On average, how many hours do students study per week?",
+    "sql": "SELECT AVG(StudyTimeWeekly) FROM student_performance",
+    "expected_answer": 9.772
+  },
+  {
+    "id": 90,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the average number of absences per student?",
+    "sql": "SELECT AVG(Absences) FROM student_performance",
+    "expected_answer": 14.5414
+  },
+  {
+    "id": 91,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "On average, what GPA do students who receive tutoring have?",
+    "sql": "SELECT AVG(GPA) FROM student_performance WHERE Tutoring=1",
+    "expected_answer": 2.1083
+  },
+  {
+    "id": 92,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "On average, what GPA do students without tutoring have?",
+    "sql": "SELECT AVG(GPA) FROM student_performance WHERE Tutoring=0",
+    "expected_answer": 1.819
+  },
+  {
+    "id": 93,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "Can you find the average GPA of students who play sports?",
+    "sql": "SELECT AVG(GPA) FROM student_performance WHERE Sports=1",
+    "expected_answer": 1.9864
+  },
+  {
+    "id": 94,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the average study time for students in GradeClass 0?",
+    "sql": "SELECT AVG(StudyTimeWeekly) FROM student_performance WHERE GradeClass=0",
+    "expected_answer": 11.8549
+  },
+  {
+    "id": 95,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the average number of absences for students in GradeClass 4?",
+    "sql": "SELECT AVG(Absences) FROM student_performance WHERE GradeClass=4",
+    "expected_answer": 20.787
+  },
+  {
+    "id": 96,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "On average, what's the age of the students in this dataset?",
+    "sql": "SELECT AVG(Age) FROM student_performance",
+    "expected_answer": 16.4686
+  },
+  {
+    "id": 97,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the average GPA of students with the highest parental support level?",
+    "sql": "SELECT AVG(GPA) FROM student_performance WHERE ParentalSupport=4",
+    "expected_answer": 2.1915
+  },
+  {
+    "id": 98,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the highest GPA recorded in the dataset?",
+    "sql": "SELECT MAX(GPA) FROM student_performance",
+    "expected_answer": 4
+  },
+  {
+    "id": 99,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What is the lowest GPA?",
+    "sql": "SELECT MIN(GPA) FROM student_performance",
+    "expected_answer": 0
+  },
+  {
+    "id": 100,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the maximum number of absences any student has?",
+    "sql": "SELECT MAX(Absences) FROM student_performance",
+    "expected_answer": 29
+  },
+  {
+    "id": 101,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the minimum weekly study time recorded?",
+    "sql": "SELECT MIN(StudyTimeWeekly) FROM student_performance",
+    "expected_answer": 0.0011
+  },
+  {
+    "id": 102,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the highest weekly study time among all students?",
+    "sql": "SELECT MAX(StudyTimeWeekly) FROM student_performance",
+    "expected_answer": 19.9781
+  },
+  {
+    "id": 103,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the oldest age recorded among students?",
+    "sql": "SELECT MAX(Age) FROM student_performance",
+    "expected_answer": 18
+  },
+  {
+    "id": 104,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the youngest age among the students?",
+    "sql": "SELECT MIN(Age) FROM student_performance",
+    "expected_answer": 15
+  },
+  {
+    "id": 105,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the highest GPA among students who don't play sports?",
+    "sql": "SELECT MAX(GPA) FROM student_performance WHERE Sports=0",
+    "expected_answer": 4
+  },
+  {
+    "id": 106,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "Can you calculate the total number of absences across all students?",
+    "sql": "SELECT SUM(Absences) FROM student_performance",
+    "expected_answer": 34783
+  },
+  {
+    "id": 107,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the combined weekly study time for every student?",
+    "sql": "SELECT SUM(StudyTimeWeekly) FROM student_performance",
+    "expected_answer": 23374.6047
+  },
+  {
+    "id": 108,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students in total participate in at least one of sports, music, or volunteering?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Sports=1 OR Music=1 OR Volunteering=1",
+    "expected_answer": 1272
+  },
+  {
+    "id": 109,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "Which GradeClass has the most students in it?",
+    "sql": "SELECT GradeClass FROM student_performance GROUP BY GradeClass ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": 4
+  },
+  {
+    "id": 110,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "Which GradeClass has the fewest students?",
+    "sql": "SELECT GradeClass FROM student_performance GROUP BY GradeClass ORDER BY COUNT(*) ASC LIMIT 1",
+    "expected_answer": 0
+  },
+  {
+    "id": 111,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the most common parental education level among students?",
+    "sql": "SELECT ParentalEducation FROM student_performance GROUP BY ParentalEducation ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": 2
+  },
+  {
+    "id": 112,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the most common ethnicity code recorded in the dataset?",
+    "sql": "SELECT Ethnicity FROM student_performance GROUP BY Ethnicity ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": 0
+  },
+  {
+    "id": 113,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students belong to the most common ethnicity group?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Ethnicity = (SELECT Ethnicity FROM student_performance GROUP BY Ethnicity ORDER BY COUNT(*) DESC LIMIT 1)",
+    "expected_answer": 1207
+  },
+  {
+    "id": 114,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many distinct GradeClass values exist in the dataset?",
+    "sql": "SELECT COUNT(DISTINCT GradeClass) FROM student_performance",
+    "expected_answer": 5
+  },
+  {
+    "id": 115,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have a GPA between 2.5 and 3.5?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE GPA BETWEEN 2.5 AND 3.5",
+    "expected_answer": 629
+  },
+  {
+    "id": 116,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have between 5 and 15 absences?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Absences BETWEEN 5 AND 15",
+    "expected_answer": 903
+  },
+  {
+    "id": 117,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students receive tutoring and also have a GPA above 3?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Tutoring=1 AND GPA>3",
+    "expected_answer": 147
+  },
+  {
+    "id": 118,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students play sports and are also in extracurricular activities?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Sports=1 AND Extracurricular=1",
+    "expected_answer": 272
+  },
+  {
+    "id": 119,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the average absences for students who receive no parental support?",
+    "sql": "SELECT AVG(Absences) FROM student_performance WHERE ParentalSupport=0",
+    "expected_answer": 14.8726
+  },
+  {
+    "id": 120,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many female students are in the dataset?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Gender=1",
+    "expected_answer": 1222
+  },
+  {
+    "id": 121,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many male students are recorded?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Gender=0",
+    "expected_answer": 1170
+  },
+  {
+    "id": 122,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the average GPA of students with gender code 1?",
+    "sql": "SELECT AVG(GPA) FROM student_performance WHERE Gender=1",
+    "expected_answer": 1.8942
+  },
+  {
+    "id": 123,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students study 20 or more hours weekly?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE StudyTimeWeekly>=20",
+    "expected_answer": 0
+  },
+  {
+    "id": 124,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the total number of students who volunteer and also play music?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Volunteering=1 AND Music=1",
+    "expected_answer": 80
+  },
+  {
+    "id": 125,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have a GradeClass of 1 or 2?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE GradeClass IN (1,2)",
+    "expected_answer": 660
+  },
+  {
+    "id": 126,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the minimum GPA among students with zero absences?",
+    "sql": "SELECT MIN(GPA) FROM student_performance WHERE Absences=0",
+    "expected_answer": 2.7366
+  },
+  {
+    "id": 127,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the maximum GPA among students who don't receive tutoring?",
+    "sql": "SELECT MAX(GPA) FROM student_performance WHERE Tutoring=0",
+    "expected_answer": 4
+  },
+  {
+    "id": 128,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students are exactly 17 years old and play sports?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE Age=17 AND Sports=1",
+    "expected_answer": 162
+  },
+  {
+    "id": 129,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "What's the average parental support level across all students?",
+    "sql": "SELECT AVG(ParentalSupport) FROM student_performance",
+    "expected_answer": 2.1221
+  },
+  {
+    "id": 130,
+    "dataset": "student_performance",
+    "type": "sql",
+    "question": "How many students have more than 20 hours of weekly study time and a GPA above 3.5?",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE StudyTimeWeekly>20 AND GPA>3.5",
+    "expected_answer": 0
+  },
+  {
+    "id": 131,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many weather records are in the dataset?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain",
+    "expected_answer": 1380
+  },
+  {
+    "id": 132,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average temperature recorded across all entries?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain",
+    "expected_answer": 25.0662
+  },
+  {
+    "id": 133,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Can you find the average rainfall across the whole dataset?",
+    "sql": "SELECT AVG(rain) FROM temp_and_rain",
+    "expected_answer": 203.2754
+  },
+  {
+    "id": 134,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average temperature for June?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Month=6",
+    "expected_answer": 28.1392
+  },
+  {
+    "id": 135,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "On average, what's the temperature in January?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Month=1",
+    "expected_answer": 18.2694
+  },
+  {
+    "id": 136,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average rainfall during July?",
+    "sql": "SELECT AVG(rain) FROM temp_and_rain WHERE Month=7",
+    "expected_answer": 516.8142
+  },
+  {
+    "id": 137,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average rainfall in December?",
+    "sql": "SELECT AVG(rain) FROM temp_and_rain WHERE Month=12",
+    "expected_answer": 6.2913
+  },
+  {
+    "id": 138,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the highest temperature ever recorded?",
+    "sql": "SELECT MAX(tem) FROM temp_and_rain",
+    "expected_answer": 29.526
+  },
+  {
+    "id": 139,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Can you find the smallest recorded temperature?",
+    "sql": "SELECT MIN(tem) FROM temp_and_rain",
+    "expected_answer": 16.8006
+  },
+  {
+    "id": 140,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Can you find the maximum rainfall recorded in a single entry?",
+    "sql": "SELECT MAX(rain) FROM temp_and_rain",
+    "expected_answer": 1012.02
+  },
+  {
+    "id": 141,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the lowest rainfall value in the dataset?",
+    "sql": "SELECT MIN(rain) FROM temp_and_rain",
+    "expected_answer": 0
+  },
+  {
+    "id": 142,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the combined rainfall across the entire dataset?",
+    "sql": "SELECT SUM(rain) FROM temp_and_rain",
+    "expected_answer": 280520.0953
+  },
+  {
+    "id": 143,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the total rainfall recorded in the year 2000?",
+    "sql": "SELECT SUM(rain) FROM temp_and_rain WHERE Year=2000",
+    "expected_answer": 2425.9179
+  },
+  {
+    "id": 144,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What year had the highest average rainfall?",
+    "sql": "SELECT Year FROM temp_and_rain GROUP BY Year ORDER BY AVG(rain) DESC LIMIT 1",
+    "expected_answer": 2007
+  },
+  {
+    "id": 145,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Which year recorded the highest average temperature?",
+    "sql": "SELECT Year FROM temp_and_rain GROUP BY Year ORDER BY AVG(tem) DESC LIMIT 1",
+    "expected_answer": 2009
+  },
+  {
+    "id": 146,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Which year had the lowest average temperature?",
+    "sql": "SELECT Year FROM temp_and_rain GROUP BY Year ORDER BY AVG(tem) ASC LIMIT 1",
+    "expected_answer": 1905
+  },
+  {
+    "id": 147,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Which month tends to have the highest average temperature overall?",
+    "sql": "SELECT Month FROM temp_and_rain GROUP BY Month ORDER BY AVG(tem) DESC LIMIT 1",
+    "expected_answer": 6
+  },
+  {
+    "id": 148,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Which month has the lowest average temperature on average?",
+    "sql": "SELECT Month FROM temp_and_rain GROUP BY Month ORDER BY AVG(tem) ASC LIMIT 1",
+    "expected_answer": 1
+  },
+  {
+    "id": 149,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Which month has the highest average rainfall?",
+    "sql": "SELECT Month FROM temp_and_rain GROUP BY Month ORDER BY AVG(rain) DESC LIMIT 1",
+    "expected_answer": 7
+  },
+  {
+    "id": 150,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Which month typically has the least rainfall?",
+    "sql": "SELECT Month FROM temp_and_rain GROUP BY Month ORDER BY AVG(rain) ASC LIMIT 1",
+    "expected_answer": 12
+  },
+  {
+    "id": 151,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many records show a temperature above 30 degrees?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE tem>30",
+    "expected_answer": 0
+  },
+  {
+    "id": 152,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many months recorded a temperature below 15 degrees?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE tem<15",
+    "expected_answer": 0
+  },
+  {
+    "id": 153,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many entries have rainfall greater than 300?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE rain>300",
+    "expected_answer": 423
+  },
+  {
+    "id": 154,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many entries recorded zero rainfall?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE rain=0",
+    "expected_answer": 1
+  },
+  {
+    "id": 155,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many years of data are covered in this dataset?",
+    "sql": "SELECT COUNT(DISTINCT Year) FROM temp_and_rain",
+    "expected_answer": 115
+  },
+  {
+    "id": 156,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the earliest year recorded in the dataset?",
+    "sql": "SELECT MIN(Year) FROM temp_and_rain",
+    "expected_answer": 1901
+  },
+  {
+    "id": 157,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the most recent year included in the data?",
+    "sql": "SELECT MAX(Year) FROM temp_and_rain",
+    "expected_answer": 2015
+  },
+  {
+    "id": 158,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What was the average temperature during the year 1950?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Year=1950",
+    "expected_answer": 24.8895
+  },
+  {
+    "id": 159,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What was the total rainfall recorded in 1980?",
+    "sql": "SELECT SUM(rain) FROM temp_and_rain WHERE Year=1980",
+    "expected_answer": 2214.989
+  },
+  {
+    "id": 160,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "Could you show me the average temperature between the years 2000 and 2010?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Year BETWEEN 2000 AND 2010",
+    "expected_answer": 25.625
+  },
+  {
+    "id": 161,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average rainfall between 1990 and 2000?",
+    "sql": "SELECT AVG(rain) FROM temp_and_rain WHERE Year BETWEEN 1990 AND 2000",
+    "expected_answer": 198.3807
+  },
+  {
+    "id": 162,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many records fall between the years 1950 and 1960?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE Year BETWEEN 1950 AND 1960",
+    "expected_answer": 132
+  },
+  {
+    "id": 163,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the highest temperature recorded in the year 2015?",
+    "sql": "SELECT MAX(tem) FROM temp_and_rain WHERE Year=2015",
+    "expected_answer": 28.3603
+  },
+  {
+    "id": 164,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average temperature recorded during the month of December?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Month=12",
+    "expected_answer": 19.3168
+  },
+  {
+    "id": 165,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average rainfall recorded in April?",
+    "sql": "SELECT AVG(rain) FROM temp_and_rain WHERE Month=4",
+    "expected_answer": 152.9833
+  },
+  {
+    "id": 166,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many records have both a temperature above 25 and rainfall above 100?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE tem>25 AND rain>100",
+    "expected_answer": 747
+  },
+  {
+    "id": 167,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the maximum rainfall recorded during the month of June?",
+    "sql": "SELECT MAX(rain) FROM temp_and_rain WHERE Month=6",
+    "expected_answer": 972.536
+  },
+  {
+    "id": 168,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the minimum temperature recorded in the month of January?",
+    "sql": "SELECT MIN(tem) FROM temp_and_rain WHERE Month=1",
+    "expected_answer": 16.8006
+  },
+  {
+    "id": 169,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many records in total were logged for the month of March?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE Month=3",
+    "expected_answer": 115
+  },
+  {
+    "id": 170,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average temperature across all of the 1990s (1990 to 1999)?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Year BETWEEN 1990 AND 1999",
+    "expected_answer": 25.1612
+  },
+  {
+    "id": 171,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average rainfall for the year 1901, the earliest year on record?",
+    "sql": "SELECT AVG(rain) FROM temp_and_rain WHERE Year=1901",
+    "expected_answer": 202.735
+  },
+  {
+    "id": 172,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many records show rainfall between 50 and 150?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE rain BETWEEN 50 AND 150",
+    "expected_answer": 187
+  },
+  {
+    "id": 173,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average temperature for the month of August across all years?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Month=8",
+    "expected_answer": 28.0438
+  },
+  {
+    "id": 174,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many entries recorded a temperature between 20 and 25 degrees?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE tem BETWEEN 20 AND 25",
+    "expected_answer": 271
+  },
+  {
+    "id": 175,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the total rainfall recorded across every February in the dataset?",
+    "sql": "SELECT SUM(rain) FROM temp_and_rain WHERE Month=2",
+    "expected_answer": 2257.4657
+  },
+  {
+    "id": 176,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average temperature recorded in the year 2010?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Year=2010",
+    "expected_answer": 26.1128
+  },
+  {
+    "id": 177,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many records show a temperature exactly at or above 28 degrees?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE tem>=28",
+    "expected_answer": 350
+  },
+  {
+    "id": 178,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the lowest rainfall recorded in any November?",
+    "sql": "SELECT MIN(rain) FROM temp_and_rain WHERE Month=11",
+    "expected_answer": 0.0009
+  },
+  {
+    "id": 179,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many total records exist for the year 2015, the most recent year?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE Year=2015",
+    "expected_answer": 12
+  },
+  {
+    "id": 180,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average rainfall for the month of May across the full dataset?",
+    "sql": "SELECT AVG(rain) FROM temp_and_rain WHERE Month=5",
+    "expected_answer": 272.1044
+  },
+  {
+    "id": 181,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the highest temperature recorded during any October?",
+    "sql": "SELECT MAX(tem) FROM temp_and_rain WHERE Month=10",
+    "expected_answer": 28.6631
+  },
+  {
+    "id": 182,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many records have a temperature below 10 degrees?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE tem<10",
+    "expected_answer": 0
+  },
+  {
+    "id": 183,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average temperature for the month of September?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Month=9",
+    "expected_answer": 28.0077
+  },
+  {
+    "id": 184,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many records were logged between 1960 and 1970?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE Year BETWEEN 1960 AND 1970",
+    "expected_answer": 132
+  },
+  {
+    "id": 185,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the total rainfall for the year 2005?",
+    "sql": "SELECT SUM(rain) FROM temp_and_rain WHERE Year=2005",
+    "expected_answer": 1917.8471
+  },
+  {
+    "id": 186,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the maximum temperature recorded in the entire 1900s decade of data (1901-1909)?",
+    "sql": "SELECT MAX(tem) FROM temp_and_rain WHERE Year BETWEEN 1901 AND 1909",
+    "expected_answer": 29.3307
+  },
+  {
+    "id": 187,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average rainfall recorded during the month of November?",
+    "sql": "SELECT AVG(rain) FROM temp_and_rain WHERE Month=11",
+    "expected_answer": 32.622
+  },
+  {
+    "id": 188,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "How many months in total recorded a rainfall figure of exactly zero?",
+    "sql": "SELECT COUNT(*) FROM temp_and_rain WHERE rain=0.0",
+    "expected_answer": 1
+  },
+  {
+    "id": 189,
+    "dataset": "temp_and_rain",
+    "type": "sql",
+    "question": "What's the average temperature for the month of February?",
+    "sql": "SELECT AVG(tem) FROM temp_and_rain WHERE Month=2",
+    "expected_answer": 20.5433
+  },
+  {
+    "id": 190,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients are recorded in the dengue dataset?",
+    "sql": "SELECT COUNT(*) FROM dengue",
+    "expected_answer": 1000
+  },
+  {
+    "id": 191,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients tested positive for NS1?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE NS1=1",
+    "expected_answer": 519
+  },
+  {
+    "id": 192,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients tested positive for IgG?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE IgG=1",
+    "expected_answer": 533
+  },
+  {
+    "id": 193,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients tested positive for IgM?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE IgM=1",
+    "expected_answer": 475
+  },
+  {
+    "id": 194,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients ended up with a positive dengue outcome?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Outcome=1",
+    "expected_answer": 533
+  },
+  {
+    "id": 195,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients had a negative dengue outcome?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Outcome=0",
+    "expected_answer": 467
+  },
+  {
+    "id": 196,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients reported a headache?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Headache=1",
+    "expected_answer": 553
+  },
+  {
+    "id": 197,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients experienced joint pain classified as severe?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Joint_Pain='Severe'",
+    "expected_answer": 335
+  },
+  {
+    "id": 198,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients had moderate joint pain?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Joint_Pain='Moderate'",
+    "expected_answer": 174
+  },
+  {
+    "id": 199,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients reported retro-orbital pain?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Retro_Orbital_Pain=1",
+    "expected_answer": 392
+  },
+  {
+    "id": 200,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients experienced myalgia?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Myalgia=1",
+    "expected_answer": 457
+  },
+  {
+    "id": 201,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients developed a rash?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Rash=1",
+    "expected_answer": 380
+  },
+  {
+    "id": 202,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients are from the Mirpur area?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Area='Mirpur'",
+    "expected_answer": 34
+  },
+  {
+    "id": 203,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients live in a developed area type?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE AreaType='Developed'",
+    "expected_answer": 501
+  },
+  {
+    "id": 204,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients live in an undeveloped area?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE AreaType='Undeveloped'",
+    "expected_answer": 499
+  },
+  {
+    "id": 205,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients live in a building-type house?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE HouseType='Building'",
+    "expected_answer": 354
+  },
+  {
+    "id": 206,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients live in a tin-shed house?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE HouseType='Tinshed'",
+    "expected_answer": 317
+  },
+  {
+    "id": 207,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many female patients are in the dataset?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Gender='Female'",
+    "expected_answer": 524
+  },
+  {
+    "id": 208,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many male patients are recorded?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Gender='Male'",
+    "expected_answer": 476
+  },
+  {
+    "id": 209,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients are older than 50?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Age>50",
+    "expected_answer": 231
+  },
+  {
+    "id": 210,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients are younger than 18?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Age<18",
+    "expected_answer": 183
+  },
+  {
+    "id": 211,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average age of patients in this dataset?",
+    "sql": "SELECT AVG(Age) FROM dengue",
+    "expected_answer": 35.924
+  },
+  {
+    "id": 212,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average body temperature recorded among patients?",
+    "sql": "SELECT AVG(Body_Temperature) FROM dengue",
+    "expected_answer": 38.1826
+  },
+  {
+    "id": 213,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "On average, how long does the fever last, in days?",
+    "sql": "SELECT AVG(Fever_Duration) FROM dengue",
+    "expected_answer": 3.023
+  },
+  {
+    "id": 214,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average platelet count across all patients?",
+    "sql": "SELECT AVG(Platelet_Count) FROM dengue",
+    "expected_answer": 151716.703
+  },
+  {
+    "id": 215,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average white blood cell count in the dataset?",
+    "sql": "SELECT AVG(WBC_Count) FROM dengue",
+    "expected_answer": 4696.809
+  },
+  {
+    "id": 216,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average platelet count for patients with a positive outcome?",
+    "sql": "SELECT AVG(Platelet_Count) FROM dengue WHERE Outcome=1",
+    "expected_answer": 71566.394
+  },
+  {
+    "id": 217,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average platelet count for patients with a negative outcome?",
+    "sql": "SELECT AVG(Platelet_Count) FROM dengue WHERE Outcome=0",
+    "expected_answer": 243194.4647
+  },
+  {
+    "id": 218,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average body temperature among patients who tested positive for NS1?",
+    "sql": "SELECT AVG(Body_Temperature) FROM dengue WHERE NS1=1",
+    "expected_answer": 39.3087
+  },
+  {
+    "id": 219,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average fever duration for patients with a positive outcome?",
+    "sql": "SELECT AVG(Fever_Duration) FROM dengue WHERE Outcome=1",
+    "expected_answer": 5
+  },
+  {
+    "id": 220,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the highest platelet count recorded?",
+    "sql": "SELECT MAX(Platelet_Count) FROM dengue",
+    "expected_answer": 362426
+  },
+  {
+    "id": 221,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the lowest platelet count in the dataset?",
+    "sql": "SELECT MIN(Platelet_Count) FROM dengue",
+    "expected_answer": 26885
+  },
+  {
+    "id": 222,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the highest recorded body temperature?",
+    "sql": "SELECT MAX(Body_Temperature) FROM dengue",
+    "expected_answer": 40.6
+  },
+  {
+    "id": 223,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the lowest body temperature recorded among patients?",
+    "sql": "SELECT MIN(Body_Temperature) FROM dengue",
+    "expected_answer": 36
+  },
+  {
+    "id": 224,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the longest fever duration recorded, in days?",
+    "sql": "SELECT MAX(Fever_Duration) FROM dengue",
+    "expected_answer": 7
+  },
+  {
+    "id": 225,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the oldest patient's age in the dataset?",
+    "sql": "SELECT MAX(Age) FROM dengue",
+    "expected_answer": 65
+  },
+  {
+    "id": 226,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the youngest patient's age recorded?",
+    "sql": "SELECT MIN(Age) FROM dengue",
+    "expected_answer": 8
+  },
+  {
+    "id": 227,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the highest white blood cell count observed?",
+    "sql": "SELECT MAX(WBC_Count) FROM dengue",
+    "expected_answer": 10229
+  },
+  {
+    "id": 228,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "Can you calculate the total number of patients who tested positive on both NS1 and IgM?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE NS1=1 AND IgM=1",
+    "expected_answer": 258
+  },
+  {
+    "id": 229,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "Which area shows up most frequently in the dataset?",
+    "sql": "SELECT Area FROM dengue GROUP BY Area ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": "Jatrabari"
+  },
+  {
+    "id": 230,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "Which house type is most common among patients?",
+    "sql": "SELECT HouseType FROM dengue GROUP BY HouseType ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": "Building"
+  },
+  {
+    "id": 231,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many distinct areas appear in the dataset?",
+    "sql": "SELECT COUNT(DISTINCT Area) FROM dengue",
+    "expected_answer": 36
+  },
+  {
+    "id": 232,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients have a platelet count below 150000?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Platelet_Count<150000",
+    "expected_answer": 536
+  },
+  {
+    "id": 233,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients have a fever that lasted between 2 and 5 days?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Fever_Duration BETWEEN 2 AND 5",
+    "expected_answer": 408
+  },
+  {
+    "id": 234,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients tested positive on NS1, IgG, and IgM all at once?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE NS1=1 AND IgG=1 AND IgM=1",
+    "expected_answer": 258
+  },
+  {
+    "id": 235,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients have a body temperature above 38 degrees?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Body_Temperature>38",
+    "expected_answer": 533
+  },
+  {
+    "id": 236,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average age of patients who had a positive dengue outcome?",
+    "sql": "SELECT AVG(Age) FROM dengue WHERE Outcome=1",
+    "expected_answer": 35.743
+  },
+  {
+    "id": 237,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients from an undeveloped area had a positive outcome?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE AreaType='Undeveloped' AND Outcome=1",
+    "expected_answer": 276
+  },
+  {
+    "id": 238,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "How many patients have a WBC count above 10000?",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE WBC_Count>10000",
+    "expected_answer": 3
+  },
+  {
+    "id": 239,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "What's the average fever duration for female patients?",
+    "sql": "SELECT AVG(Fever_Duration) FROM dengue WHERE Gender='Female'",
+    "expected_answer": 3.0477
+  },
+  {
+    "id": 240,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees are in the dataset?",
+    "sql": "SELECT COUNT(*) FROM employee",
+    "expected_answer": 25
+  },
+  {
+    "id": 241,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "Can you tell me how many employees work in Sales?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Department='Sales'",
+    "expected_answer": 3
+  },
+  {
+    "id": 242,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees are in the Software Development department?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Department='Software Development'",
+    "expected_answer": 13
+  },
+  {
+    "id": 243,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees work in R&D?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Department='R&D'",
+    "expected_answer": 7
+  },
+  {
+    "id": 244,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees have a Master's degree?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Education='Masters'",
+    "expected_answer": 13
+  },
+  {
+    "id": 245,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees hold a Doctorate?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Education='Doctorate'",
+    "expected_answer": 5
+  },
+  {
+    "id": 246,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees are married?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Marital_Status='Married'",
+    "expected_answer": 9
+  },
+  {
+    "id": 247,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees are single?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Marital_Status='Single'",
+    "expected_answer": 9
+  },
+  {
+    "id": 248,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees have a Performance Rating of 5?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Performance_Rating=5",
+    "expected_answer": 5
+  },
+  {
+    "id": 249,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees have a Performance Rating of 3?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Performance_Rating=3",
+    "expected_answer": 20
+  },
+  {
+    "id": 250,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many male employees are there?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Gender='Male'",
+    "expected_answer": 16
+  },
+  {
+    "id": 251,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many female employees are there?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Gender='Female'",
+    "expected_answer": 8
+  },
+  {
+    "id": 252,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees are older than 40?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Age>40",
+    "expected_answer": 4
+  },
+  {
+    "id": 253,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees have more than 5 years of experience?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Years_of_Experience>5",
+    "expected_answer": 5
+  },
+  {
+    "id": 254,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "On average, how much do employees earn per month?",
+    "sql": "SELECT AVG(Monthly_Income) FROM employee",
+    "expected_answer": 4674.04
+  },
+  {
+    "id": 255,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What is the minimum monthly income among employees?",
+    "sql": "SELECT MIN(Monthly_Income) FROM employee",
+    "expected_answer": 2028
+  },
+  {
+    "id": 256,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "Which employee has the highest salary?",
+    "sql": "SELECT Employee_Name FROM employee ORDER BY Monthly_Income DESC LIMIT 1",
+    "expected_answer": "Nicole"
+  },
+  {
+    "id": 257,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the highest monthly income recorded in this dataset?",
+    "sql": "SELECT MAX(Monthly_Income) FROM employee",
+    "expected_answer": 15427
+  },
+  {
+    "id": 258,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the average years of experience across all employees?",
+    "sql": "SELECT AVG(Years_of_Experience) FROM employee",
+    "expected_answer": 2.32
+  },
+  {
+    "id": 259,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the average percent salary hike given to employees?",
+    "sql": "SELECT AVG(Percent_Salary_Hike) FROM employee",
+    "expected_answer": 14.76
+  },
+  {
+    "id": 260,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the highest percent salary hike anyone received?",
+    "sql": "SELECT MAX(Percent_Salary_Hike) FROM employee",
+    "expected_answer": 23
+  },
+  {
+    "id": 261,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "Which department has the most employees?",
+    "sql": "SELECT Department FROM employee GROUP BY Department ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": "Software Development"
+  },
+  {
+    "id": 262,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the most common education level among employees?",
+    "sql": "SELECT Education FROM employee GROUP BY Education ORDER BY COUNT(*) DESC LIMIT 1",
+    "expected_answer": "Masters"
+  },
+  {
+    "id": 263,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How much do all employees' monthly incomes add up to combined?",
+    "sql": "SELECT SUM(Monthly_Income) FROM employee",
+    "expected_answer": 116851
+  },
+  {
+    "id": 264,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "On average, what's the monthly income of employees with a Performance Rating of 5?",
+    "sql": "SELECT AVG(Monthly_Income) FROM employee WHERE Performance_Rating=5",
+    "expected_answer": 4685.2
+  },
+  {
+    "id": 265,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the average age of employees in the Sales department?",
+    "sql": "SELECT AVG(Age) FROM employee WHERE Department='Sales'",
+    "expected_answer": 46
+  },
+  {
+    "id": 266,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees have an Undergraduate education level?",
+    "sql": "SELECT COUNT(*) FROM employee WHERE Education='Undergraduate'",
+    "expected_answer": 7
+  },
+  {
+    "id": 267,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "How well does the housing model perform based on RMSE?",
+    "expected_answer": 1391455.72,
+    "metric": "RMSE"
+  },
+  {
+    "id": 268,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What's the mean absolute error of the housing price prediction model?",
+    "expected_answer": 1009083.3,
+    "metric": "MAE"
+  },
+  {
+    "id": 269,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What R-squared score does the housing price model achieve on the test set?",
+    "expected_answer": 0.617,
+    "metric": "R2"
+  },
+  {
+    "id": 270,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What price would the model estimate for house 316?",
+    "row_index": 316,
+    "expected_answer": 5493582.5
+  },
+  {
+    "id": 271,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What price would the model estimate for house 77?",
+    "row_index": 77,
+    "expected_answer": 7203924.7
+  },
+  {
+    "id": 272,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What price would the model estimate for house 360?",
+    "row_index": 360,
+    "expected_answer": 3786584.38
+  },
+  {
+    "id": 273,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What price would the model estimate for house 90?",
+    "row_index": 90,
+    "expected_answer": 4498130.0
+  },
+  {
+    "id": 274,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What price would the model estimate for house 493?",
+    "row_index": 493,
+    "expected_answer": 3659967.5
+  },
+  {
+    "id": 275,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What price would the model estimate for house 209?",
+    "row_index": 209,
+    "expected_answer": 3495520.0
+  },
+  {
+    "id": 276,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What price would the model estimate for house 176?",
+    "row_index": 176,
+    "expected_answer": 5094250.0
+  },
+  {
+    "id": 277,
+    "dataset": "housing",
+    "type": "ml",
+    "question": "What price would the model estimate for house 249?",
+    "row_index": 249,
+    "expected_answer": 5366410.0
+  },
+  {
+    "id": 278,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "How accurately can the model classify student GradeClass?",
+    "expected_answer": 0.9102,
+    "metric": "accuracy"
+  },
+  {
+    "id": 279,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "What GradeClass does the model predict for student row 1167?",
+    "row_index": 1167,
+    "expected_answer": 4
+  },
+  {
+    "id": 280,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "What GradeClass does the model predict for student row 1839?",
+    "row_index": 1839,
+    "expected_answer": 4
+  },
+  {
+    "id": 281,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "What GradeClass does the model predict for student row 2122?",
+    "row_index": 2122,
+    "expected_answer": 4
+  },
+  {
+    "id": 282,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "What GradeClass does the model predict for student row 1460?",
+    "row_index": 1460,
+    "expected_answer": 4
+  },
+  {
+    "id": 283,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "What GradeClass does the model predict for student row 352?",
+    "row_index": 352,
+    "expected_answer": 2
+  },
+  {
+    "id": 284,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "What GradeClass does the model predict for student row 1311?",
+    "row_index": 1311,
+    "expected_answer": 3
+  },
+  {
+    "id": 285,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "What GradeClass does the model predict for student row 1479?",
+    "row_index": 1479,
+    "expected_answer": 2
+  },
+  {
+    "id": 286,
+    "dataset": "student_performance",
+    "type": "ml",
+    "question": "What GradeClass does the model predict for student row 2292?",
+    "row_index": 2292,
+    "expected_answer": 3
+  },
+  {
+    "id": 287,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "How accurate is the model on unseen dengue data?",
+    "expected_answer": 1.0,
+    "metric": "accuracy"
+  },
+  {
+    "id": 288,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "What outcome does the model predict for dengue record 739?",
+    "row_index": 739,
+    "expected_answer": 1
+  },
+  {
+    "id": 289,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "What outcome does the model predict for dengue record 587?",
+    "row_index": 587,
+    "expected_answer": 0
+  },
+  {
+    "id": 290,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "What outcome does the model predict for dengue record 306?",
+    "row_index": 306,
+    "expected_answer": 1
+  },
+  {
+    "id": 291,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "What outcome does the model predict for dengue record 218?",
+    "row_index": 218,
+    "expected_answer": 0
+  },
+  {
+    "id": 292,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "What outcome does the model predict for dengue record 962?",
+    "row_index": 962,
+    "expected_answer": 1
+  },
+  {
+    "id": 293,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "What outcome does the model predict for dengue record 88?",
+    "row_index": 88,
+    "expected_answer": 1
+  },
+  {
+    "id": 294,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "What outcome does the model predict for dengue record 885?",
+    "row_index": 885,
+    "expected_answer": 1
+  },
+  {
+    "id": 295,
+    "dataset": "dengue",
+    "type": "ml",
+    "question": "What outcome does the model predict for dengue record 402?",
+    "row_index": 402,
+    "expected_answer": 0
+  },
+  {
+    "id": 296,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees have a Percent Salary Hike of 20 or more?",
+    "sql": "SELECT COUNT(*) FROM employee_dataset WHERE Percent_Salary_Hike>=20",
+    "expected_answer": 5
+  },
+  {
+    "id": 297,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the average Years of Experience for employees with a Performance Rating of 5?",
+    "sql": "SELECT AVG(Years_of_Experience) FROM employee_dataset WHERE Performance_Rating=5",
+    "expected_answer": 2.6
+  },
+  {
+    "id": 298,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the lowest Percent Salary Hike recorded among employees?",
+    "sql": "SELECT MIN(Percent_Salary_Hike) FROM employee_dataset",
+    "expected_answer": 11
+  },
+  {
+    "id": 299,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "How many employees are divorced?",
+    "sql": "SELECT COUNT(*) FROM employee_dataset WHERE Marital_Status='Divorced'",
+    "expected_answer": 5
+  },
+  {
+    "id": 300,
+    "dataset": "employee_dataset",
+    "type": "sql",
+    "question": "What's the average Monthly Income of employees with a Master's degree?",
+    "sql": "SELECT AVG(Monthly_Income) FROM employee_dataset WHERE Education='Masters'",
+    "expected_answer": 4509.5385
+  }
+]
