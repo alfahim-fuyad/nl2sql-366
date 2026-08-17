@@ -1,9 +1,0 @@
-Product,Category,Region,Salesperson,Units,Revenue,Discount
-Laptop,Electronics,North,Nadia,12,14400,5
-Phone,Electronics,South,Rafi,35,21000,10
-Desk,Furniture,East,Nadia,8,6400,0
-Chair,Furniture,West,Sumi,42,8400,15
-Tablet,Electronics,North,Rafi,18,12600,5
-Monitor,Electronics,East,Sumi,25,10000,8
-Sofa,Furniture,South,Nadia,6,18000,12
-Printer,Electronics,West,Rafi,15,7500,3

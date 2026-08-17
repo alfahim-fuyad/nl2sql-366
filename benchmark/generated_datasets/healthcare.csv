@@ -1,9 +1,0 @@
-Patient,Age,Gender,District,Diagnosis,BMI,Cholesterol
-P01,34,Female,Dhaka,Diabetes,27.4,210
-P02,58,Male,Sylhet,Hypertension,31.2,245
-P03,46,Female,Dhaka,Asthma,23.8,180
-P04,67,Male,Chittagong,Diabetes,29.6,230
-P05,29,Female,Rajshahi,Asthma,21.5,165
-P06,52,Male,Dhaka,Hypertension,33.1,260
-P07,41,Female,Khulna,Diabetes,26.7,205
-P08,73,Male,Sylhet,Asthma,28.3,195

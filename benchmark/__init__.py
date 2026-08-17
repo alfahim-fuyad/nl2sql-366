@@ -1,1 +1,0 @@
-"""Reproducible evaluation assets for nl2sql-366."""
