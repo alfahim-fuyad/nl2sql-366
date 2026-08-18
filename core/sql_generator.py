@@ -1,7 +1,10 @@
 import re
 
 from operator_detector import detect_operators
-from attribute_matcher import find_columns_with_positions
+from attribute_matcher import (
+    find_columns_with_positions,
+    resolve_schema_column
+)
 from value_matcher import (
     extract_numbers,
     match_categorical_values
@@ -90,14 +93,6 @@ _BOTTOM_PATTERN = re.compile(
 
 
 def _clean_column_name(name):
-    """
-    Clean column name while preserving database naming convention.
-
-    IMPORTANT:
-        Monthly_Income remains Monthly_Income
-        ' Monthly_Income ' -> Monthly_Income
-    """
-
     if name is None:
         return None
 
@@ -105,8 +100,6 @@ def _clean_column_name(name):
 
 
 def _quote_identifier(name):
-    """Safely quote SQLite identifier."""
-
     name = _clean_column_name(name)
 
     if not name:
@@ -122,12 +115,51 @@ def _quote_identifier(name):
 
 
 def _clean_value(value):
-    """Clean string values without changing numeric values."""
-
     if isinstance(value, str):
         return value.strip()
 
     return value
+
+
+def _canonical_column(name, schema):
+    """
+    ALWAYS convert a column reference to the
+    exact schema column name.
+    """
+
+    if not name:
+        return None
+
+    resolved = resolve_schema_column(
+        name,
+        schema
+    )
+
+    if resolved:
+        return resolved
+
+    return None
+
+
+def _canonical_columns(columns, schema):
+    """
+    Convert a list/set of column names into
+    exact schema names.
+    """
+
+    result = set()
+
+    for column in columns:
+
+        resolved = _canonical_column(
+            column,
+            schema
+        )
+
+        if resolved:
+            result.add(resolved)
+
+    return result
 
 
 def _nearest_column(
@@ -139,15 +171,19 @@ def _nearest_column(
     candidates = column_matches
 
     if allowed is not None:
+
         candidates = [
-            c for c in candidates
-            if c["column"] in allowed
+            column
+            for column in candidates
+            if column["column"] in allowed
         ]
 
     if exclude:
+
         candidates = [
-            c for c in candidates
-            if c["column"] not in exclude
+            column
+            for column in candidates
+            if column["column"] not in exclude
         ]
 
     if not candidates:
@@ -155,11 +191,12 @@ def _nearest_column(
 
     return min(
         candidates,
-        key=lambda c: (
+        key=lambda column: (
             abs(
-                c["position"] - ref_pos
+                column["position"]
+                - ref_pos
             ),
-            -c["score"]
+            -column["score"]
         )
     )["column"]
 
@@ -174,19 +211,20 @@ def _find_agg_column(
 
     agg_keyword_pos = None
 
-    for m in re.finditer(
+    for match in re.finditer(
         r"\S+",
         question.lower()
     ):
 
-        if m.group() in _AGGREGATE_KEYWORDS:
+        if match.group() in _AGGREGATE_KEYWORDS:
 
-            agg_keyword_pos = m.start()
+            agg_keyword_pos = match.start()
             break
 
     numeric_matches = [
-        c for c in column_matches
-        if c["column"] in numeric_columns
+        column
+        for column in column_matches
+        if column["column"] in numeric_columns
     ]
 
     if not numeric_matches:
@@ -196,17 +234,17 @@ def _find_agg_column(
 
         return max(
             numeric_matches,
-            key=lambda c: c["score"]
+            key=lambda column: column["score"]
         )["column"]
 
     return min(
         numeric_matches,
-        key=lambda c: (
+        key=lambda column: (
             abs(
-                c["position"]
+                column["position"]
                 - agg_keyword_pos
             ),
-            -c["score"]
+            -column["score"]
         )
     )["column"]
 
@@ -215,20 +253,21 @@ def _detect_group_by(
     question,
     column_matches
 ):
-    m = re.search(
+    match = re.search(
         r"\bby\b",
         question,
         re.IGNORECASE
     )
 
-    if not m:
+    if not match:
         return None
 
-    pos = m.end()
+    pos = match.end()
 
     candidates = [
-        c for c in column_matches
-        if c["position"] >= pos
+        column
+        for column in column_matches
+        if column["position"] >= pos
     ]
 
     if not candidates:
@@ -236,9 +275,9 @@ def _detect_group_by(
 
     return min(
         candidates,
-        key=lambda c: (
-            c["position"],
-            -c["score"]
+        key=lambda column: (
+            column["position"],
+            -column["score"]
         )
     )["column"]
 
@@ -252,18 +291,20 @@ def _detect_order_limit(
     def _column_near(pos):
 
         candidates = [
-            c for c in column_matches
+            column
+            for column in column_matches
             if (
-                c["column"] in numeric_columns
-                and c["position"] >= pos
+                column["column"] in numeric_columns
+                and column["position"] >= pos
             )
         ]
 
         if not candidates:
 
             candidates = [
-                c for c in column_matches
-                if c["column"] in numeric_columns
+                column
+                for column in column_matches
+                if column["column"] in numeric_columns
             ]
 
         if not candidates:
@@ -271,32 +312,40 @@ def _detect_order_limit(
 
         return min(
             candidates,
-            key=lambda c: (
+            key=lambda column: (
                 abs(
-                    c["position"] - pos
+                    column["position"] - pos
                 ),
-                -c["score"]
+                -column["score"]
             )
         )["column"]
 
-    top_m = _TOP_PATTERN.search(question)
+    top_match = _TOP_PATTERN.search(
+        question
+    )
 
-    if top_m:
+    if top_match:
 
         return (
-            _column_near(top_m.end()),
+            _column_near(
+                top_match.end()
+            ),
             "DESC",
-            int(top_m.group(1))
+            int(top_match.group(1))
         )
 
-    bot_m = _BOTTOM_PATTERN.search(question)
+    bottom_match = _BOTTOM_PATTERN.search(
+        question
+    )
 
-    if bot_m:
+    if bottom_match:
 
         return (
-            _column_near(bot_m.end()),
+            _column_near(
+                bottom_match.end()
+            ),
             "ASC",
-            int(bot_m.group(1))
+            int(bottom_match.group(1))
         )
 
     return None, None, None
@@ -313,23 +362,23 @@ def build_query(
     filters = []
     filtered_columns = set()
 
-    # ---------------------------------------------------------
-    # Schema column sets
-    # ---------------------------------------------------------
+    # =========================================================
+    # SCHEMA COLUMN SETS
+    # =========================================================
 
-    numeric_columns = {
-        _clean_column_name(c)
-        for c in get_numeric_columns(schema)
-    }
+    numeric_columns = _canonical_columns(
+        get_numeric_columns(schema),
+        schema
+    )
 
-    text_columns = {
-        _clean_column_name(c)
-        for c in get_text_columns(schema)
-    }
+    text_columns = _canonical_columns(
+        get_text_columns(schema),
+        schema
+    )
 
-    # ---------------------------------------------------------
-    # Find columns
-    # ---------------------------------------------------------
+    # =========================================================
+    # FIND COLUMNS
+    # =========================================================
 
     column_matches = find_columns_with_positions(
         question,
@@ -337,21 +386,44 @@ def build_query(
         synonyms_path
     )
 
-    # Normalize returned column names
+    # ---------------------------------------------------------
+    # Force exact schema names
+    # ---------------------------------------------------------
+
+    clean_matches = []
+
     for match in column_matches:
 
-        match["column"] = _clean_column_name(
-            match["column"]
+        resolved = _canonical_column(
+            match.get("column"),
+            schema
         )
 
+        if not resolved:
+            continue
+
+        clean_matches.append({
+            "column": resolved,
+            "position": match.get(
+                "position",
+                0
+            ),
+            "score": match.get(
+                "score",
+                0
+            ),
+        })
+
+    column_matches = clean_matches
+
     matched_column_names = {
-        m["column"]
-        for m in column_matches
+        match["column"]
+        for match in column_matches
     }
 
-    # ---------------------------------------------------------
-    # Categorical filters
-    # ---------------------------------------------------------
+    # =========================================================
+    # CATEGORICAL FILTERS
+    # =========================================================
 
     categorical_matches = match_categorical_values(
         question,
@@ -361,18 +433,27 @@ def build_query(
 
     for match in categorical_matches:
 
-        col = _clean_column_name(
-            match["column"]
+        # IMPORTANT:
+        # value_matcher may return:
+        # Monthly Income
+        # instead of:
+        # Monthly_Income
+        #
+        # Resolve it here.
+
+        col = _canonical_column(
+            match.get("column"),
+            schema
         )
+
+        if not col:
+            continue
 
         value = _clean_value(
-            match["value"]
+            match.get("value")
         )
 
-        if (
-            col
-            and col not in filtered_columns
-        ):
+        if col not in filtered_columns:
 
             filters.append({
                 "column": col,
@@ -382,9 +463,9 @@ def build_query(
 
             filtered_columns.add(col)
 
-    # ---------------------------------------------------------
-    # Operators
-    # ---------------------------------------------------------
+    # =========================================================
+    # OPERATORS
+    # =========================================================
 
     operators = detect_operators(
         question,
@@ -397,16 +478,15 @@ def build_query(
 
     used_num_ids = set()
 
-    # ---------------------------------------------------------
-    # Process operators
-    # ---------------------------------------------------------
+    # =========================================================
+    # PROCESS OPERATORS
+    # =========================================================
 
     for op in operators:
 
         symbol = op["symbol"]
         op_pos = op["position"]
 
-        # Ignore IN / NOT IN for now
         if symbol in _SKIP_OPS:
             continue
 
@@ -431,13 +511,15 @@ def build_query(
                 )
             )
 
-            if (
-                col
-                and col not in filtered_columns
-            ):
+            col = _canonical_column(
+                col,
+                schema
+            )
+
+            if col and col not in filtered_columns:
 
                 filters.append({
-                    "column": _clean_column_name(col),
+                    "column": col,
                     "operator": symbol,
                 })
 
@@ -453,14 +535,15 @@ def build_query(
 
             nums_after = sorted(
                 [
-                    n for n in all_numbers
+                    number
+                    for number in all_numbers
                     if (
-                        n["position"] > op_pos
-                        and id(n)
+                        number["position"] > op_pos
+                        and id(number)
                         not in used_num_ids
                     )
                 ],
-                key=lambda n: n["position"]
+                key=lambda number: number["position"]
             )
 
             if len(nums_after) >= 2:
@@ -472,13 +555,15 @@ def build_query(
                     exclude=filtered_columns
                 )
 
-                if (
-                    col
-                    and col not in filtered_columns
-                ):
+                col = _canonical_column(
+                    col,
+                    schema
+                )
+
+                if col and col not in filtered_columns:
 
                     filters.append({
-                        "column": _clean_column_name(col),
+                        "column": col,
                         "operator": symbol,
                         "value": nums_after[0]["value"],
                         "value2": nums_after[1]["value"],
@@ -500,17 +585,17 @@ def build_query(
         if symbol in _LIKE_OPS:
 
             words_after = [
-                m
-                for m in re.finditer(
+                match
+                for match in re.finditer(
                     r"\S+",
                     question.lower()
                 )
-                if m.start() > op_pos
+                if match.start() > op_pos
             ]
 
             if words_after:
 
-                val = words_after[0].group()
+                value = words_after[0].group()
 
                 col = (
                     _nearest_column(
@@ -527,15 +612,17 @@ def build_query(
                     )
                 )
 
-                if (
-                    col
-                    and col not in filtered_columns
-                ):
+                col = _canonical_column(
+                    col,
+                    schema
+                )
+
+                if col and col not in filtered_columns:
 
                     filters.append({
-                        "column": _clean_column_name(col),
+                        "column": col,
                         "operator": "LIKE",
-                        "value": f"%{val}%",
+                        "value": f"%{value}%",
                     })
 
                     filtered_columns.add(col)
@@ -550,14 +637,15 @@ def build_query(
 
             nums_after = sorted(
                 [
-                    n for n in all_numbers
+                    number
+                    for number in all_numbers
                     if (
-                        n["position"] > op_pos
-                        and id(n)
+                        number["position"] > op_pos
+                        and id(number)
                         not in used_num_ids
                     )
                 ],
-                key=lambda n: n["position"]
+                key=lambda number: number["position"]
             )
 
             if not nums_after:
@@ -572,13 +660,15 @@ def build_query(
                 exclude=filtered_columns
             )
 
-            if (
-                col
-                and col not in filtered_columns
-            ):
+            col = _canonical_column(
+                col,
+                schema
+            )
+
+            if col and col not in filtered_columns:
 
                 filters.append({
-                    "column": _clean_column_name(col),
+                    "column": col,
                     "operator": symbol,
                     "value": nearest_num["value"],
                 })
@@ -589,23 +679,23 @@ def build_query(
                     id(nearest_num)
                 )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # GROUP BY
-    # ---------------------------------------------------------
+    # =========================================================
 
     group_by_col = _detect_group_by(
         question,
         column_matches
     )
 
-    if group_by_col:
-        group_by_col = _clean_column_name(
-            group_by_col
-        )
+    group_by_col = _canonical_column(
+        group_by_col,
+        schema
+    )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # ORDER BY + LIMIT
-    # ---------------------------------------------------------
+    # =========================================================
 
     (
         order_col,
@@ -617,14 +707,14 @@ def build_query(
         numeric_columns
     )
 
-    if order_col:
-        order_col = _clean_column_name(
-            order_col
-        )
+    order_col = _canonical_column(
+        order_col,
+        schema
+    )
 
-    # ---------------------------------------------------------
-    # Aggregate column
-    # ---------------------------------------------------------
+    # =========================================================
+    # AGGREGATE COLUMN
+    # =========================================================
 
     agg_col = None
 
@@ -636,14 +726,35 @@ def build_query(
             numeric_columns
         )
 
-        if agg_col:
-            agg_col = _clean_column_name(
-                agg_col
-            )
+        agg_col = _canonical_column(
+            agg_col,
+            schema
+        )
 
-    # ---------------------------------------------------------
-    # Final result
-    # ---------------------------------------------------------
+    # =========================================================
+    # FINAL SAFETY CHECK
+    # =========================================================
+
+    clean_filters = []
+
+    for filter_item in filters:
+
+        col = _canonical_column(
+            filter_item.get("column"),
+            schema
+        )
+
+        if not col:
+            continue
+
+        new_filter = dict(filter_item)
+        new_filter["column"] = col
+
+        clean_filters.append(
+            new_filter
+        )
+
+    filters = clean_filters
 
     return {
         "intent": intent,
@@ -658,7 +769,8 @@ def build_query(
 
 def query_to_sql(
     query,
-    table_name="data"
+    table_name="data",
+    schema=None
 ):
 
     intent = query["intent"]
@@ -693,45 +805,100 @@ def query_to_sql(
         table_name
     )
 
-    # ---------------------------------------------------------
-    # Normalize everything before SQL generation
-    # ---------------------------------------------------------
+    # =========================================================
+    # CANONICALIZE ALL COLUMNS
+    # =========================================================
 
-    for f in filters:
+    if schema is not None:
 
-        if "column" in f:
-            f["column"] = _clean_column_name(
-                f["column"]
+        if agg_column:
+            agg_column = _canonical_column(
+                agg_column,
+                schema
             )
 
-        if "value" in f:
-            f["value"] = _clean_value(
-                f["value"]
+        if group_by:
+            group_by = _canonical_column(
+                group_by,
+                schema
             )
 
-        if "value2" in f:
-            f["value2"] = _clean_value(
-                f["value2"]
+        if order_by:
+            order_by = _canonical_column(
+                order_by,
+                schema
             )
 
-    if agg_column:
-        agg_column = _clean_column_name(
-            agg_column
+    else:
+
+        if agg_column:
+            agg_column = _clean_column_name(
+                agg_column
+            )
+
+        if group_by:
+            group_by = _clean_column_name(
+                group_by
+            )
+
+        if order_by:
+            order_by = _clean_column_name(
+                order_by
+            )
+
+    # =========================================================
+    # FILTERS
+    # =========================================================
+
+    clean_filters = []
+
+    for filter_item in filters:
+
+        column = filter_item.get(
+            "column"
         )
 
-    if group_by:
-        group_by = _clean_column_name(
-            group_by
+        if schema is not None:
+
+            column = _canonical_column(
+                column,
+                schema
+            )
+
+        else:
+
+            column = _clean_column_name(
+                column
+            )
+
+        if not column:
+            continue
+
+        new_filter = dict(
+            filter_item
         )
 
-    if order_by:
-        order_by = _clean_column_name(
-            order_by
+        new_filter["column"] = column
+
+        if "value" in new_filter:
+            new_filter["value"] = _clean_value(
+                new_filter["value"]
+            )
+
+        if "value2" in new_filter:
+            new_filter["value2"] = _clean_value(
+                new_filter["value2"]
+            )
+
+        clean_filters.append(
+            new_filter
         )
 
-    # ---------------------------------------------------------
-    # Aggregate + LIMIT special case
-    # ---------------------------------------------------------
+    filters = clean_filters
+
+    # =========================================================
+    # AGGREGATE + LIMIT
+    # =========================================================
 
     agg_overridden = (
         limit is not None
@@ -739,9 +906,9 @@ def query_to_sql(
         and intent in _AGGREGATE_INTENTS
     )
 
-    # ---------------------------------------------------------
-    # SELECT part
-    # ---------------------------------------------------------
+    # =========================================================
+    # SELECT
+    # =========================================================
 
     if intent == "SELECT" or agg_overridden:
 
@@ -752,9 +919,9 @@ def query_to_sql(
         if group_by:
 
             select_part = (
-                f"SELECT "
+                "SELECT "
                 f"{_quote_identifier(group_by)}, "
-                f"COUNT(*)"
+                "COUNT(*)"
             )
 
         else:
@@ -769,8 +936,7 @@ def query_to_sql(
                 f"Could not determine which column "
                 f"to apply '{intent}' to. "
                 "Try rephrasing your question "
-                "with the column name, "
-                f"e.g. 'average of <column name>'."
+                "with the column name."
             )
 
         col = _quote_identifier(
@@ -780,7 +946,7 @@ def query_to_sql(
         if group_by:
 
             select_part = (
-                f"SELECT "
+                "SELECT "
                 f"{_quote_identifier(group_by)}, "
                 f"{intent}({col})"
             )
@@ -788,7 +954,7 @@ def query_to_sql(
         else:
 
             select_part = (
-                f"SELECT "
+                "SELECT "
                 f"{intent}({col})"
             )
 
@@ -796,38 +962,38 @@ def query_to_sql(
 
         select_part = "SELECT *"
 
-    # ---------------------------------------------------------
+    # =========================================================
     # FROM
-    # ---------------------------------------------------------
+    # =========================================================
 
     sql = (
         f"{select_part} "
         f"FROM {tbl}"
     )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # WHERE
-    # ---------------------------------------------------------
+    # =========================================================
 
     if filters:
 
         conditions = []
 
-        for f in filters:
+        for filter_item in filters:
 
-            column = _clean_column_name(
-                f["column"]
-            )
+            column = filter_item["column"]
 
             col_q = _quote_identifier(
                 column
             )
 
-            operator = f["operator"]
+            operator = filter_item[
+                "operator"
+            ]
 
-            # ---------------------------------------------
-            # NULL operators
-            # ---------------------------------------------
+            # -------------------------------------------------
+            # NULL
+            # -------------------------------------------------
 
             if operator in _NULL_OPS:
 
@@ -835,34 +1001,43 @@ def query_to_sql(
                     f"{col_q} {operator}"
                 )
 
-            # ---------------------------------------------
+            # -------------------------------------------------
             # BETWEEN
-            # ---------------------------------------------
+            # -------------------------------------------------
 
             elif operator in _BETWEEN_OPS:
 
-                v1 = _clean_value(
-                    f.get("value", "")
+                value1 = _clean_value(
+                    filter_item.get(
+                        "value",
+                        ""
+                    )
                 )
 
-                v2 = _clean_value(
-                    f.get("value2", "")
+                value2 = _clean_value(
+                    filter_item.get(
+                        "value2",
+                        ""
+                    )
                 )
 
                 conditions.append(
                     f"{col_q} "
                     f"{operator} "
-                    f"{v1} AND {v2}"
+                    f"{value1} AND {value2}"
                 )
 
-            # ---------------------------------------------
+            # -------------------------------------------------
             # Normal operators
-            # ---------------------------------------------
+            # -------------------------------------------------
 
             else:
 
                 value = _clean_value(
-                    f.get("value", "")
+                    filter_item.get(
+                        "value",
+                        ""
+                    )
                 )
 
                 value_str = str(
@@ -870,12 +1045,13 @@ def query_to_sql(
                 ).strip()
 
                 # Numeric
-                if (
-                    value_str
-                    .replace(".", "", 1)
-                    .lstrip("-")
-                    .isdigit()
-                ):
+                try:
+                    float(value_str)
+                    is_numeric = True
+                except (ValueError, TypeError):
+                    is_numeric = False
+
+                if is_numeric:
 
                     conditions.append(
                         f"{col_q} "
@@ -886,12 +1062,9 @@ def query_to_sql(
                 # Text
                 else:
 
-                    safe = (
-                        value_str
-                        .replace(
-                            "'",
-                            "''"
-                        )
+                    safe = value_str.replace(
+                        "'",
+                        "''"
                     )
 
                     conditions.append(
@@ -909,9 +1082,9 @@ def query_to_sql(
                 )
             )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # GROUP BY
-    # ---------------------------------------------------------
+    # =========================================================
 
     if group_by:
 
@@ -920,26 +1093,41 @@ def query_to_sql(
             f"{_quote_identifier(group_by)}"
         )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # ORDER BY
-    # ---------------------------------------------------------
+    # =========================================================
 
     if order_by:
+
+        direction = (
+            "ASC"
+            if str(order_dir).upper()
+            == "ASC"
+            else "DESC"
+        )
 
         sql += (
             " ORDER BY "
             f"{_quote_identifier(order_by)} "
-            f"{order_dir}"
+            f"{direction}"
         )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # LIMIT
-    # ---------------------------------------------------------
+    # =========================================================
 
-    if limit:
+    if limit is not None:
 
-        sql += (
-            f" LIMIT {limit}"
-        )
+        try:
+            limit_int = int(limit)
+
+            if limit_int > 0:
+
+                sql += (
+                    f" LIMIT {limit_int}"
+                )
+
+        except (ValueError, TypeError):
+            pass
 
     return sql
