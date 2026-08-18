@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-17T15:25:35.781286+00:00",
-  "total_runtime_seconds": 4.52,
+  "generated_at": "2026-08-18T15:01:51.344193+00:00",
+  "total_runtime_seconds": 12.27,
   "metrics": {
     "overall": {
       "total_queries": 271,
@@ -13,7 +13,7 @@
       "result_match_accuracy": 51.29,
       "exact_sql_match_rate": 0.0,
       "avg_generation_time_ms": 0.01,
-      "avg_execution_time_ms": 0.78
+      "avg_execution_time_ms": 0.77
     },
     "by_intent": {
       "AVG": {

@@ -1,7 +1,7 @@
 # NL2SQL-366 Benchmark Report
 
-**Generated:** 2026-08-17 15:25 UTC
-**Total Runtime:** 4.52 seconds
+**Generated:** 2026-08-18 15:01 UTC
+**Total Runtime:** 12.27 seconds
 
 ## 1. Benchmark Overview
 
@@ -27,7 +27,7 @@
 | Exact SQL Match | 0.00% |
 | Macro F1 | 66.65% |
 | Avg SQL Generation Time | 0.01 ms |
-| Avg Execution Time | 0.78 ms |
+| Avg Execution Time | 0.77 ms |
 | Total Passed | 139 |
 | Total Failed | 132 |
 
