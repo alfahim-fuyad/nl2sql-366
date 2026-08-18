@@ -11,6 +11,10 @@ _COUNT_OVERRIDES = re.compile(
     r"\b(count|how many|number of|total number)\b",
     re.IGNORECASE,
 )
+_AVERAGE_OVERRIDES = re.compile(
+    r"\b(avg|average|mean)\b",
+    re.IGNORECASE,
+)
 _RANK_TRIGGERS = re.compile(
     r"\b(top|bottom|lowest|least|worst|best)\s+\d+\b",
     re.IGNORECASE,
@@ -18,6 +22,12 @@ _RANK_TRIGGERS = re.compile(
 
 
 def _override_intent(text, ml_intent):
+    # "highest average salary" is an AVG grouped-ranking query, not MAX.
+    # The classifier was trained mostly on single-operation examples and
+    # otherwise gives the ranking word ("highest") too much weight.
+    if _AVERAGE_OVERRIDES.search(text):
+        return "AVG"
+
     if _RANK_TRIGGERS.search(text):
         return "SELECT"
 
