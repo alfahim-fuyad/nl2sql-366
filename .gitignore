@@ -1,0 +1,17 @@
+# Runtime data
+data/uploads/
+data/database.db
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Python environments
+.env
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db

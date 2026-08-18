@@ -6,12 +6,11 @@
     <p><strong>1. Upload a Dataset</strong></p>
     <ul>
       <li>
-        Drag &amp; drop or click to browse a
-        <code>.csv</code>, <code>.xlsx</code>, or <code>.xls</code> file.
+        Drag &amp; drop or click to browse a <code>.csv</code>,
+        <code>.xlsx</code>, or <code>.xls</code> file.
       </li>
-      <li>The first row should contain column headers.</li>
+      <li>The first row must contain column headers.</li>
       <li>The dataset schema is detected automatically after upload.</li>
-      <li>Both CSV and Excel datasets are supported.</li>
     </ul>
 
     <p><strong>2. Example Questions</strong></p>
@@ -21,90 +20,33 @@
       <li><code>average salary by department</code></li>
       <li><code>top 5 highest salary</code></li>
       <li><code>lowest 10 prices</code></li>
-      <li><code>how many students from Dhaka</code></li>
+      <li><code>count students from Dhaka</code></li>
       <li><code>how many female employees</code></li>
       <li><code>total sales by region</code></li>
       <li><code>maximum age</code></li>
       <li><code>minimum salary</code></li>
       <li><code>age between 20 and 40</code></li>
       <li><code>employees with salary greater than 50000</code></li>
-      <li><code>average temperature for June</code></li>
-      <li><code>houses with air conditioning</code></li>
-      <li><code>which year had the highest average rainfall</code></li>
     </ul>
 
-    <p><strong>3. Supported Query Types</strong></p>
+    <p><strong>3. Supported Keywords</strong></p>
     <ul>
-      <li><code>SELECT</code> → Show or retrieve records</li>
-      <li><code>COUNT</code> → Count records</li>
-      <li><code>AVG</code> → Calculate an average</li>
-      <li><code>MAX</code> → Find the maximum value</li>
-      <li><code>MIN</code> → Find the minimum value</li>
-      <li><code>SUM</code> → Calculate a total</li>
-      <li><code>GROUP BY</code> → Group results by a column</li>
-      <li><code>ORDER BY</code> → Sort results</li>
-      <li><code>LIMIT</code> → Return the top N results</li>
-      <li><code>BETWEEN</code> → Filter values within a range</li>
+      <li><code>average</code>, <code>avg</code> → <code>AVG()</code></li>
+      <li><code>total</code>, <code>sum</code> → <code>SUM()</code></li>
+      <li><code>count</code>, <code>how many</code>, <code>number of</code> → <code>COUNT()</code></li>
+      <li><code>maximum</code>, <code>max</code> → <code>MAX()</code></li>
+      <li><code>minimum</code>, <code>min</code> → <code>MIN()</code></li>
+      <li><code>highest</code> → <code>ORDER BY DESC</code></li>
+      <li><code>lowest</code> → <code>ORDER BY ASC</code></li>
+      <li><code>top N</code> → <code>ORDER BY DESC LIMIT N</code></li>
+      <li><code>by</code> → <code>GROUP BY</code></li>
+      <li><code>greater than</code>, <code>more than</code>, <code>above</code> → <code>&gt;</code></li>
+      <li><code>less than</code>, <code>below</code>, <code>under</code> → <code>&lt;</code></li>
+      <li><code>between</code> → <code>BETWEEN</code></li>
+      <li><code>is</code>, <code>equals</code>, <code>equal to</code> → <code>=</code></li>
     </ul>
 
-    <p><strong>4. Supported Keywords</strong></p>
-    <ul>
-      <li>
-        <code>average</code>, <code>avg</code> → <code>AVG()</code>
-      </li>
-      <li>
-        <code>total</code>, <code>sum</code> → <code>SUM()</code>
-      </li>
-      <li>
-        <code>count</code>, <code>how many</code>,
-        <code>number of</code> → <code>COUNT()</code>
-      </li>
-      <li>
-        <code>maximum</code>, <code>max</code> → <code>MAX()</code>
-      </li>
-      <li>
-        <code>minimum</code>, <code>min</code> → <code>MIN()</code>
-      </li>
-      <li>
-        <code>highest</code> → Sort descending
-      </li>
-      <li>
-        <code>lowest</code> → Sort ascending
-      </li>
-      <li>
-        <code>top N</code> → Sort descending and return N results
-      </li>
-      <li>
-        <code>by</code> → <code>GROUP BY</code>
-      </li>
-      <li>
-        <code>greater than</code>, <code>more than</code>,
-        <code>above</code> → <code>&gt;</code>
-      </li>
-      <li>
-        <code>less than</code>, <code>below</code>,
-        <code>under</code> → <code>&lt;</code>
-      </li>
-      <li>
-        <code>between</code> → <code>BETWEEN</code>
-      </li>
-      <li>
-        <code>is</code>, <code>equals</code>,
-        <code>equal to</code> → <code>=</code>
-      </li>
-    </ul>
-
-    <p><strong>5. Smart Matching</strong></p>
-    <ul>
-      <li>Column names can be matched using fuzzy matching.</li>
-      <li>Common domain synonyms are supported.</li>
-      <li>Column names with underscores can be matched naturally.</li>
-      <li>Month names such as <code>June</code> and <code>January</code> can be resolved.</li>
-      <li>Binary values such as <code>yes/no</code> can be detected from natural language.</li>
-      <li>Comma-separated numbers such as <code>5,000,000</code> are supported.</li>
-    </ul>
-
-    <p><strong>6. Accepted Question Starters</strong></p>
+    <p><strong>4. Accepted Question Starters</strong></p>
     <ul>
       <li>
         <code>show</code>, <code>list</code>, <code>display</code>,
@@ -120,31 +62,28 @@
       </li>
     </ul>
 
-    <p><strong>7. Tips for Best Results</strong></p>
+    <p><strong>5. Tips for Best Results</strong></p>
     <ol>
       <li>Use simple English questions.</li>
       <li>Mention column names whenever possible.</li>
       <li>Use <code>by &lt;column&gt;</code> for grouped results.</li>
       <li>Use <code>top N</code> or <code>lowest N</code> for ranked results.</li>
       <li>Use <code>greater than</code>, <code>less than</code>, or <code>between</code> for filtering.</li>
-      <li>Use natural values that exist in the uploaded dataset.</li>
-      <li>Review the generated SQL before relying on the result.</li>
+      <li>Review the generated SQL before execution.</li>
     </ol>
 
-    <p><strong>8. Current Limitations</strong></p>
+    <p><strong>6. Current Limitations</strong></p>
     <ul>
       <li>English language only.</li>
-      <li>Single-table queries only.</li>
+      <li>Supports single-table queries only.</li>
       <li><code>OR</code> conditions are not supported.</li>
-      <li><code>IN</code> filters are not supported.</li>
-      <li>Nested conditions such as <code>(A OR B) AND C</code> are not supported.</li>
       <li><code>JOIN</code> queries are not supported.</li>
-      <li>Natural language dates such as <code>last month</code> are not supported.</li>
+      <li>Natural language dates (e.g. <code>last month</code>) are not supported.</li>
     </ul>
 
     <p>
-      If a question is unclear or cannot be matched to the uploaded dataset,
-      the system will display an error instead of generating unsafe or invalid SQL.
+      If a question is unclear or does not match the uploaded dataset,
+      the system will display an error instead of generating an incorrect SQL query.
     </p>
 
     <button class="modal-close" data-close="help-modal">Close</button>

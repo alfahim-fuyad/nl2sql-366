@@ -1,35 +1,36 @@
 # NL2SQL-366 Benchmark Report
 
-**Generated:** 2026-08-18 15:01 UTC
-**Total Runtime:** 12.27 seconds
+**Generated:** 2026-08-18 18:02 UTC
+**Total Runtime:** 5.06 seconds
 
 ## 1. Benchmark Overview
 
-- **Total SQL Queries Evaluated:** 271
-- **Number of Datasets/Schemas:** 5
-- **Datasets:** dengue, employee_dataset, housing, student_performance, temp_and_rain
+- **Total SQL Queries Evaluated:** 180
+- **Number of Datasets/Schemas:** 6
+- **Datasets:** dengue_dataset, ecommerce_dataset, employee_dataset, housing_dataset, student_performance_dataset, temp_and_rain_dataset
+- **Queries per Dataset:** 30
 - **Intent Distribution:**
-  - AVG: 71 queries
-  - COUNT: 141 queries
-  - MAX: 26 queries
-  - MIN: 18 queries
-  - SELECT: 3 queries
-  - SUM: 12 queries
+  - AVG: 44 queries
+  - COUNT: 69 queries
+  - MAX: 17 queries
+  - MIN: 16 queries
+  - SELECT: 27 queries
+  - SUM: 7 queries
 
 ## 2. Overall Results
 
 | Metric | Score |
 |--------|-------|
-| Intent Accuracy | 90.04% |
-| Valid SQL | 97.42% |
-| Execution Success | 97.42% |
-| Result Match Accuracy | 51.29% |
+| Intent Accuracy | 79.44% |
+| Valid SQL | 92.22% |
+| Execution Success | 92.22% |
+| Result Match Accuracy | 60.56% |
 | Exact SQL Match | 0.00% |
-| Macro F1 | 66.65% |
+| Macro F1 | 73.83% |
 | Avg SQL Generation Time | 0.01 ms |
-| Avg Execution Time | 0.77 ms |
-| Total Passed | 139 |
-| Total Failed | 132 |
+| Avg Execution Time | 0.96 ms |
+| Total Passed | 109 |
+| Total Failed | 71 |
 
 ![Overall Metrics](chart_overall_metrics.png)
 
@@ -37,10 +38,10 @@
 
 | Method | Description | Accuracy |
 |--------|-------------|----------|
-| Reference SQL | Ground-truth SQL executed directly on the database | 100.00% (by definition) |
-| NL2SQL-366 | Natural language converted to SQL by the NL2SQL-366 pipeline | 51.29% |
+| Reference SQL | Ground-truth SQL executed directly | 100.00% |
+| NL2SQL-366 | Natural language to SQL pipeline | 60.56% |
 
-> The Reference SQL serves as the ground truth. NL2SQL-366 is evaluated on whether its generated SQL produces the same database result as the reference query.
+> Reference SQL is treated as ground truth. NL2SQL-366 is correct when generated SQL produces the same result as the reference SQL.
 
 ![Pipeline Funnel](chart_pipeline_funnel.png)
 
@@ -48,12 +49,12 @@
 
 | Intent | Queries | Intent Acc. | Result Match | Exact SQL | Valid SQL | Exec Success |
 |--------|---------|-------------|--------------|-----------|-----------|-------------|
-| AVG | 71 | 98.59% | 59.15% | 0.00% | 97.18% | 97.18% |
-| COUNT | 141 | 88.65% | 40.43% | 0.00% | 98.58% | 98.58% |
-| MAX | 26 | 84.62% | 73.08% | 0.00% | 96.15% | 96.15% |
-| MIN | 18 | 83.33% | 66.67% | 0.00% | 94.44% | 94.44% |
-| SELECT | 3 | 33.33% | 0.00% | 0.00% | 66.67% | 66.67% |
-| SUM | 12 | 91.67% | 75.00% | 0.00% | 100.00% | 100.00% |
+| AVG | 44 | 88.64% | 86.36% | 0.00% | 88.64% | 88.64% |
+| COUNT | 69 | 71.01% | 47.83% | 0.00% | 97.10% | 97.10% |
+| MAX | 17 | 88.24% | 70.59% | 0.00% | 94.12% | 94.12% |
+| MIN | 16 | 93.75% | 75.00% | 0.00% | 93.75% | 93.75% |
+| SELECT | 27 | 77.78% | 37.04% | 0.00% | 88.89% | 88.89% |
+| SUM | 7 | 57.14% | 57.14% | 0.00% | 71.43% | 71.43% |
 
 ![Intent Accuracy](chart_intent_accuracy.png)
 
@@ -63,11 +64,12 @@
 
 | Dataset | Queries | Intent Acc. | Result Match | Exact SQL |
 |---------|---------|-------------|--------------|-----------|
-| dengue | 50 | 88.00% | 44.00% | 0.00% |
-| employee_dataset | 32 | 90.62% | 43.75% | 0.00% |
-| housing | 67 | 95.52% | 65.67% | 0.00% |
-| student_performance | 63 | 85.71% | 33.33% | 0.00% |
-| temp_and_rain | 59 | 89.83% | 64.41% | 0.00% |
+| dengue_dataset | 30 | 100.00% | 80.00% | 0.00% |
+| ecommerce_dataset | 30 | 46.67% | 46.67% | 0.00% |
+| employee_dataset | 30 | 90.00% | 60.00% | 0.00% |
+| housing_dataset | 30 | 90.00% | 73.33% | 0.00% |
+| student_performance_dataset | 30 | 76.67% | 50.00% | 0.00% |
+| temp_and_rain_dataset | 30 | 73.33% | 53.33% | 0.00% |
 
 ![Dataset Accuracy](chart_dataset_accuracy.png)
 
@@ -75,24 +77,24 @@
 
 | Intent | Precision | Recall | F1 | Support |
 |--------|-----------|--------|-----|---------|
-| AVG | 100.00% | 59.15% | 74.34% | 71 |
-| COUNT | 100.00% | 40.43% | 57.58% | 141 |
-| MAX | 100.00% | 73.08% | 84.44% | 26 |
-| MIN | 100.00% | 66.67% | 80.00% | 18 |
-| SELECT | 0.00% | 0.00% | 0.00% | 3 |
-| SUM | 100.00% | 75.00% | 85.71% | 12 |
+| AVG | 100.00% | 86.36% | 92.68% | 44 |
+| COUNT | 100.00% | 47.83% | 64.71% | 69 |
+| MAX | 100.00% | 70.59% | 82.76% | 17 |
+| MIN | 100.00% | 75.00% | 85.71% | 16 |
+| SELECT | 100.00% | 37.04% | 54.05% | 27 |
+| SUM | 100.00% | 57.14% | 72.73% | 7 |
 
 ## 6. Error Analysis
 
-**Total Failed Queries:** 132
+**Total Failed Queries:** 71
 
 **Error Distribution:**
 
 | Error Category | Count |
 |----------------|-------|
-| intent_error | 26 |
-| result_mismatch | 102 |
-| sql_validation_error | 4 |
+| intent_error | 25 |
+| reference_error | 12 |
+| result_mismatch | 34 |
 
 ![Error Distribution](chart_error_distribution.png)
 
@@ -100,77 +102,76 @@
 
 | ID | Dataset | Question | Expected Intent | Predicted | Error |
 |----|---------|----------|-----------------|-----------|-------|
-| 3 | housing | How many houses are over the 10,000,000 mark? | COUNT | COUNT | result_mismatch |
-| 8 | housing | Can you tell me how many houses are on the main ro | COUNT | COUNT | result_mismatch |
-| 10 | housing | How many properties are located in a preferred are | COUNT | COUNT | result_mismatch |
-| 11 | housing | How many houses have a guest room? | COUNT | COUNT | result_mismatch |
-| 15 | housing | Can you find how many houses have no parking space | COUNT | COUNT | result_mismatch |
-| 18 | housing | How many houses have air conditioning and are also | COUNT | COUNT | result_mismatch |
-| 29 | housing | On average, how much does a house in a preferred a | AVG | AVG | result_mismatch |
-| 42 | housing | What's the total number of parking spots across al | SUM | COUNT | intent_error |
-| 43 | housing | Which furnishing status appears most often in the  | COUNT | SELECT | intent_error |
-| 44 | housing | How many bedrooms does the most common house confi | COUNT | COUNT | result_mismatch |
-| 45 | housing | Which number of parking spaces is most common amon | COUNT | COUNT | result_mismatch |
-| 46 | housing | Can you show me the price of the most expensive ho | SELECT | SELECT | result_mismatch |
-| 47 | housing | What's the area of the cheapest house in the datas | SELECT | AVG | intent_error |
-| 48 | housing | How many distinct furnishing statuses are there? | COUNT | COUNT | result_mismatch |
-| 49 | housing | How many different bedroom counts appear in the da | COUNT | COUNT | result_mismatch |
-| 50 | housing | How many houses have both a guest room and a basem | COUNT | COUNT | result_mismatch |
-| 51 | housing | How many houses have neither air conditioning nor  | COUNT | COUNT | result_mismatch |
-| 53 | housing | How many houses have fewer than 2 bathrooms? | COUNT | COUNT | result_mismatch |
-| 54 | housing | How many houses have more than one bathroom? | COUNT | COUNT | result_mismatch |
-| 60 | housing | How many houses are not located in a preferred are | COUNT | COUNT | result_mismatch |
-| 63 | housing | How many houses have 5 or 6 bedrooms? | COUNT | COUNT | result_mismatch |
-| 64 | housing | What's the minimum area among houses that are on t | MIN | MIN | result_mismatch |
-| 65 | housing | How many unfurnished houses lack a main road conne | COUNT | COUNT | result_mismatch |
-| 68 | student_performance | How many students are there in total? | COUNT | SUM | intent_error |
-| 71 | student_performance | Can you tell me how many students receive tutoring | COUNT | COUNT | result_mismatch |
-| 72 | student_performance | How many students do not receive tutoring? | COUNT | COUNT | result_mismatch |
-| 73 | student_performance | How many students participate in extracurricular a | COUNT | COUNT | result_mismatch |
-| 74 | student_performance | How many students play sports? | COUNT | COUNT | result_mismatch |
-| 75 | student_performance | Could you check how many students are involved in  | COUNT | COUNT | result_mismatch |
-| 76 | student_performance | How many students do volunteering work? | COUNT | COUNT | result_mismatch |
-| 78 | student_performance | How many students have fewer than 5 absences? | COUNT | COUNT | result_mismatch |
-| 79 | student_performance | How many students have zero absences? | COUNT | COUNT | result_mismatch |
-| 82 | student_performance | How many students study more than 15 hours a week? | COUNT | COUNT | result_mismatch |
-| 83 | student_performance | How many students study less than 5 hours a week? | COUNT | COUNT | result_mismatch |
-| 86 | student_performance | How many students have the highest level of parent | COUNT | MAX | intent_error |
-| 87 | student_performance | How many students report no parental support at al | COUNT | COUNT | result_mismatch |
-| 89 | student_performance | On average, how many hours do students study per w | AVG | AVG | result_mismatch |
-| 91 | student_performance | On average, what GPA do students who receive tutor | AVG | AVG | result_mismatch |
-| 92 | student_performance | On average, what GPA do students without tutoring  | AVG | AVG | result_mismatch |
-| 93 | student_performance | Can you find the average GPA of students who play  | AVG | AVG | result_mismatch |
-| 94 | student_performance | What's the average study time for students in Grad | AVG | AVG | result_mismatch |
-| 97 | student_performance | What's the average GPA of students with the highes | AVG | AVG | result_mismatch |
-| 101 | student_performance | What's the minimum weekly study time recorded? | MIN | MIN | sql_validation_error |
-| 102 | student_performance | What's the highest weekly study time among all stu | MAX | MAX | result_mismatch |
-| 103 | student_performance | What's the oldest age recorded among students? | MAX | AVG | intent_error |
-| 104 | student_performance | What's the youngest age among the students? | MIN | AVG | intent_error |
-| 107 | student_performance | What's the combined weekly study time for every st | SUM | SUM | result_mismatch |
-| 108 | student_performance | How many students in total participate in at least | COUNT | SUM | intent_error |
-| 109 | student_performance | Which GradeClass has the most students in it? | COUNT | MIN | intent_error |
-| 111 | student_performance | What's the most common parental education level am | COUNT | AVG | intent_error |
-| ... | | | | | +82 more |
+| 16 | dengue_dataset | count patients with NS1 positive | COUNT | COUNT | result_mismatch |
+| 17 | dengue_dataset | count patients with IgG positive | COUNT | COUNT | result_mismatch |
+| 18 | dengue_dataset | count patients with IgM positive | COUNT | COUNT | result_mismatch |
+| 23 | dengue_dataset | count patients with headache | COUNT | COUNT | result_mismatch |
+| 24 | dengue_dataset | count patients with myalgia | COUNT | COUNT | result_mismatch |
+| 30 | dengue_dataset | top 5 highest platelet count | SELECT | SELECT | result_mismatch |
+| 35 | ecommerce_dataset | total purchase amount | SUM | None | reference_error |
+| 36 | ecommerce_dataset | average purchase amount | AVG | None | reference_error |
+| 37 | ecommerce_dataset | maximum purchase amount | MAX | None | reference_error |
+| 38 | ecommerce_dataset | minimum purchase amount | MIN | None | reference_error |
+| 39 | ecommerce_dataset | average time spent on website | AVG | None | reference_error |
+| 40 | ecommerce_dataset | average delivery time | AVG | None | reference_error |
+| 41 | ecommerce_dataset | average review score | AVG | None | reference_error |
+| 42 | ecommerce_dataset | total number of items purchased | SUM | COUNT | intent_error |
+| 46 | ecommerce_dataset | show customers with purchase amount greater than 5 | SELECT | None | reference_error |
+| 47 | ecommerce_dataset | count customers who availed discount | COUNT | SELECT | intent_error |
+| 48 | ecommerce_dataset | count return customers | COUNT | SELECT | intent_error |
+| 52 | ecommerce_dataset | count customers who paid with credit card | COUNT | SELECT | intent_error |
+| 55 | ecommerce_dataset | total purchase amount by product category | SUM | None | reference_error |
+| 56 | ecommerce_dataset | average purchase amount by gender | AVG | None | reference_error |
+| 59 | ecommerce_dataset | top 5 highest purchase amount | SELECT | None | reference_error |
+| 60 | ecommerce_dataset | lowest 5 purchase amount | SELECT | None | reference_error |
+| 70 | employee_dataset | total employees in R and D | COUNT | SUM | intent_error |
+| 73 | employee_dataset | top 5 highest monthly income | SELECT | SELECT | result_mismatch |
+| 74 | employee_dataset | how many female employees | COUNT | COUNT | result_mismatch |
+| 75 | employee_dataset | how many male employees | COUNT | COUNT | result_mismatch |
+| 77 | employee_dataset | employees with age between 30 and 40 | SELECT | COUNT | intent_error |
+| 79 | employee_dataset | employees with masters degree | SELECT | SELECT | result_mismatch |
+| 80 | employee_dataset | employees in Software Development | COUNT | COUNT | result_mismatch |
+| 83 | employee_dataset | count employees by gender | COUNT | COUNT | result_mismatch |
+| 86 | employee_dataset | employees with single marital status | SELECT | SELECT | result_mismatch |
+| 88 | employee_dataset | average performance rating by marital status | AVG | AVG | result_mismatch |
+| 89 | employee_dataset | female employees with salary greater than 4000 | SELECT | SELECT | result_mismatch |
+| 90 | employee_dataset | total employees by department | COUNT | SUM | intent_error |
+| 101 | housing_dataset | top 10 highest priced houses | SELECT | SELECT | result_mismatch |
+| 105 | housing_dataset | maximum number of stories | MAX | COUNT | intent_error |
+| 108 | housing_dataset | lowest 5 house prices | SELECT | SELECT | result_mismatch |
+| 114 | housing_dataset | minimum price by number of stories | MIN | MIN | result_mismatch |
+| 115 | housing_dataset | houses on main road | SELECT | COUNT | intent_error |
+| 116 | housing_dataset | price between 5000000 and 7000000 | SELECT | MIN | intent_error |
+| 117 | housing_dataset | houses with air conditioning and guest room | SELECT | SELECT | result_mismatch |
+| 119 | housing_dataset | top 5 most expensive semi furnished houses | SELECT | SELECT | result_mismatch |
+| 130 | student_performance_dataset | how many female students | COUNT | COUNT | result_mismatch |
+| 131 | student_performance_dataset | how many male students | COUNT | COUNT | result_mismatch |
+| 132 | student_performance_dataset | count students with tutoring | COUNT | COUNT | result_mismatch |
+| 133 | student_performance_dataset | count students without tutoring | COUNT | COUNT | result_mismatch |
+| 134 | student_performance_dataset | count students with extracurricular activities | COUNT | COUNT | result_mismatch |
+| 135 | student_performance_dataset | count students who play sports | COUNT | COUNT | result_mismatch |
+| 136 | student_performance_dataset | students with GPA greater than 3.5 | COUNT | SELECT | intent_error |
+| 137 | student_performance_dataset | students with GPA less than 1.0 | COUNT | SELECT | intent_error |
 
 ## 7. Reference vs Generated SQL Analysis
 
 | Category | Count | Percentage |
 |----------|-------|------------|
 | SQL exactly identical, result correct | 0 | 0.00% |
-| SQL different, but result identical | 139 | 51.29% |
-| SQL valid but result incorrect | 125 | 46.13% |
-| SQL invalid | 7 | 2.58% |
+| SQL different, but result identical | 109 | 60.56% |
+| SQL valid but result incorrect | 57 | 31.67% |
+| SQL invalid | 14 | 7.78% |
 | SQL execution failed | 0 | 0.00% |
 
 ### Examples
 
-**Different SQL + Same Result (ID 1):**
-- Question: How many houses have air conditioning?
-- Reference: `SELECT COUNT(*) FROM housing WHERE airconditioning='yes'`
-- Generated: `SELECT COUNT(*) FROM "housing" WHERE "airconditioning" = 'yes'`
+**Correct Result (ID 1):**
+- Question: count all patients
+- Reference: `SELECT COUNT(*) FROM dengue_dataset`
+- Generated: `SELECT COUNT(*) FROM "dengue"`
 
-**Valid SQL + Wrong Result (ID 3):**
-- Question: How many houses are over the 10,000,000 mark?
-- Reference: `SELECT COUNT(*) FROM housing WHERE price>10000000`
-- Generated: `SELECT COUNT(*) FROM "housing"`
+**Valid SQL + Wrong Result (ID 16):**
+- Question: count patients with NS1 positive
+- Reference: `SELECT COUNT(*) FROM dengue_dataset WHERE NS1 = 1`
+- Generated: `SELECT COUNT(*) FROM "dengue"`
 - Error: result_mismatch
