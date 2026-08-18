@@ -11,3 +11,16 @@ markdown
 response
 weasyprint
 pypandoc_binary
+flask
+gunicorn
+markdown
+openpyxl
+pandas
+psycopg2-binary
+pypandoc_binary
+pytest
+rapidfuzz
+response
+scikit-learn
+sqlalchemy
+weasyprint
