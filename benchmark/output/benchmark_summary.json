@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-18T18:02:33.305241+00:00",
-  "total_runtime_seconds": 5.06,
+  "generated_at": "2026-08-18T18:18:11.372495+00:00",
+  "total_runtime_seconds": 3.81,
   "benchmark_configuration": {
     "datasets": 6,
     "queries_per_dataset": 30,
@@ -9,54 +9,54 @@
   "metrics": {
     "overall": {
       "total_queries": 180,
-      "passed": 109,
-      "failed": 71,
-      "intent_accuracy": 79.44,
-      "valid_sql_rate": 92.22,
-      "execution_success_rate": 92.22,
-      "execution_accuracy": 92.22,
-      "result_match_accuracy": 60.56,
+      "passed": 81,
+      "failed": 99,
+      "intent_accuracy": 78.89,
+      "valid_sql_rate": 86.67,
+      "execution_success_rate": 86.67,
+      "execution_accuracy": 86.67,
+      "result_match_accuracy": 45.0,
       "exact_sql_match_rate": 0.0,
       "avg_generation_time_ms": 0.01,
-      "avg_execution_time_ms": 0.96
+      "avg_execution_time_ms": 1.03
     },
     "by_intent": {
       "AVG": {
         "total": 44,
-        "intent_accuracy": 88.64,
-        "result_match_accuracy": 86.36,
+        "intent_accuracy": 84.09,
+        "result_match_accuracy": 54.55,
         "exact_sql_match_rate": 0.0,
-        "valid_sql_rate": 88.64,
-        "execution_success_rate": 88.64
+        "valid_sql_rate": 79.55,
+        "execution_success_rate": 79.55
       },
       "COUNT": {
         "total": 69,
-        "intent_accuracy": 71.01,
-        "result_match_accuracy": 47.83,
+        "intent_accuracy": 72.46,
+        "result_match_accuracy": 40.58,
         "exact_sql_match_rate": 0.0,
-        "valid_sql_rate": 97.1,
-        "execution_success_rate": 97.1
+        "valid_sql_rate": 95.65,
+        "execution_success_rate": 95.65
       },
       "MAX": {
         "total": 17,
         "intent_accuracy": 88.24,
-        "result_match_accuracy": 70.59,
+        "result_match_accuracy": 52.94,
         "exact_sql_match_rate": 0.0,
-        "valid_sql_rate": 94.12,
-        "execution_success_rate": 94.12
+        "valid_sql_rate": 76.47,
+        "execution_success_rate": 76.47
       },
       "MIN": {
         "total": 16,
         "intent_accuracy": 93.75,
-        "result_match_accuracy": 75.0,
+        "result_match_accuracy": 68.75,
         "exact_sql_match_rate": 0.0,
-        "valid_sql_rate": 93.75,
-        "execution_success_rate": 93.75
+        "valid_sql_rate": 81.25,
+        "execution_success_rate": 81.25
       },
       "SELECT": {
         "total": 27,
         "intent_accuracy": 77.78,
-        "result_match_accuracy": 37.04,
+        "result_match_accuracy": 22.22,
         "exact_sql_match_rate": 0.0,
         "valid_sql_rate": 88.89,
         "execution_success_rate": 88.89
@@ -64,7 +64,7 @@
       "SUM": {
         "total": 7,
         "intent_accuracy": 57.14,
-        "result_match_accuracy": 57.14,
+        "result_match_accuracy": 42.86,
         "exact_sql_match_rate": 0.0,
         "valid_sql_rate": 71.43,
         "execution_success_rate": 71.43
@@ -73,7 +73,7 @@
     "by_dataset": {
       "dengue_dataset": {
         "total": 30,
-        "result_match_accuracy": 80.0,
+        "result_match_accuracy": 73.33,
         "intent_accuracy": 100.0,
         "exact_sql_match_rate": 0.0
       },
@@ -85,35 +85,36 @@
       },
       "employee_dataset": {
         "total": 30,
-        "result_match_accuracy": 60.0,
-        "intent_accuracy": 90.0,
+        "result_match_accuracy": 50.0,
+        "intent_accuracy": 93.33,
         "exact_sql_match_rate": 0.0
       },
       "housing_dataset": {
         "total": 30,
-        "result_match_accuracy": 73.33,
-        "intent_accuracy": 90.0,
+        "result_match_accuracy": 53.33,
+        "intent_accuracy": 83.33,
         "exact_sql_match_rate": 0.0
       },
       "student_performance_dataset": {
         "total": 30,
-        "result_match_accuracy": 50.0,
+        "result_match_accuracy": 40.0,
         "intent_accuracy": 76.67,
         "exact_sql_match_rate": 0.0
       },
       "temp_and_rain_dataset": {
         "total": 30,
-        "result_match_accuracy": 53.33,
+        "result_match_accuracy": 6.67,
         "intent_accuracy": 73.33,
         "exact_sql_match_rate": 0.0
       }
     },
     "error_analysis": {
-      "total_failed": 71,
+      "total_failed": 99,
       "categories": {
-        "intent_error": 25,
+        "intent_error": 26,
         "reference_error": 12,
-        "result_mismatch": 34
+        "result_mismatch": 52,
+        "sql_validation_error": 9
       },
       "failed_queries": [
         {
@@ -150,6 +151,17 @@
           "error_message": ""
         },
         {
+          "id": 22,
+          "question": "count patients with outcome 1",
+          "dataset": "dengue_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "COUNT",
+          "predicted_intent": "COUNT",
+          "reference_sql": "SELECT COUNT(*) FROM dengue_dataset WHERE Outcome = 1",
+          "generated_sql": "SELECT COUNT(*) FROM \"dengue\"",
+          "error_message": ""
+        },
+        {
           "id": 23,
           "question": "count patients with headache",
           "dataset": "dengue_dataset",
@@ -172,6 +184,17 @@
           "error_message": ""
         },
         {
+          "id": 29,
+          "question": "count patients by area type",
+          "dataset": "dengue_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "COUNT",
+          "predicted_intent": "COUNT",
+          "reference_sql": "SELECT AreaType, COUNT(*) FROM dengue_dataset GROUP BY AreaType",
+          "generated_sql": "SELECT \"Area\", COUNT(*) FROM \"dengue\" GROUP BY \"Area\"",
+          "error_message": ""
+        },
+        {
           "id": 30,
           "question": "top 5 highest platelet count",
           "dataset": "dengue_dataset",
@@ -179,7 +202,7 @@
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT Platelet_Count FROM dengue_dataset ORDER BY Platelet_Count DESC LIMIT 5",
-          "generated_sql": "SELECT * FROM \"dengue\" WHERE \"Platelet_Count\" = 5 ORDER BY \"Platelet_Count\" DESC LIMIT 5",
+          "generated_sql": "SELECT * FROM \"dengue\" ORDER BY \"Platelet_Count\" DESC LIMIT 5",
           "error_message": ""
         },
         {
@@ -362,12 +385,34 @@
           "id": 70,
           "question": "total employees in R and D",
           "dataset": "employee_dataset",
-          "error_category": "intent_error",
+          "error_category": "result_mismatch",
           "expected_intent": "COUNT",
-          "predicted_intent": "SUM",
+          "predicted_intent": "COUNT",
           "reference_sql": "SELECT COUNT(*) FROM employee_dataset WHERE Department = 'R&D'",
+          "generated_sql": "SELECT COUNT(*) FROM \"employee_dataset\"",
+          "error_message": ""
+        },
+        {
+          "id": 71,
+          "question": "employees with salary greater than 5000",
+          "dataset": "employee_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "SELECT",
+          "predicted_intent": "SELECT",
+          "reference_sql": "SELECT * FROM employee_dataset WHERE Monthly_Income > 5000",
+          "generated_sql": "SELECT * FROM \"employee_dataset\"",
+          "error_message": ""
+        },
+        {
+          "id": 72,
+          "question": "average salary hike by department",
+          "dataset": "employee_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT Department, AVG(Percent_Salary_Hike) FROM employee_dataset GROUP BY Department",
           "generated_sql": null,
-          "error_message": "SQL generation failed: Could not determine which column to apply 'SUM' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
+          "error_message": "SQL generation failed: Could not determine which column to apply 'AVG' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
         },
         {
           "id": 73,
@@ -377,7 +422,7 @@
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT Employee_Name, Monthly_Income FROM employee_dataset ORDER BY Monthly_Income DESC LIMIT 5",
-          "generated_sql": "SELECT * FROM \"employee_dataset\" WHERE \"Monthly_Income\" = 5 ORDER BY \"Monthly_Income\" DESC LIMIT 5",
+          "generated_sql": "SELECT * FROM \"employee_dataset\" ORDER BY \"Monthly_Income\" DESC LIMIT 5",
           "error_message": ""
         },
         {
@@ -388,7 +433,7 @@
           "expected_intent": "COUNT",
           "predicted_intent": "COUNT",
           "reference_sql": "SELECT COUNT(*) FROM employee_dataset WHERE Gender = 'Female'",
-          "generated_sql": "SELECT COUNT(*) FROM \"employee_dataset\" WHERE \"Gender\" = ' Female'",
+          "generated_sql": "SELECT COUNT(*) FROM \"employee_dataset\"",
           "error_message": ""
         },
         {
@@ -399,7 +444,18 @@
           "expected_intent": "COUNT",
           "predicted_intent": "COUNT",
           "reference_sql": "SELECT COUNT(*) FROM employee_dataset WHERE Gender = 'Male'",
-          "generated_sql": "SELECT COUNT(*) FROM \"employee_dataset\" WHERE \"Gender\" = ' Male  '",
+          "generated_sql": "SELECT COUNT(*) FROM \"employee_dataset\"",
+          "error_message": ""
+        },
+        {
+          "id": 76,
+          "question": "employees with performance rating 5",
+          "dataset": "employee_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "SELECT",
+          "predicted_intent": "SELECT",
+          "reference_sql": "SELECT * FROM employee_dataset WHERE Performance_Rating = 5",
+          "generated_sql": "SELECT * FROM \"employee_dataset\"",
           "error_message": ""
         },
         {
@@ -436,15 +492,26 @@
           "error_message": ""
         },
         {
-          "id": 83,
-          "question": "count employees by gender",
+          "id": 81,
+          "question": "employees with salary less than 3000",
           "dataset": "employee_dataset",
           "error_category": "result_mismatch",
-          "expected_intent": "COUNT",
-          "predicted_intent": "COUNT",
-          "reference_sql": "SELECT Gender, COUNT(*) FROM employee_dataset GROUP BY Gender",
-          "generated_sql": "SELECT \"Gender\", COUNT(*) FROM \"employee_dataset\" WHERE \"Gender\" = '       ' GROUP BY \"Gender\"",
+          "expected_intent": "SELECT",
+          "predicted_intent": "SELECT",
+          "reference_sql": "SELECT * FROM employee_dataset WHERE Monthly_Income < 3000",
+          "generated_sql": "SELECT * FROM \"employee_dataset\"",
           "error_message": ""
+        },
+        {
+          "id": 82,
+          "question": "maximum salary hike",
+          "dataset": "employee_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "MAX",
+          "predicted_intent": "MAX",
+          "reference_sql": "SELECT MAX(Percent_Salary_Hike) FROM employee_dataset",
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'MAX' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
         },
         {
           "id": 86,
@@ -454,18 +521,7 @@
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT * FROM employee_dataset WHERE Marital_Status = 'Single'",
-          "generated_sql": "SELECT * FROM \"employee_dataset\" WHERE \"Marital_Status\" = ' Single        '",
-          "error_message": ""
-        },
-        {
-          "id": 88,
-          "question": "average performance rating by marital status",
-          "dataset": "employee_dataset",
-          "error_category": "result_mismatch",
-          "expected_intent": "AVG",
-          "predicted_intent": "AVG",
-          "reference_sql": "SELECT Marital_Status, AVG(Performance_Rating) FROM employee_dataset GROUP BY Marital_Status",
-          "generated_sql": "SELECT \"Marital_Status\", AVG(\"Performance_Rating\") AS \"avg_performance_rating\" FROM \"employee_dataset\" WHERE \"Marital_Status\" = '               ' GROUP BY \"Marital_Status\"",
+          "generated_sql": "SELECT * FROM \"employee_dataset\"",
           "error_message": ""
         },
         {
@@ -476,7 +532,7 @@
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT * FROM employee_dataset WHERE Gender = 'Female' AND Monthly_Income > 4000",
-          "generated_sql": "SELECT * FROM \"employee_dataset\" WHERE \"Gender\" = ' Female' AND \"Monthly_Income\" > 4000",
+          "generated_sql": "SELECT * FROM \"employee_dataset\"",
           "error_message": ""
         },
         {
@@ -491,14 +547,58 @@
           "error_message": "SQL generation failed: Could not determine which column to apply 'SUM' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
         },
         {
-          "id": 101,
-          "question": "top 10 highest priced houses",
+          "id": 98,
+          "question": "average number of bedrooms",
+          "dataset": "housing_dataset",
+          "error_category": "intent_error",
+          "expected_intent": "AVG",
+          "predicted_intent": "COUNT",
+          "reference_sql": "SELECT AVG(bedrooms) FROM housing_dataset",
+          "generated_sql": "SELECT COUNT(*) FROM \"housing\"",
+          "error_message": ""
+        },
+        {
+          "id": 99,
+          "question": "average number of bathrooms",
+          "dataset": "housing_dataset",
+          "error_category": "intent_error",
+          "expected_intent": "AVG",
+          "predicted_intent": "COUNT",
+          "reference_sql": "SELECT AVG(bathrooms) FROM housing_dataset",
+          "generated_sql": "SELECT COUNT(*) FROM \"housing\"",
+          "error_message": ""
+        },
+        {
+          "id": 100,
+          "question": "houses with 4 bedrooms",
           "dataset": "housing_dataset",
           "error_category": "result_mismatch",
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
-          "reference_sql": "SELECT * FROM housing_dataset ORDER BY price DESC LIMIT 10",
-          "generated_sql": "SELECT * FROM \"housing\" WHERE \"price\" = 10 ORDER BY \"price\" DESC LIMIT 10",
+          "reference_sql": "SELECT * FROM housing_dataset WHERE bedrooms = 4",
+          "generated_sql": "SELECT * FROM \"housing\"",
+          "error_message": ""
+        },
+        {
+          "id": 102,
+          "question": "average area of houses with air conditioning",
+          "dataset": "housing_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT AVG(area) FROM housing_dataset WHERE airconditioning = 'yes'",
+          "generated_sql": "SELECT AVG(\"area\") FROM \"housing\"",
+          "error_message": ""
+        },
+        {
+          "id": 103,
+          "question": "how many houses have guest room",
+          "dataset": "housing_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "COUNT",
+          "predicted_intent": "COUNT",
+          "reference_sql": "SELECT COUNT(*) FROM housing_dataset WHERE guestroom = 'yes'",
+          "generated_sql": "SELECT COUNT(*) FROM \"housing\"",
           "error_message": ""
         },
         {
@@ -513,25 +613,36 @@
           "error_message": ""
         },
         {
-          "id": 108,
-          "question": "lowest 5 house prices",
+          "id": 109,
+          "question": "houses with basement",
           "dataset": "housing_dataset",
           "error_category": "result_mismatch",
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
-          "reference_sql": "SELECT * FROM housing_dataset ORDER BY price ASC LIMIT 5",
-          "generated_sql": "SELECT * FROM \"housing\" WHERE \"price\" = 5 ORDER BY \"price\" ASC LIMIT 5",
+          "reference_sql": "SELECT * FROM housing_dataset WHERE basement = 'yes'",
+          "generated_sql": "SELECT * FROM \"housing\"",
           "error_message": ""
         },
         {
-          "id": 114,
-          "question": "minimum price by number of stories",
+          "id": 110,
+          "question": "average price of houses with hot water heating",
           "dataset": "housing_dataset",
           "error_category": "result_mismatch",
-          "expected_intent": "MIN",
-          "predicted_intent": "MIN",
-          "reference_sql": "SELECT stories, MIN(price) FROM housing_dataset GROUP BY stories",
-          "generated_sql": "SELECT \"stories\", MIN(\"price\") AS \"min_price\" FROM \"housing\" GROUP BY \"stories\" ORDER BY \"min_price\" ASC LIMIT 1",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT AVG(price) FROM housing_dataset WHERE hotwaterheating = 'yes'",
+          "generated_sql": "SELECT AVG(\"price\") FROM \"housing\"",
+          "error_message": ""
+        },
+        {
+          "id": 111,
+          "question": "houses with 2 bathrooms",
+          "dataset": "housing_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "SELECT",
+          "predicted_intent": "SELECT",
+          "reference_sql": "SELECT * FROM housing_dataset WHERE bathrooms = 2",
+          "generated_sql": "SELECT * FROM \"housing\"",
           "error_message": ""
         },
         {
@@ -542,7 +653,7 @@
           "expected_intent": "SELECT",
           "predicted_intent": "COUNT",
           "reference_sql": "SELECT * FROM housing_dataset WHERE mainroad = 'yes'",
-          "generated_sql": "SELECT COUNT(*) FROM \"housing\" WHERE \"mainroad\" = 'yes'",
+          "generated_sql": "SELECT COUNT(*) FROM \"housing\"",
           "error_message": ""
         },
         {
@@ -564,7 +675,7 @@
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT * FROM housing_dataset WHERE airconditioning = 'yes' AND guestroom = 'yes'",
-          "generated_sql": "SELECT * FROM \"housing\" WHERE \"airconditioning\" = 'yes'",
+          "generated_sql": "SELECT * FROM \"housing\"",
           "error_message": ""
         },
         {
@@ -575,8 +686,30 @@
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT * FROM housing_dataset WHERE furnishingstatus = 'semi-furnished' ORDER BY price DESC LIMIT 5",
-          "generated_sql": "SELECT * FROM \"housing\" WHERE \"furnishingstatus\" = 'furnished' AND \"price\" = 5 ORDER BY \"price\" DESC LIMIT 5",
+          "generated_sql": "SELECT * FROM \"housing\" WHERE \"furnishingstatus\" = 'furnished' ORDER BY \"price\" DESC LIMIT 5",
           "error_message": ""
+        },
+        {
+          "id": 120,
+          "question": "average price by main road",
+          "dataset": "housing_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT mainroad, AVG(price) FROM housing_dataset GROUP BY mainroad",
+          "generated_sql": "SELECT AVG(\"price\") FROM \"housing\"",
+          "error_message": ""
+        },
+        {
+          "id": 126,
+          "question": "average study time weekly",
+          "dataset": "student_performance_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT AVG(StudyTimeWeekly) FROM student_performance_dataset",
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'AVG' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
         },
         {
           "id": 130,
@@ -674,7 +807,7 @@
           "expected_intent": "COUNT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT COUNT(*) FROM student_performance_dataset WHERE Age = 15",
-          "generated_sql": "SELECT * FROM \"student_performance\" WHERE \"Age\" = 15",
+          "generated_sql": "SELECT * FROM \"student_performance\"",
           "error_message": ""
         },
         {
@@ -685,7 +818,18 @@
           "expected_intent": "COUNT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT COUNT(*) FROM student_performance_dataset WHERE Age = 18",
-          "generated_sql": "SELECT * FROM \"student_performance\" WHERE \"Age\" = 18",
+          "generated_sql": "SELECT * FROM \"student_performance\"",
+          "error_message": ""
+        },
+        {
+          "id": 143,
+          "question": "count students by parental education level",
+          "dataset": "student_performance_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "COUNT",
+          "predicted_intent": "COUNT",
+          "reference_sql": "SELECT ParentalEducation, COUNT(*) FROM student_performance_dataset GROUP BY ParentalEducation",
+          "generated_sql": "SELECT COUNT(*) FROM \"student_performance\"",
           "error_message": ""
         },
         {
@@ -696,7 +840,7 @@
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT StudentID, GPA FROM student_performance_dataset ORDER BY GPA DESC LIMIT 5",
-          "generated_sql": "SELECT * FROM \"student_performance\" WHERE \"GPA\" = 5 ORDER BY \"GPA\" DESC LIMIT 5",
+          "generated_sql": "SELECT * FROM \"student_performance\" ORDER BY \"GPA\" DESC LIMIT 5",
           "error_message": ""
         },
         {
@@ -707,7 +851,18 @@
           "expected_intent": "SELECT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT StudentID, GPA FROM student_performance_dataset ORDER BY GPA ASC LIMIT 5",
-          "generated_sql": "SELECT * FROM \"student_performance\" WHERE \"GPA\" = 5 ORDER BY \"GPA\" ASC LIMIT 5",
+          "generated_sql": "SELECT * FROM \"student_performance\" ORDER BY \"GPA\" ASC LIMIT 5",
+          "error_message": ""
+        },
+        {
+          "id": 146,
+          "question": "count students by grade class",
+          "dataset": "student_performance_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "COUNT",
+          "predicted_intent": "COUNT",
+          "reference_sql": "SELECT GradeClass, COUNT(*) FROM student_performance_dataset GROUP BY GradeClass",
+          "generated_sql": "SELECT COUNT(*) FROM \"student_performance\"",
           "error_message": ""
         },
         {
@@ -744,6 +899,127 @@
           "error_message": ""
         },
         {
+          "id": 152,
+          "question": "average temperature",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT AVG(tem) FROM temp_and_rain_dataset",
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'AVG' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
+        },
+        {
+          "id": 153,
+          "question": "average rainfall",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT AVG(rain) FROM temp_and_rain_dataset",
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'AVG' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
+        },
+        {
+          "id": 154,
+          "question": "maximum temperature",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "MAX",
+          "predicted_intent": "MAX",
+          "reference_sql": "SELECT MAX(tem) FROM temp_and_rain_dataset",
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'MAX' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
+        },
+        {
+          "id": 155,
+          "question": "minimum temperature",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "MIN",
+          "predicted_intent": "MIN",
+          "reference_sql": "SELECT MIN(tem) FROM temp_and_rain_dataset",
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'MIN' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
+        },
+        {
+          "id": 156,
+          "question": "maximum rainfall",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "MAX",
+          "predicted_intent": "MAX",
+          "reference_sql": "SELECT MAX(rain) FROM temp_and_rain_dataset",
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'MAX' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
+        },
+        {
+          "id": 157,
+          "question": "minimum rainfall",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "sql_validation_error",
+          "expected_intent": "MIN",
+          "predicted_intent": "MIN",
+          "reference_sql": "SELECT MIN(rain) FROM temp_and_rain_dataset",
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'MIN' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
+        },
+        {
+          "id": 158,
+          "question": "total rainfall all years",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "SUM",
+          "predicted_intent": "SUM",
+          "reference_sql": "SELECT SUM(rain) FROM temp_and_rain_dataset",
+          "generated_sql": "SELECT SUM(\"Year\") FROM \"temp_and_rain\"",
+          "error_message": ""
+        },
+        {
+          "id": 159,
+          "question": "average temperature by month",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT Month, AVG(tem) FROM temp_and_rain_dataset GROUP BY Month",
+          "generated_sql": "SELECT \"Month\", AVG(\"Month\") FROM \"temp_and_rain\" GROUP BY \"Month\"",
+          "error_message": ""
+        },
+        {
+          "id": 160,
+          "question": "average rainfall by month",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT Month, AVG(rain) FROM temp_and_rain_dataset GROUP BY Month",
+          "generated_sql": "SELECT \"Month\", AVG(\"Month\") FROM \"temp_and_rain\" GROUP BY \"Month\"",
+          "error_message": ""
+        },
+        {
+          "id": 161,
+          "question": "average temperature by year",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT Year, AVG(tem) FROM temp_and_rain_dataset GROUP BY Year",
+          "generated_sql": "SELECT \"Year\", AVG(\"Year\") FROM \"temp_and_rain\" GROUP BY \"Year\"",
+          "error_message": ""
+        },
+        {
+          "id": 162,
+          "question": "average rainfall by year",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT Year, AVG(rain) FROM temp_and_rain_dataset GROUP BY Year",
+          "generated_sql": "SELECT \"Year\", AVG(\"Year\") FROM \"temp_and_rain\" GROUP BY \"Year\"",
+          "error_message": ""
+        },
+        {
           "id": 163,
           "question": "count months with rainfall greater than 500",
           "dataset": "temp_and_rain_dataset",
@@ -751,7 +1027,7 @@
           "expected_intent": "COUNT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE rain > 500",
-          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"rain\" > 500",
+          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"Month\" > 500",
           "error_message": ""
         },
         {
@@ -762,7 +1038,7 @@
           "expected_intent": "COUNT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE rain < 50",
-          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"rain\" < 50",
+          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"Month\" < 50",
           "error_message": ""
         },
         {
@@ -773,7 +1049,7 @@
           "expected_intent": "COUNT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem > 28",
-          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"tem\" > 28",
+          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"Month\" > 28",
           "error_message": ""
         },
         {
@@ -784,7 +1060,7 @@
           "expected_intent": "COUNT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem < 20",
-          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"tem\" < 20",
+          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"Month\" < 20",
           "error_message": ""
         },
         {
@@ -795,7 +1071,7 @@
           "expected_intent": "MAX",
           "predicted_intent": "MAX",
           "reference_sql": "SELECT MAX(tem) FROM temp_and_rain_dataset WHERE Month = 6",
-          "generated_sql": "SELECT MAX(\"tem\") FROM \"temp_and_rain\" WHERE \"tem\" = 6",
+          "generated_sql": "SELECT MAX(\"Month\") FROM \"temp_and_rain\"",
           "error_message": ""
         },
         {
@@ -806,7 +1082,7 @@
           "expected_intent": "MIN",
           "predicted_intent": "MIN",
           "reference_sql": "SELECT MIN(tem) FROM temp_and_rain_dataset WHERE Month = 1",
-          "generated_sql": "SELECT MIN(\"tem\") FROM \"temp_and_rain\" WHERE \"tem\" = 1",
+          "generated_sql": "SELECT MIN(\"Month\") FROM \"temp_and_rain\"",
           "error_message": ""
         },
         {
@@ -817,7 +1093,7 @@
           "expected_intent": "MAX",
           "predicted_intent": "MAX",
           "reference_sql": "SELECT MAX(rain) FROM temp_and_rain_dataset WHERE Month = 8",
-          "generated_sql": "SELECT MAX(\"rain\") FROM \"temp_and_rain\" WHERE \"rain\" = 8",
+          "generated_sql": "SELECT MAX(\"Month\") FROM \"temp_and_rain\"",
           "error_message": ""
         },
         {
@@ -828,18 +1104,51 @@
           "expected_intent": "MIN",
           "predicted_intent": "MIN",
           "reference_sql": "SELECT MIN(rain) FROM temp_and_rain_dataset WHERE Month = 12",
-          "generated_sql": "SELECT MIN(\"rain\") FROM \"temp_and_rain\" WHERE \"rain\" = 12",
+          "generated_sql": "SELECT MIN(\"Month\") FROM \"temp_and_rain\"",
           "error_message": ""
         },
         {
-          "id": 173,
-          "question": "records from year 1990 to 2000",
+          "id": 171,
+          "question": "records from year 2000",
           "dataset": "temp_and_rain_dataset",
           "error_category": "result_mismatch",
           "expected_intent": "COUNT",
           "predicted_intent": "COUNT",
-          "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE Year BETWEEN 1990 AND 2000",
-          "generated_sql": "SELECT COUNT(*) FROM \"temp_and_rain\" WHERE \"Year\" = 1990",
+          "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE Year = 2000",
+          "generated_sql": "SELECT COUNT(*) FROM \"temp_and_rain\"",
+          "error_message": ""
+        },
+        {
+          "id": 172,
+          "question": "records from year 1901",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "COUNT",
+          "predicted_intent": "COUNT",
+          "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE Year = 1901",
+          "generated_sql": "SELECT COUNT(*) FROM \"temp_and_rain\"",
+          "error_message": ""
+        },
+        {
+          "id": 174,
+          "question": "average temperature in year 2000",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT AVG(tem) FROM temp_and_rain_dataset WHERE Year = 2000",
+          "generated_sql": "SELECT AVG(\"Year\") FROM \"temp_and_rain\"",
+          "error_message": ""
+        },
+        {
+          "id": 175,
+          "question": "average temperature in year 1901",
+          "dataset": "temp_and_rain_dataset",
+          "error_category": "result_mismatch",
+          "expected_intent": "AVG",
+          "predicted_intent": "AVG",
+          "reference_sql": "SELECT AVG(tem) FROM temp_and_rain_dataset WHERE Year = 1901",
+          "generated_sql": "SELECT AVG(\"Year\") FROM \"temp_and_rain\"",
           "error_message": ""
         },
         {
@@ -850,8 +1159,8 @@
           "expected_intent": "COUNT",
           "predicted_intent": "MIN",
           "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem BETWEEN 25 AND 28",
-          "generated_sql": "SELECT MIN(\"tem\") FROM \"temp_and_rain\" WHERE \"tem\" BETWEEN 25 AND 28",
-          "error_message": ""
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'MIN' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
         },
         {
           "id": 177,
@@ -861,8 +1170,8 @@
           "expected_intent": "COUNT",
           "predicted_intent": "MAX",
           "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE rain BETWEEN 200 AND 400",
-          "generated_sql": "SELECT MAX(\"rain\") FROM \"temp_and_rain\" WHERE \"rain\" BETWEEN 200 AND 400",
-          "error_message": ""
+          "generated_sql": null,
+          "error_message": "SQL generation failed: Could not determine which column to apply 'MAX' to. Try rephrasing your question with the column name, e.g. 'average of <column name>'."
         },
         {
           "id": 178,
@@ -872,7 +1181,7 @@
           "expected_intent": "COUNT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem > 28 AND rain > 400",
-          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"rain\" > 28 AND \"tem\" > 400",
+          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"Month\" > 28",
           "error_message": ""
         },
         {
@@ -883,7 +1192,7 @@
           "expected_intent": "COUNT",
           "predicted_intent": "SELECT",
           "reference_sql": "SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem < 20 AND rain > 100",
-          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"rain\" < 20 AND \"tem\" > 100",
+          "generated_sql": "SELECT * FROM \"temp_and_rain\" WHERE \"Month\" < 20",
           "error_message": ""
         },
         {
@@ -894,7 +1203,7 @@
           "expected_intent": "MAX",
           "predicted_intent": "MAX",
           "reference_sql": "SELECT Month, MAX(tem) FROM temp_and_rain_dataset GROUP BY Month",
-          "generated_sql": "SELECT \"Month\", MAX(\"tem\") AS \"max_tem\" FROM \"temp_and_rain\" GROUP BY \"Month\" ORDER BY \"max_tem\" DESC LIMIT 1",
+          "generated_sql": "SELECT \"Month\", MAX(\"Month\") FROM \"temp_and_rain\" GROUP BY \"Month\"",
           "error_message": ""
         }
       ]
@@ -902,41 +1211,41 @@
     "f1_scores": {
       "COUNT": {
         "precision": 100.0,
-        "recall": 47.83,
-        "f1": 64.71,
+        "recall": 40.58,
+        "f1": 57.73,
         "support": 69
       },
       "AVG": {
         "precision": 100.0,
-        "recall": 86.36,
-        "f1": 92.68,
+        "recall": 54.55,
+        "f1": 70.59,
         "support": 44
       },
       "MAX": {
         "precision": 100.0,
-        "recall": 70.59,
-        "f1": 82.76,
+        "recall": 52.94,
+        "f1": 69.23,
         "support": 17
       },
       "MIN": {
         "precision": 100.0,
-        "recall": 75.0,
-        "f1": 85.71,
+        "recall": 68.75,
+        "f1": 81.48,
         "support": 16
       },
       "SUM": {
         "precision": 100.0,
-        "recall": 57.14,
-        "f1": 72.73,
+        "recall": 42.86,
+        "f1": 60.0,
         "support": 7
       },
       "SELECT": {
         "precision": 100.0,
-        "recall": 37.04,
-        "f1": 54.05,
+        "recall": 22.22,
+        "f1": 36.36,
         "support": 27
       }
     },
-    "macro_f1": 73.83
+    "macro_f1": 60.95
   }
 }
