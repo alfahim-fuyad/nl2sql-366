@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-19T05:12:48.840041+00:00",
-  "total_runtime_seconds": 23.97,
+  "generated_at": "2026-08-19T05:15:23.472819+00:00",
+  "total_runtime_seconds": 11.3,
   "benchmark_configuration": {
     "datasets": 6,
     "queries_per_dataset": 30,
@@ -18,7 +18,7 @@
       "result_match_accuracy": 50.0,
       "exact_sql_match_rate": 0.0,
       "avg_generation_time_ms": 0.01,
-      "avg_execution_time_ms": 5.65
+      "avg_execution_time_ms": 5.87
     },
     "by_intent": {
       "AVG": {
