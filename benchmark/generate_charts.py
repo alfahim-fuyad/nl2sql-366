@@ -38,7 +38,14 @@ COLORS = {
 }
 
 INTENT_ORDER = ['COUNT', 'AVG', 'SUM', 'MAX', 'MIN', 'SELECT']
-DATASET_ORDER = ['housing', 'student_performance', 'temp_and_rain', 'dengue', 'employee_dataset']
+DATASET_ORDER = [
+    'housing_dataset',
+    'ecommerce_dataset',
+    'diabetes_prediction_dataset',
+    'dengue_dataset',
+    'student_performance_dataset',
+    'employee_dataset',
+]
 
 
 def load_data():

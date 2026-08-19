@@ -1,182 +1,1442 @@
 [
-  {"id": 1, "dataset": "Employee Dataset", "type": "sql", "question": "list all employees", "sql": "SELECT * FROM 'Employee Dataset'", "expected_answer": 25},
-  {"id": 2, "dataset": "Employee Dataset", "type": "sql", "question": "average monthly income by department", "sql": "SELECT Department, AVG(Monthly Income) FROM 'Employee Dataset' GROUP BY Department", "expected_answer": 11131.0},
-  {"id": 3, "dataset": "Employee Dataset", "type": "sql", "question": "how many male employees", "sql": "SELECT COUNT(*) FROM 'Employee Dataset' WHERE Gender = 'Male'", "expected_answer": 15},
-  {"id": 4, "dataset": "Employee Dataset", "type": "sql", "question": "maximum age of employees", "sql": "SELECT MAX(Age) FROM 'Employee Dataset'", "expected_answer": 59},
-  {"id": 5, "dataset": "Employee Dataset", "type": "sql", "question": "employees with salary greater than 10000", "sql": "SELECT * FROM 'Employee Dataset' WHERE Monthly Income > 10000", "expected_answer": 7},
-  {"id": 6, "dataset": "Employee Dataset", "type": "sql", "question": "top 5 highest performance ratings", "sql": "SELECT Employee Name, Performance Rating FROM 'Employee Dataset' ORDER BY Performance Rating DESC LIMIT 5", "expected_answer": 5},
-  {"id": 7, "dataset": "Employee Dataset", "type": "sql", "question": "total monthly income by gender", "sql": "SELECT Gender, SUM(Monthly Income) FROM 'Employee Dataset' GROUP BY Gender", "expected_answer": 74043.0},
-  {"id": 8, "dataset": "Employee Dataset", "type": "sql", "question": "employees with age between 30 and 40", "sql": "SELECT * FROM 'Employee Dataset' WHERE Age BETWEEN 30 AND 40", "expected_answer": 11},
-  {"id": 9, "dataset": "Employee Dataset", "type": "sql", "question": "show female employees with more than 5 years experience", "sql": "SELECT * FROM 'Employee Dataset' WHERE Gender = 'Female' AND Years of Experience > 5", "expected_answer": 3},
-  {"id": 10, "dataset": "Employee Dataset", "type": "sql", "question": "average years of experience by education level", "sql": "SELECT Education, AVG(Years of Experience) FROM 'Employee Dataset' GROUP BY Education", "expected_answer": 3.0},
-  {"id": 11, "dataset": "Employee Dataset", "type": "sql", "question": "minimum salary among employees", "sql": "SELECT MIN(Monthly Income) FROM 'Employee Dataset'", "expected_answer": 2090},
-  {"id": 12, "dataset": "Employee Dataset", "type": "sql", "question": "count employees with married status", "sql": "SELECT COUNT(*) FROM 'Employee Dataset' WHERE Marital Status = 'Married'", "expected_answer": 14},
-  {"id": 13, "dataset": "Employee Dataset", "type": "sql", "question": "how many distinct departments", "sql": "SELECT COUNT(DISTINCT Department) FROM 'Employee Dataset'", "expected_answer": 9},
-  {"id": 14, "dataset": "Employee Dataset", "type": "sql", "question": "employees with salary hike greater than 15", "sql": "SELECT * FROM 'Employee Dataset' WHERE Percent Salary Hike > 15", "expected_answer": 9},
-  {"id": 15, "dataset": "Employee Dataset", "type": "sql", "question": "lowest 10 monthly incomes", "sql": "SELECT Monthly Income FROM 'Employee Dataset' ORDER BY Monthly Income ASC LIMIT 10", "expected_answer": 10},
-  {"id": 16, "dataset": "Employee Dataset", "type": "sql", "question": "total salary by marital status", "sql": "SELECT Marital Status, SUM(Monthly Income) FROM 'Employee Dataset' GROUP BY Marital Status", "expected_answer": 84418.0},
-  {"id": 17, "dataset": "Employee Dataset", "type": "sql", "question": "employees who are not single", "sql": "SELECT * FROM 'Employee Dataset' WHERE Marital Status != 'Single'", "expected_answer": 15},
-  {"id": 18, "dataset": "Employee Dataset", "type": "sql", "question": "average salary by age group", "sql": "SELECT Age, AVG(Monthly Income) FROM 'Employee Dataset' GROUP BY Age", "expected_answer": 4071.75},
-  {"id": 19, "dataset": "Employee Dataset", "type": "sql", "question": "maximum salary in R&D", "sql": "SELECT MAX(Monthly Income) FROM 'Employee Dataset' WHERE Department = 'R&D'", "expected_answer": 11994},
-  {"id": 20, "dataset": "Employee Dataset", "type": "sql", "question": "how many employees have doctorate", "sql": "SELECT COUNT(*) FROM 'Employee Dataset' WHERE Education = 'Doctorate'", "expected_answer": 4},
-  {"id": 21, "dataset": "Employee Dataset", "type": "sql", "question": "show employees with 0 years experience", "sql": "SELECT * FROM 'Employee Dataset' WHERE Years of Experience = 0", "expected_answer": 8},
-  {"id": 22, "dataset": "Employee Dataset", "type": "sql", "question": "total salary by gender", "sql": "SELECT Gender, SUM(Monthly Income) FROM 'Employee Dataset' GROUP BY Gender", "expected_answer": 74043.0},
-  {"id": 23, "dataset": "Employee Dataset", "type": "sql", "question": "employees with performance rating greater than 3", "sql": "SELECT * FROM 'Employee Dataset' WHERE Performance Rating > 3", "expected_answer": 5},
-  {"id": 24, "dataset": "Employee Dataset", "type": "sql", "question": "average salary by education level", "sql": "SELECT Education, AVG(Monthly Income) FROM 'Employee Dataset' GROUP BY Education", "expected_answer": 9093.833333333334},
-  {"id": 25, "dataset": "Employee Dataset", "type": "sql", "question": "count employees by last working day", "sql": "SELECT Last Working Day, COUNT(*) FROM 'Employee Dataset' GROUP BY Last Working Day", "expected_answer": 23},
-  {"id": 26, "dataset": "Employee Dataset", "type": "sql", "question": "show employees with salary between 3000 and 6000", "sql": "SELECT * FROM 'Employee Dataset' WHERE Monthly Income BETWEEN 3000 AND 6000", "expected_answer": 15},
-  {"id": 27, "dataset": "Employee Dataset", "type": "sql", "question": "how many employees in training department", "sql": "SELECT COUNT(*) FROM 'Employee Dataset' WHERE Department = 'Training'", "expected_answer": 1},
-  {"id": 28, "dataset": "Employee Dataset", "type": "sql", "question": "total salary by department", "sql": "SELECT Department, SUM(Monthly Income) FROM 'Employee Dataset' GROUP BY Department", "expected_answer": 59854.0},
-  {"id": 29, "dataset": "Employee Dataset", "type": "sql", "question": "maximum performance rating", "sql": "SELECT MAX(Performance Rating) FROM 'Employee Dataset'", "expected_answer": 5},
-  {"id": 30, "dataset": "Employee Dataset", "type": "sql", "question": "employees from software development", "sql": "SELECT * FROM 'Employee Dataset' WHERE Department = 'Software Development'", "expected_answer": 8},
-  {"id": 31, "dataset": "Housing", "type": "sql", "question": "show houses with price greater than 10000000", "sql": "SELECT * FROM Housing WHERE price > 10000000", "expected_answer": 10},
-  {"id": 32, "dataset": "Housing", "type": "sql", "question": "average price by number of bedrooms", "sql": "SELECT bedrooms, AVG(price) FROM Housing GROUP BY bedrooms", "expected_answer": 7901060.0},
-  {"id": 33, "dataset": "Housing", "type": "sql", "question": "how many houses have 4 bedrooms", "sql": "SELECT COUNT(*) FROM Housing WHERE bedrooms = 4", "expected_answer": 230},
-  {"id": 34, "dataset": "Housing", "type": "sql", "question": "maximum area of houses", "sql": "SELECT MAX(area) FROM Housing", "expected_answer": 16200},
-  {"id": 35, "dataset": "Housing", "type": "sql", "question": "minimum price by stories", "sql": "SELECT stories, MIN(price) FROM Housing GROUP BY stories", "expected_answer": 1750000},
-  {"id": 36, "dataset": "Housing", "type": "sql", "question": "houses with mainroad yes", "sql": "SELECT * FROM Housing WHERE mainroad = 'yes'", "expected_answer": 544},
-  {"id": 37, "dataset": "Housing", "type": "sql", "question": "total price by furnishing status", "sql": "SELECT furnishingstatus, SUM(price) FROM Housing GROUP BY furnishingstatus", "expected_answer": 2049311240.0},
-  {"id": 38, "dataset": "Housing", "type": "sql", "question": "top 5 highest priced houses", "sql": "SELECT price FROM Housing ORDER BY price DESC LIMIT 5", "expected_answer": 5},
-  {"id": 39, "dataset": "Housing", "type": "sql", "question": "average area by number of bathrooms", "sql": "SELECT bathrooms, AVG(area) FROM Housing GROUP BY bathrooms", "expected_answer": 5289.636363636364},
-  {"id": 40, "dataset": "Housing", "type": "sql", "question": "houses with airconditioning yes", "sql": "SELECT * FROM Housing WHERE airconditioning = 'yes'", "expected_answer": 289},
-  {"id": 41, "dataset": "Housing", "type": "sql", "question": "count houses with guestroom yes", "sql": "SELECT COUNT(*) FROM Housing WHERE guestroom = 'yes'", "expected_answer": 169},
-  {"id": 42, "dataset": "Housing", "type": "sql", "question": "houses with basement yes", "sql": "SELECT * FROM Housing WHERE basement = 'yes'", "expected_answer": 129},
-  {"id": 43, "dataset": "Housing", "type": "sql", "question": "average price by mainroad", "sql": "SELECT mainroad, AVG(price) FROM Housing GROUP BY mainroad", "expected_answer": 8080080.0},
-  {"id": 44, "dataset": "Housing", "type": "sql", "question": "houses with area between 5000 and 8000", "sql": "SELECT * FROM Housing WHERE area BETWEEN 5000 AND 8000", "expected_answer": 300},
-  {"id": 45, "dataset": "Housing", "type": "sql", "question": "total bedrooms by stories", "sql": "SELECT stories, SUM(bedrooms) FROM Housing GROUP BY stories", "expected_answer": 1574},
-  {"id": 46, "dataset": "Housing", "type": "sql", "question": "minimum area of houses", "sql": "SELECT MIN(area) FROM Housing", "expected_answer": 1650},
-  {"id": 47, "dataset": "Housing", "type": "sql", "question": "houses with hotwaterheating yes", "sql": "SELECT * FROM Housing WHERE hotwaterheating = 'yes'", "expected_answer": 18},
-  {"id": 48, "dataset": "Housing", "type": "sql", "question": "maximum price by prefarea", "sql": "SELECT prefarea, MAX(price) FROM Housing GROUP BY prefarea", "expected_answer": 13300000},
-  {"id": 49, "dataset": "Housing", "type": "sql", "question": "average bathrooms by furnished status", "sql": "SELECT furnishingstatus, AVG(bathrooms) FROM Housing GROUP BY furnishingstatus", "expected_answer": 1.659848484848485},
-  {"id": 50, "dataset": "Housing", "type": "sql", "question": "houses with parking greater than 1", "sql": "SELECT * FROM Housing WHERE parking > 1", "expected_answer": 327},
-  {"id": 51, "dataset": "Housing", "type": "sql", "question": "show fully furnished houses", "sql": "SELECT * FROM Housing WHERE furnishingstatus = 'furnished'", "expected_answer": 154},
-  {"id": 52, "dataset": "Housing", "type": "sql", "question": "total price by location", "sql": "SELECT prefarea, SUM(price) FROM Housing GROUP BY prefarea", "expected_answer": 2739620800.0},
-  {"id": 53, "dataset": "Housing", "type": "sql", "question": "count houses with 3 bedrooms", "sql": "SELECT COUNT(*) FROM Housing WHERE bedrooms = 3", "expected_answer": 223},
-  {"id": 54, "dataset": "Housing", "type": "sql", "question": "houses with price below 4000000", "sql": "SELECT * FROM Housing WHERE price < 4000000", "expected_answer": 183},
-  {"id": 55, "dataset": "Housing", "type": "sql", "question": "average area by number of stories", "sql": "SELECT stories, AVG(area) FROM Housing GROUP BY stories", "expected_answer": 5657.265625},
-  {"id": 56, "dataset": "Housing", "type": "sql", "question": "houses with guestroom yes and airconditioning yes", "sql": "SELECT * FROM Housing WHERE guestroom = 'yes' AND airconditioning = 'yes'", "expected_answer": 131},
-  {"id": 57, "dataset": "Housing", "type": "sql", "question": "lowest 10 prices", "sql": "SELECT price FROM Housing ORDER BY price ASC LIMIT 10", "expected_answer": 10},
-  {"id": 58, "dataset": "Housing", "type": "sql", "question": "total price by mainroad and furnishing status", "sql": "SELECT mainroad, furnishingstatus, SUM(price) FROM Housing GROUP BY mainroad, furnishingstatus", "expected_answer": 2555678840.0},
-  {"id": 59, "dataset": "Housing", "type": "sql", "question": "houses with area greater than 10000", "sql": "SELECT * FROM Housing WHERE area > 10000", "expected_answer": 17},
-  {"id": 60, "dataset": "Housing", "type": "sql", "question": "average price by number of bedrooms", "sql": "SELECT bedrooms, AVG(price) FROM Housing GROUP BY bedrooms", "expected_answer": 7901060.0},
-  {"id": 61, "dataset": "Student_performance", "type": "sql", "question": "list students with gpa greater than 3.5", "sql": "SELECT * FROM Student_performance WHERE GPA > 3.5", "expected_answer": 223},
-  {"id": 62, "dataset": "Student_performance", "type": "sql", "question": "average gpa by gender", "sql": "SELECT Gender, AVG(GPA) FROM Student_performance GROUP BY Gender", "expected_answer": 2.025582291666666},
-  {"id": 63, "dataset": "Student_performance", "type": "sql", "question": "how many students have gpa less than 2.0", "sql": "SELECT COUNT(*) FROM Student_performance WHERE GPA < 2.0", "expected_answer": 1303},
-  {"id": 64, "dataset": "Student_performance", "type": "sql", "question": "maximum age of students", "sql": "SELECT MAX(Age) FROM Student_performance", "expected_answer": 18},
-  {"id": 65, "dataset": "Student_performance", "type": "sql", "question": "students with grade class 0", "sql": "SELECT * FROM Student_performance WHERE GradeClass = 0.0", "expected_answer": 86},
-  {"id": 66, "dataset": "Student_performance", "type": "sql", "question": "top 5 highest gpa", "sql": "SELECT GPA FROM Student_performance ORDER BY GPA DESC LIMIT 5", "expected_answer": 5},
-  {"id": 67, "dataset": "Student_performance", "type": "sql", "question": "average study time by ethnicity", "sql": "SELECT Ethnicity, AVG(StudyTimeWeekly) FROM Student_performance GROUP BY Ethnicity", "expected_answer": 9.850515022044771},
-  {"id": 68, "dataset": "Student_performance", "type": "sql", "question": "count students by parental education", "sql": "SELECT ParentalEducation, COUNT(*) FROM Student_performance GROUP BY ParentalEducation", "expected_answer": 547},
-  {"id": 69, "dataset": "Student_performance", "type": "sql", "question": "students with absences greater than 20", "sql": "SELECT * FROM Student_performance WHERE Absences > 20", "expected_answer": 723},
-  {"id": 70, "dataset": "Student_performance", "type": "sql", "question": "minimum gpa by gender", "sql": "SELECT Gender, MIN(GPA) FROM Student_performance GROUP BY Gender", "expected_answer": 0.0},
-  {"id": 71, "dataset": "Student_performance", "type": "sql", "question": "students with tutoring 1", "sql": "SELECT * FROM Student_performance WHERE Tutoring = 1", "expected_answer": 561},
-  {"id": 72, "dataset": "Student_performance", "type": "sql", "question": "average gpa by grade class", "sql": "SELECT GradeClass, AVG(GPA) FROM Student_performance GROUP BY GradeClass", "expected_answer": 2.7551382326652956},
-  {"id": 73, "dataset": "Student_performance", "type": "sql", "question": "students with extracurricular 1", "sql": "SELECT * FROM Student_performance WHERE Extracurricular = 1", "expected_answer": 1517},
-  {"id": 74, "dataset": "Student_performance", "type": "sql", "question": "total absences by gender", "sql": "SELECT Gender, SUM(Absences) FROM Student_performance GROUP BY Gender", "expected_answer": 26226},
-  {"id": 75, "dataset": "Student_performance", "type": "sql", "question": "students with gpa between 2.5 and 3.5", "sql": "SELECT * FROM Student_performance WHERE GPA BETWEEN 2.5 AND 3.5", "expected_answer": 608},
-  {"id": 76, "dataset": "Student_performance", "type": "sql", "question": "show students with sports 1", "sql": "SELECT * FROM Student_performance WHERE Sports = 1", "expected_answer": 654},
-  {"id": 77, "dataset": "Student_performance", "type": "sql", "question": "maximum gpa", "sql": "SELECT MAX(GPA) FROM Student_performance", "expected_answer": 4.0},
-  {"id": 78, "dataset": "Student_performance", "type": "sql", "question": "average absences by ethnicity", "sql": "SELECT Ethnicity, AVG(Absences) FROM Student_performance GROUP BY Ethnicity", "expected_answer": 16.886386363636364},
-  {"id": 79, "dataset": "Student_performance", "type": "sql", "question": "students with parental support 4", "sql": "SELECT * FROM Student_performance WHERE ParentalSupport = 4", "expected_answer": 736},
-  {"id": 80, "dataset": "Student_performance", "type": "sql", "question": "total gpa by ethnicity", "sql": "SELECT Ethnicity, SUM(GPA) FROM Student_performance GROUP BY Ethnicity", "expected_answer": 3343.474901182086},
-  {"id": 81, "dataset": "Student_performance", "type": "sql", "question": "students with music 1", "sql": "SELECT * FROM Student_performance WHERE Music = 1", "expected_answer": 105},
-  {"id": 82, "dataset": "Student_performance", "type": "sql", "question": "average gpa by parental support", "sql": "SELECT ParentalSupport, AVG(GPA) FROM Student_performance GROUP BY ParentalSupport", "expected_answer": 2.0392902866410353},
-  {"id": 83, "dataset": "Student_performance", "type": "sql", "question": "count students by age", "sql": "SELECT Age, COUNT(*) FROM Student_performance GROUP BY Age", "expected_answer": 606},
-  {"id": 84, "dataset": "Student_performance", "type": "sql", "question": "students with volunteering 1", "sql": "SELECT * FROM Student_performance WHERE Volunteering = 1", "expected_answer": 479},
-  {"id": 85, "dataset": "Student_performance", "type": "sql", "question": "minimum age by gender", "sql": "SELECT Gender, MIN(Age) FROM Student_performance GROUP BY Gender", "expected_answer": 15},
-  {"id": 86, "dataset": "Student_performance", "type": "sql", "question": "students with gpa 0", "sql": "SELECT * FROM Student_performance WHERE GPA = 0.0", "expected_answer": 13},
-  {"id": 87, "dataset": "Student_performance", "type": "sql", "question": "average gpa by ethnicity and gender", "sql": "SELECT Ethnicity, Gender, AVG(GPA) FROM Student_performance GROUP BY Ethnicity, Gender", "expected_answer": 2.0786983845829066},
-  {"id": 88, "dataset": "Student_performance", "type": "sql", "question": "students with age 16", "sql": "SELECT * FROM Student_performance WHERE Age = 16", "expected_answer": 1095},
-  {"id": 89, "dataset": "Student_performance", "type": "sql", "question": "total absences by grade class", "sql": "SELECT GradeClass, SUM(Absences) FROM Student_performance GROUP BY GradeClass", "expected_answer": 18209},
-  {"id": 90, "dataset": "Student_performance", "type": "sql", "question": "students with study time greater than 15", "sql": "SELECT * FROM Student_performance WHERE StudyTimeWeekly > 15", "expected_answer": 826},
-  {"id": 91, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "list diabetic patients", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 1", "expected_answer": 957},
-  {"id": 92, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "average bmi by gender", "sql": "SELECT gender, AVG(bmi) FROM diabetes_prediction_dataset GROUP BY gender", "expected_answer": 27.016348364304277},
-  {"id": 93, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "how many patients have hypertension", "sql": "SELECT COUNT(*) FROM diabetes_prediction_dataset WHERE hypertension = 1", "expected_answer": 1592},
-  {"id": 94, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "maximum age of patients", "sql": "SELECT MAX(age) FROM diabetes_prediction_dataset", "expected_answer": 80.0},
-  {"id": 95, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with heart disease 1", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE heart_disease = 1", "expected_answer": 843},
-  {"id": 96, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "top 5 highest blood glucose level", "sql": "SELECT blood_glucose_level FROM diabetes_prediction_dataset ORDER BY blood_glucose_level DESC LIMIT 5", "expected_answer": 5},
-  {"id": 97, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "average hba1c level by smoking history", "sql": "SELECT smoking_history, AVG(HbA1c_level) FROM diabetes_prediction_dataset GROUP BY smoking_history", "expected_answer": 5.587673076923077},
-  {"id": 98, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "count patients by gender", "sql": "SELECT gender, COUNT(*) FROM diabetes_prediction_dataset GROUP BY gender", "expected_answer": 7429},
-  {"id": 99, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with bmi greater than 30", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE bmi > 30", "expected_answer": 1885},
-  {"id": 100, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "minimum age of patients", "sql": "SELECT MIN(age) FROM diabetes_prediction_dataset", "expected_answer": 0.08},
-  {"id": 101, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with blood glucose level greater than 200", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE blood_glucose_level > 200", "expected_answer": 849},
-  {"id": 102, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "average age by hypertension", "sql": "SELECT hypertension, AVG(age) FROM diabetes_prediction_dataset GROUP BY hypertension", "expected_answer": 46.647359037399},
-  {"id": 103, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with diabetes 0", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 0", "expected_answer": 7043},
-  {"id": 104, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "total patients by smoking history", "sql": "SELECT smoking_history, COUNT(*) FROM diabetes_prediction_dataset GROUP BY smoking_history", "expected_answer": 1963},
-  {"id": 105, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with bmi between 25 and 30", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE bmi BETWEEN 25 AND 30", "expected_answer": 2023},
-  {"id": 106, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "show female patients", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE gender = 'Female'", "expected_answer": 4620},
-  {"id": 107, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "maximum bmi", "sql": "SELECT MAX(bmi) FROM diabetes_prediction_dataset", "expected_answer": 69.37},
-  {"id": 108, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "average blood glucose by heart disease", "sql": "SELECT heart_disease, AVG(blood_glucose_level) FROM diabetes_prediction_dataset GROUP BY heart_disease", "expected_answer": 150.64139753634743},
-  {"id": 109, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with hba1c level greater than 7", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE HbA1c_level > 7", "expected_answer": 541},
-  {"id": 110, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "total patients by age group", "sql": "SELECT age, COUNT(*) FROM diabetes_prediction_dataset GROUP BY age", "expected_answer": 275},
-  {"id": 111, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with hypertension 1 and heart disease 1", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE hypertension = 1 AND heart_disease = 1", "expected_answer": 208},
-  {"id": 112, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "average bmi by diabetes", "sql": "SELECT diabetes, AVG(bmi) FROM diabetes_prediction_dataset GROUP BY diabetes", "expected_answer": 31.94954928511791},
-  {"id": 113, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with age between 40 and 60", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE age BETWEEN 40 AND 60", "expected_answer": 1853},
-  {"id": 114, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "count male patients with hypertension", "sql": "SELECT COUNT(*) FROM diabetes_prediction_dataset WHERE gender = 'Male' AND hypertension = 1", "expected_answer": 972},
-  {"id": 115, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "minimum blood glucose level", "sql": "SELECT MIN(blood_glucose_level) FROM diabetes_prediction_dataset", "expected_answer": 80},
-  {"id": 116, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with smoking history 'never'", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE smoking_history = 'never'", "expected_answer": 4987},
-  {"id": 117, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "average hba1c by gender", "sql": "SELECT gender, AVG(HbA1c_level) FROM diabetes_prediction_dataset GROUP BY gender", "expected_answer": 5.778648290223537},
-  {"id": 118, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with bmi less than 18.5", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE bmi < 18.5", "expected_answer": 458},
-  {"id": 119, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "maximum age by smoking history", "sql": "SELECT smoking_history, MAX(age) FROM diabetes_prediction_dataset GROUP BY smoking_history", "expected_answer": 80.0},
-  {"id": 120, "dataset": "diabetes_prediction_dataset", "type": "sql", "question": "patients with diabetes 1 and hypertension 1", "sql": "SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 1 AND hypertension = 1", "expected_answer": 276},
-  {"id": 121, "dataset": "dengue", "type": "sql", "question": "list patients with outcome 1", "sql": "SELECT * FROM dengue WHERE Outcome = 1", "expected_answer": 439},
-  {"id": 122, "dataset": "dengue", "type": "sql", "question": "average age by outcome", "sql": "SELECT Outcome, AVG(Age) FROM dengue GROUP BY Outcome", "expected_answer": 39.88181818181818},
-  {"id": 123, "dataset": "dengue", "type": "sql", "question": "how many female patients", "sql": "SELECT COUNT(*) FROM dengue WHERE Gender = 'Female'", "expected_answer": 365},
-  {"id": 124, "dataset": "dengue", "type": "sql", "question": "maximum body temperature", "sql": "SELECT MAX(Body_Temperature) FROM dengue", "expected_answer": 40.6},
-  {"id": 125, "dataset": "dengue", "type": "sql", "question": "patients with severe joint pain", "sql": "SELECT * FROM dengue WHERE Joint_Pain = 'Severe'", "expected_answer": 39},
-  {"id": 126, "dataset": "dengue", "type": "sql", "question": "top 5 highest platelet count", "sql": "SELECT Platelet_Count FROM dengue ORDER BY Platelet_Count DESC LIMIT 5", "expected_answer": 5},
-  {"id": 127, "dataset": "dengue", "type": "sql", "question": "average wbc count by area type", "sql": "SELECT AreaType, AVG(WBC_Count) FROM dengue GROUP BY AreaType", "expected_answer": 3422.25},
-  {"id": 128, "dataset": "dengue", "type": "sql", "question": "count patients by area", "sql": "SELECT Area, COUNT(*) FROM dengue GROUP BY Area", "expected_answer": 24},
-  {"id": 129, "dataset": "dengue", "type": "sql", "question": "patients with headache 1", "sql": "SELECT * FROM dengue WHERE Headache = 1", "expected_answer": 311},
-  {"id": 130, "dataset": "dengue", "type": "sql", "question": "minimum platelet count", "sql": "SELECT MIN(Platelet_Count) FROM dengue", "expected_answer": 26885},
-  {"id": 131, "dataset": "dengue", "type": "sql", "question": "patients with rash 1", "sql": "SELECT * FROM dengue WHERE Rash = 1", "expected_answer": 165},
-  {"id": 132, "dataset": "dengue", "type": "sql", "question": "average body temperature by house type", "sql": "SELECT HouseType, AVG(Body_Temperature) FROM dengue GROUP BY HouseType", "expected_answer": 37.31473684210526},
-  {"id": 133, "dataset": "dengue", "type": "sql", "question": "patients with myalgia 1", "sql": "SELECT * FROM dengue WHERE Myalgia = 1", "expected_answer": 387},
-  {"id": 134, "dataset": "dengue", "type": "sql", "question": "total patients by gender", "sql": "SELECT Gender, COUNT(*) FROM dengue GROUP BY Gender", "expected_answer": 460},
-  {"id": 135, "dataset": "dengue", "type": "sql", "question": "patients with fever duration between 3 and 5", "sql": "SELECT * FROM dengue WHERE Fever_Duration BETWEEN 3 AND 5", "expected_answer": 173},
-  {"id": 136, "dataset": "dengue", "type": "sql", "question": "show patients with ns1 1", "sql": "SELECT * FROM dengue WHERE NS1 = 1", "expected_answer": 438},
-  {"id": 137, "dataset": "dengue", "type": "sql", "question": "maximum platelet count by outcome", "sql": "SELECT Outcome, MAX(Platelet_Count) FROM dengue GROUP BY Outcome", "expected_answer": 362426},
-  {"id": 138, "dataset": "dengue", "type": "sql", "question": "average age by gender", "sql": "SELECT Gender, AVG(Age) FROM dengue GROUP BY Gender", "expected_answer": 39.07733333333333},
-  {"id": 139, "dataset": "dengue", "type": "sql", "question": "patients with retro orbital pain 1", "sql": "SELECT * FROM dengue WHERE Retro_Orbital_Pain = 1", "expected_answer": 237},
-  {"id": 140, "dataset": "dengue", "type": "sql", "question": "total patients by district", "sql": "SELECT District, COUNT(*) FROM dengue GROUP BY District", "expected_answer": 476},
-  {"id": 141, "dataset": "dengue", "type": "sql", "question": "patients with outcome 0", "sql": "SELECT * FROM dengue WHERE Outcome = 0", "expected_answer": 44},
-  {"id": 142, "dataset": "dengue", "type": "sql", "question": "average platelet count by area", "sql": "SELECT Area, AVG(Platelet_Count) FROM dengue GROUP BY Area", "expected_answer": 230660.0},
-  {"id": 143, "dataset": "dengue", "type": "sql", "question": "patients with age less than 20", "sql": "SELECT * FROM dengue WHERE Age < 20", "expected_answer": 162},
-  {"id": 144, "dataset": "dengue", "type": "sql", "question": "count patients by house type", "sql": "SELECT HouseType, COUNT(*) FROM dengue GROUP BY HouseType", "expected_answer": 266},
-  {"id": 145, "dataset": "dengue", "type": "sql", "question": "patients with igm 1", "sql": "SELECT * FROM dengue WHERE IgM = 1", "expected_answer": 282},
-  {"id": 146, "dataset": "dengue", "type": "sql", "question": "minimum body temperature", "sql": "SELECT MIN(Body_Temperature) FROM dengue", "expected_answer": 36.0},
-  {"id": 147, "dataset": "dengue", "type": "sql", "question": "patients with joint pain moderate", "sql": "SELECT * FROM dengue WHERE Joint_Pain = 'Moderate'", "expected_answer": 79},
-  {"id": 148, "dataset": "dengue", "type": "sql", "question": "average wbc count by outcome", "sql": "SELECT Outcome, AVG(WBC_Count) FROM dengue GROUP BY Outcome", "expected_answer": 3094.380681818181},
-  {"id": 149, "dataset": "dengue", "type": "sql", "question": "patients with fever duration greater than 5", "sql": "SELECT * FROM dengue WHERE Fever_Duration > 5", "expected_answer": 141},
-  {"id": 150, "dataset": "dengue", "type": "sql", "question": "show patients with igg 1", "sql": "SELECT * FROM dengue WHERE IgG = 1", "expected_answer": 438},
-  {"id": 151, "dataset": "E-commerce", "type": "sql", "question": "list customers with purchase amount greater than 500", "sql": "SELECT * FROM E-commerce WHERE 'Purchase Amount ($)' > 500", "expected_answer": 545},
-  {"id": 152, "dataset": "E-commerce", "type": "sql", "question": "average purchase amount by location", "sql": "SELECT Location, AVG('Purchase Amount ($)') FROM E-commerce GROUP BY Location", "expected_answer": 604.8393939393939},
-  {"id": 153, "dataset": "E-commerce", "type": "sql", "question": "how many male customers", "sql": "SELECT COUNT(*) FROM E-commerce WHERE Gender = 'Male'", "expected_answer": 360},
-  {"id": 154, "dataset": "E-commerce", "type": "sql", "question": "maximum time spent on website", "sql": "SELECT MAX('Time Spent on Website (min)') FROM E-commerce", "expected_answer": 59},
-  {"id": 155, "dataset": "E-commerce", "type": "sql", "question": "customers with discount availed true", "sql": "SELECT * FROM E-commerce WHERE 'Discount Availed' = 'True'", "expected_answer": 519},
-  {"id": 156, "dataset": "E-commerce", "type": "sql", "question": "top 5 highest purchase amounts", "sql": "SELECT 'Purchase Amount ($)' FROM E-commerce ORDER BY 'Purchase Amount ($)' DESC LIMIT 5", "expected_answer": 5},
-  {"id": 157, "dataset": "E-commerce", "type": "sql", "question": "average purchase amount by product category", "sql": "SELECT 'Product Category', AVG('Purchase Amount ($)') FROM E-commerce GROUP BY 'Product Category'", "expected_answer": 542.9393393393392},
-  {"id": 158, "dataset": "E-commerce", "type": "sql", "question": "count customers by gender", "sql": "SELECT Gender, COUNT(*) FROM E-commerce GROUP BY Gender", "expected_answer": 360},
-  {"id": 159, "dataset": "E-commerce", "type": "sql", "question": "customers with delivery time greater than 5", "sql": "SELECT * FROM E-commerce WHERE 'Delivery Time (days)' > 5", "expected_answer": 470},
-  {"id": 160, "dataset": "E-commerce", "type": "sql", "question": "minimum purchase amount", "sql": "SELECT MIN('Purchase Amount ($)') FROM E-commerce", "expected_answer": 6.3},
-  {"id": 161, "dataset": "E-commerce", "type": "sql", "question": "customers with review score 1", "sql": "SELECT * FROM E-commerce WHERE 'Review Score (1-5)' = 1", "expected_answer": 131},
-  {"id": 162, "dataset": "E-commerce", "type": "sql", "question": "average purchase amount by device type", "sql": "SELECT 'Device Type', AVG('Purchase Amount ($)') FROM E-commerce GROUP BY 'Device Type'", "expected_answer": 548.586},
-  {"id": 163, "dataset": "E-commerce", "type": "sql", "question": "customers with return customer true", "sql": "SELECT * FROM E-commerce WHERE 'Return Customer' = 'True'", "expected_answer": 491},
-  {"id": 164, "dataset": "E-commerce", "type": "sql", "question": "total purchase amount by payment method", "sql": "SELECT 'Payment Method', SUM('Purchase Amount ($)') FROM E-commerce GROUP BY 'Payment Method'", "expected_answer": 206785.64999999997},
-  {"id": 165, "dataset": "E-commerce", "type": "sql", "question": "customers with age between 20 and 30", "sql": "SELECT * FROM E-commerce WHERE Age BETWEEN 20 AND 30", "expected_answer": 171},
-  {"id": 166, "dataset": "E-commerce", "type": "sql", "question": "show customers with subscription status premium", "sql": "SELECT * FROM E-commerce WHERE 'Subscription Status' = 'Premium'", "expected_answer": 336},
-  {"id": 167, "dataset": "E-commerce", "type": "sql", "question": "maximum purchase amount by location", "sql": "SELECT Location, MAX('Purchase Amount ($)') FROM E-commerce GROUP BY Location", "expected_answer": 999.93},
-  {"id": 168, "dataset": "E-commerce", "type": "sql", "question": "average time spent by product category", "sql": "SELECT 'Product Category', AVG('Time Spent on Website (min)') FROM E-commerce GROUP BY 'Product Category'", "expected_answer": 31.775},
-  {"id": 169, "dataset": "E-commerce", "type": "sql", "question": "customers with number of items purchased greater than 5", "sql": "SELECT * FROM E-commerce WHERE 'Number of Items Purchased' > 5", "expected_answer": 239},
-  {"id": 170, "dataset": "E-commerce", "type": "sql", "question": "total customers by customer satisfaction", "sql": "SELECT 'Customer Satisfaction', COUNT(*) FROM E-commerce GROUP BY 'Customer Satisfaction'", "expected_answer": 414},
-  {"id": 171, "dataset": "E-commerce", "type": "sql", "question": "customers with delivery time 1", "sql": "SELECT * FROM E-commerce WHERE 'Delivery Time (days)' = 1", "expected_answer": 61},
-  {"id": 172, "dataset": "E-commerce", "type": "sql", "question": "average review score by device type", "sql": "SELECT 'Device Type', AVG('Review Score (1-5)') FROM E-commerce GROUP BY 'Device Type'", "expected_answer": 3.2315},
-  {"id": 173, "dataset": "E-commerce", "type": "sql", "question": "customers with discount availed false", "sql": "SELECT * FROM E-commerce WHERE 'Discount Availed' = 'False'", "expected_answer": 483},
-  {"id": 174, "dataset": "E-commerce", "type": "sql", "question": "minimum time spent on website", "sql": "SELECT MIN('Time Spent on Website (min)') FROM E-commerce", "expected_answer": 1},
-  {"id": 175, "dataset": "E-commerce", "type": "sql", "question": "customers with customer satisfaction high", "sql": "SELECT * FROM E-commerce WHERE 'Customer Satisfaction' = 'High'", "expected_answer": 277},
-  {"id": 176, "dataset": "E-commerce", "type": "sql", "question": "total purchase amount by gender", "sql": "SELECT Gender, SUM('Purchase Amount ($)') FROM E-commerce GROUP BY Gender", "expected_answer": 236922.95000000007},
-  {"id": 177, "dataset": "E-commerce", "type": "sql", "question": "customers with location dhaka", "sql": "SELECT * FROM E-commerce WHERE Location = 'Dhaka'", "expected_answer": 121},
-  {"id": 178, "dataset": "E-commerce", "type": "sql", "question": "average delivery time by subscription status", "sql": "SELECT 'Subscription Status', AVG('Delivery Time (days)') FROM E-commerce GROUP BY 'Subscription Status'", "expected_answer": 6.817201060954389},
-  {"id": 179, "dataset": "E-commerce", "type": "sql", "question": "customers with age greater than 60", "sql": "SELECT * FROM E-commerce WHERE Age > 60", "expected_answer": 174},
-  {"id": 180, "dataset": "E-commerce", "type": "sql", "question": "top 5 lowest purchase amounts", "sql": "SELECT 'Purchase Amount ($)' FROM E-commerce ORDER BY 'Purchase Amount ($)' ASC LIMIT 5", "expected_answer": 5}
+  {
+    "id": 1,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "list all employees",
+    "sql": "SELECT * FROM employee_dataset",
+    "expected_answer": 25
+  },
+  {
+    "id": 2,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "average monthly income by department",
+    "sql": "SELECT Department, AVG(\"Monthly_Income\") FROM employee_dataset GROUP BY Department",
+    "expected_answer": 11131.0
+  },
+  {
+    "id": 3,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "how many male employees",
+    "sql": "SELECT COUNT(*) FROM employee_dataset WHERE Gender = 'Male'",
+    "expected_answer": 15
+  },
+  {
+    "id": 4,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "maximum age of employees",
+    "sql": "SELECT MAX(Age) FROM employee_dataset",
+    "expected_answer": 59
+  },
+  {
+    "id": 5,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "employees with salary greater than 10000",
+    "sql": "SELECT * FROM employee_dataset WHERE \"Monthly_Income\" > 10000",
+    "expected_answer": 7
+  },
+  {
+    "id": 6,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "top 5 highest performance ratings",
+    "sql": "SELECT \"Employee_Name\", \"Performance_Rating\" FROM employee_dataset ORDER BY \"Performance_Rating\" DESC LIMIT 5",
+    "expected_answer": 5
+  },
+  {
+    "id": 7,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "total monthly income by gender",
+    "sql": "SELECT Gender, SUM(\"Monthly_Income\") FROM employee_dataset GROUP BY Gender",
+    "expected_answer": 74043.0
+  },
+  {
+    "id": 8,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "employees with age between 30 and 40",
+    "sql": "SELECT * FROM employee_dataset WHERE Age BETWEEN 30 AND 40",
+    "expected_answer": 11
+  },
+  {
+    "id": 9,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "show female employees with more than 5 years experience",
+    "sql": "SELECT * FROM employee_dataset WHERE Gender = 'Female' AND \"Years_of_Experience\" > 5",
+    "expected_answer": 3
+  },
+  {
+    "id": 10,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "average years of experience by education level",
+    "sql": "SELECT Education, AVG(\"Years_of_Experience\") FROM employee_dataset GROUP BY Education",
+    "expected_answer": 3.0
+  },
+  {
+    "id": 11,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "minimum salary among employees",
+    "sql": "SELECT MIN(\"Monthly_Income\") FROM employee_dataset",
+    "expected_answer": 2090
+  },
+  {
+    "id": 12,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "count employees with married status",
+    "sql": "SELECT COUNT(*) FROM employee_dataset WHERE \"Marital_Status\" = 'Married'",
+    "expected_answer": 14
+  },
+  {
+    "id": 13,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "how many distinct departments",
+    "sql": "SELECT COUNT(DISTINCT Department) FROM employee_dataset",
+    "expected_answer": 9
+  },
+  {
+    "id": 14,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "employees with salary hike greater than 15",
+    "sql": "SELECT * FROM employee_dataset WHERE \"Percent_Salary_Hike\" > 15",
+    "expected_answer": 9
+  },
+  {
+    "id": 15,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "lowest 10 monthly incomes",
+    "sql": "SELECT \"Monthly_Income\" FROM employee_dataset ORDER BY \"Monthly_Income\" ASC LIMIT 10",
+    "expected_answer": 10
+  },
+  {
+    "id": 16,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "total salary by marital status",
+    "sql": "SELECT \"Marital_Status\", SUM(\"Monthly_Income\") FROM employee_dataset GROUP BY \"Marital_Status\"",
+    "expected_answer": 84418.0
+  },
+  {
+    "id": 17,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "employees who are not single",
+    "sql": "SELECT * FROM employee_dataset WHERE \"Marital_Status\" != 'Single'",
+    "expected_answer": 15
+  },
+  {
+    "id": 18,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "average salary by age group",
+    "sql": "SELECT Age, AVG(\"Monthly_Income\") FROM employee_dataset GROUP BY Age",
+    "expected_answer": 4071.75
+  },
+  {
+    "id": 19,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "maximum salary in R&D",
+    "sql": "SELECT MAX(\"Monthly_Income\") FROM employee_dataset WHERE Department = 'R&D'",
+    "expected_answer": 11994
+  },
+  {
+    "id": 20,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "how many employees have doctorate",
+    "sql": "SELECT COUNT(*) FROM employee_dataset WHERE Education = 'Doctorate'",
+    "expected_answer": 4
+  },
+  {
+    "id": 21,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "show employees with 0 years experience",
+    "sql": "SELECT * FROM employee_dataset WHERE \"Years_of_Experience\" = 0",
+    "expected_answer": 8
+  },
+  {
+    "id": 22,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "total salary by gender",
+    "sql": "SELECT Gender, SUM(\"Monthly_Income\") FROM employee_dataset GROUP BY Gender",
+    "expected_answer": 74043.0
+  },
+  {
+    "id": 23,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "employees with performance rating greater than 3",
+    "sql": "SELECT * FROM employee_dataset WHERE \"Performance_Rating\" > 3",
+    "expected_answer": 5
+  },
+  {
+    "id": 24,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "average salary by education level",
+    "sql": "SELECT Education, AVG(\"Monthly_Income\") FROM employee_dataset GROUP BY Education",
+    "expected_answer": 9093.833333333334
+  },
+  {
+    "id": 25,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "count employees by last working day",
+    "sql": "SELECT \"Last_Working_Day\", COUNT(*) FROM employee_dataset GROUP BY \"Last_Working_Day\"",
+    "expected_answer": 23
+  },
+  {
+    "id": 26,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "show employees with salary between 3000 and 6000",
+    "sql": "SELECT * FROM employee_dataset WHERE \"Monthly_Income\" BETWEEN 3000 AND 6000",
+    "expected_answer": 15
+  },
+  {
+    "id": 27,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "how many employees in training department",
+    "sql": "SELECT COUNT(*) FROM employee_dataset WHERE Department = 'Training'",
+    "expected_answer": 1
+  },
+  {
+    "id": 28,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "total salary by department",
+    "sql": "SELECT Department, SUM(\"Monthly_Income\") FROM employee_dataset GROUP BY Department",
+    "expected_answer": 59854.0
+  },
+  {
+    "id": 29,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "maximum performance rating",
+    "sql": "SELECT MAX(\"Performance_Rating\") FROM employee_dataset",
+    "expected_answer": 5
+  },
+  {
+    "id": 30,
+    "dataset": "Employee Dataset",
+    "type": "sql",
+    "question": "employees from software development",
+    "sql": "SELECT * FROM employee_dataset WHERE Department = 'Software Development'",
+    "expected_answer": 8
+  },
+  {
+    "id": 31,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "show houses with price greater than 10000000",
+    "sql": "SELECT * FROM housing WHERE price > 10000000",
+    "expected_answer": 10
+  },
+  {
+    "id": 32,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "average price by number of bedrooms",
+    "sql": "SELECT bedrooms, AVG(price) FROM housing GROUP BY bedrooms",
+    "expected_answer": 7901060.0
+  },
+  {
+    "id": 33,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "how many houses have 4 bedrooms",
+    "sql": "SELECT COUNT(*) FROM housing WHERE bedrooms = 4",
+    "expected_answer": 230
+  },
+  {
+    "id": 34,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "maximum area of houses",
+    "sql": "SELECT MAX(area) FROM housing",
+    "expected_answer": 16200
+  },
+  {
+    "id": 35,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "minimum price by stories",
+    "sql": "SELECT stories, MIN(price) FROM housing GROUP BY stories",
+    "expected_answer": 1750000
+  },
+  {
+    "id": 36,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with mainroad yes",
+    "sql": "SELECT * FROM housing WHERE mainroad = 'yes'",
+    "expected_answer": 544
+  },
+  {
+    "id": 37,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "total price by furnishing status",
+    "sql": "SELECT furnishingstatus, SUM(price) FROM housing GROUP BY furnishingstatus",
+    "expected_answer": 2049311240.0
+  },
+  {
+    "id": 38,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "top 5 highest priced houses",
+    "sql": "SELECT price FROM housing ORDER BY price DESC LIMIT 5",
+    "expected_answer": 5
+  },
+  {
+    "id": 39,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "average area by number of bathrooms",
+    "sql": "SELECT bathrooms, AVG(area) FROM housing GROUP BY bathrooms",
+    "expected_answer": 5289.636363636364
+  },
+  {
+    "id": 40,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with airconditioning yes",
+    "sql": "SELECT * FROM housing WHERE airconditioning = 'yes'",
+    "expected_answer": 289
+  },
+  {
+    "id": 41,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "count houses with guestroom yes",
+    "sql": "SELECT COUNT(*) FROM housing WHERE guestroom = 'yes'",
+    "expected_answer": 169
+  },
+  {
+    "id": 42,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with basement yes",
+    "sql": "SELECT * FROM housing WHERE basement = 'yes'",
+    "expected_answer": 129
+  },
+  {
+    "id": 43,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "average price by mainroad",
+    "sql": "SELECT mainroad, AVG(price) FROM housing GROUP BY mainroad",
+    "expected_answer": 8080080.0
+  },
+  {
+    "id": 44,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with area between 5000 and 8000",
+    "sql": "SELECT * FROM housing WHERE area BETWEEN 5000 AND 8000",
+    "expected_answer": 300
+  },
+  {
+    "id": 45,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "total bedrooms by stories",
+    "sql": "SELECT stories, SUM(bedrooms) FROM housing GROUP BY stories",
+    "expected_answer": 1574
+  },
+  {
+    "id": 46,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "minimum area of houses",
+    "sql": "SELECT MIN(area) FROM housing",
+    "expected_answer": 1650
+  },
+  {
+    "id": 47,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with hotwaterheating yes",
+    "sql": "SELECT * FROM housing WHERE hotwaterheating = 'yes'",
+    "expected_answer": 18
+  },
+  {
+    "id": 48,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "maximum price by prefarea",
+    "sql": "SELECT prefarea, MAX(price) FROM housing GROUP BY prefarea",
+    "expected_answer": 13300000
+  },
+  {
+    "id": 49,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "average bathrooms by furnished status",
+    "sql": "SELECT furnishingstatus, AVG(bathrooms) FROM housing GROUP BY furnishingstatus",
+    "expected_answer": 1.659848484848485
+  },
+  {
+    "id": 50,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with parking greater than 1",
+    "sql": "SELECT * FROM housing WHERE parking > 1",
+    "expected_answer": 327
+  },
+  {
+    "id": 51,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "show fully furnished houses",
+    "sql": "SELECT * FROM housing WHERE furnishingstatus = 'furnished'",
+    "expected_answer": 154
+  },
+  {
+    "id": 52,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "total price by location",
+    "sql": "SELECT prefarea, SUM(price) FROM housing GROUP BY prefarea",
+    "expected_answer": 2739620800.0
+  },
+  {
+    "id": 53,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "count houses with 3 bedrooms",
+    "sql": "SELECT COUNT(*) FROM housing WHERE bedrooms = 3",
+    "expected_answer": 223
+  },
+  {
+    "id": 54,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with price below 4000000",
+    "sql": "SELECT * FROM housing WHERE price < 4000000",
+    "expected_answer": 183
+  },
+  {
+    "id": 55,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "average area by number of stories",
+    "sql": "SELECT stories, AVG(area) FROM housing GROUP BY stories",
+    "expected_answer": 5657.265625
+  },
+  {
+    "id": 56,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with guestroom yes and airconditioning yes",
+    "sql": "SELECT * FROM housing WHERE guestroom = 'yes' AND airconditioning = 'yes'",
+    "expected_answer": 131
+  },
+  {
+    "id": 57,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "lowest 10 prices",
+    "sql": "SELECT price FROM housing ORDER BY price ASC LIMIT 10",
+    "expected_answer": 10
+  },
+  {
+    "id": 58,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "total price by mainroad and furnishing status",
+    "sql": "SELECT mainroad, furnishingstatus, SUM(price) FROM housing GROUP BY mainroad, furnishingstatus",
+    "expected_answer": 2555678840.0
+  },
+  {
+    "id": 59,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "houses with area greater than 10000",
+    "sql": "SELECT * FROM housing WHERE area > 10000",
+    "expected_answer": 17
+  },
+  {
+    "id": 60,
+    "dataset": "Housing",
+    "type": "sql",
+    "question": "average price by number of bedrooms",
+    "sql": "SELECT bedrooms, AVG(price) FROM housing GROUP BY bedrooms",
+    "expected_answer": 7901060.0
+  },
+  {
+    "id": 61,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "list students with gpa greater than 3.5",
+    "sql": "SELECT * FROM student_performance WHERE GPA > 3.5",
+    "expected_answer": 223
+  },
+  {
+    "id": 62,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "average gpa by gender",
+    "sql": "SELECT Gender, AVG(GPA) FROM student_performance GROUP BY Gender",
+    "expected_answer": 2.025582291666666
+  },
+  {
+    "id": 63,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "how many students have gpa less than 2.0",
+    "sql": "SELECT COUNT(*) FROM student_performance WHERE GPA < 2.0",
+    "expected_answer": 1303
+  },
+  {
+    "id": 64,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "maximum age of students",
+    "sql": "SELECT MAX(Age) FROM student_performance",
+    "expected_answer": 18
+  },
+  {
+    "id": 65,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with grade class 0",
+    "sql": "SELECT * FROM student_performance WHERE GradeClass = 0.0",
+    "expected_answer": 86
+  },
+  {
+    "id": 66,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "top 5 highest gpa",
+    "sql": "SELECT GPA FROM student_performance ORDER BY GPA DESC LIMIT 5",
+    "expected_answer": 5
+  },
+  {
+    "id": 67,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "average study time by ethnicity",
+    "sql": "SELECT Ethnicity, AVG(StudyTimeWeekly) FROM student_performance GROUP BY Ethnicity",
+    "expected_answer": 9.850515022044771
+  },
+  {
+    "id": 68,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "count students by parental education",
+    "sql": "SELECT ParentalEducation, COUNT(*) FROM student_performance GROUP BY ParentalEducation",
+    "expected_answer": 547
+  },
+  {
+    "id": 69,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with absences greater than 20",
+    "sql": "SELECT * FROM student_performance WHERE Absences > 20",
+    "expected_answer": 723
+  },
+  {
+    "id": 70,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "minimum gpa by gender",
+    "sql": "SELECT Gender, MIN(GPA) FROM student_performance GROUP BY Gender",
+    "expected_answer": 0.0
+  },
+  {
+    "id": 71,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with tutoring 1",
+    "sql": "SELECT * FROM student_performance WHERE Tutoring = 1",
+    "expected_answer": 561
+  },
+  {
+    "id": 72,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "average gpa by grade class",
+    "sql": "SELECT GradeClass, AVG(GPA) FROM student_performance GROUP BY GradeClass",
+    "expected_answer": 2.7551382326652956
+  },
+  {
+    "id": 73,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with extracurricular 1",
+    "sql": "SELECT * FROM student_performance WHERE Extracurricular = 1",
+    "expected_answer": 1517
+  },
+  {
+    "id": 74,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "total absences by gender",
+    "sql": "SELECT Gender, SUM(Absences) FROM student_performance GROUP BY Gender",
+    "expected_answer": 26226
+  },
+  {
+    "id": 75,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with gpa between 2.5 and 3.5",
+    "sql": "SELECT * FROM student_performance WHERE GPA BETWEEN 2.5 AND 3.5",
+    "expected_answer": 608
+  },
+  {
+    "id": 76,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "show students with sports 1",
+    "sql": "SELECT * FROM student_performance WHERE Sports = 1",
+    "expected_answer": 654
+  },
+  {
+    "id": 77,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "maximum gpa",
+    "sql": "SELECT MAX(GPA) FROM student_performance",
+    "expected_answer": 4.0
+  },
+  {
+    "id": 78,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "average absences by ethnicity",
+    "sql": "SELECT Ethnicity, AVG(Absences) FROM student_performance GROUP BY Ethnicity",
+    "expected_answer": 16.886386363636365
+  },
+  {
+    "id": 79,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with parental support 4",
+    "sql": "SELECT * FROM student_performance WHERE ParentalSupport = 4",
+    "expected_answer": 736
+  },
+  {
+    "id": 80,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "total gpa by ethnicity",
+    "sql": "SELECT Ethnicity, SUM(GPA) FROM student_performance GROUP BY Ethnicity",
+    "expected_answer": 3343.474901182086
+  },
+  {
+    "id": 81,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with music 1",
+    "sql": "SELECT * FROM student_performance WHERE Music = 1",
+    "expected_answer": 105
+  },
+  {
+    "id": 82,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "average gpa by parental support",
+    "sql": "SELECT ParentalSupport, AVG(GPA) FROM student_performance GROUP BY ParentalSupport",
+    "expected_answer": 2.039290286641035
+  },
+  {
+    "id": 83,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "count students by age",
+    "sql": "SELECT Age, COUNT(*) FROM student_performance GROUP BY Age",
+    "expected_answer": 606
+  },
+  {
+    "id": 84,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with volunteering 1",
+    "sql": "SELECT * FROM student_performance WHERE Volunteering = 1",
+    "expected_answer": 479
+  },
+  {
+    "id": 85,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "minimum age by gender",
+    "sql": "SELECT Gender, MIN(Age) FROM student_performance GROUP BY Gender",
+    "expected_answer": 15
+  },
+  {
+    "id": 86,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with gpa 0",
+    "sql": "SELECT * FROM student_performance WHERE GPA = 0.0",
+    "expected_answer": 13
+  },
+  {
+    "id": 87,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "average gpa by ethnicity and gender",
+    "sql": "SELECT Ethnicity, Gender, AVG(GPA) FROM student_performance GROUP BY Ethnicity, Gender",
+    "expected_answer": 2.0786983845829066
+  },
+  {
+    "id": 88,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with age 16",
+    "sql": "SELECT * FROM student_performance WHERE Age = 16",
+    "expected_answer": 1095
+  },
+  {
+    "id": 89,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "total absences by grade class",
+    "sql": "SELECT GradeClass, SUM(Absences) FROM student_performance GROUP BY GradeClass",
+    "expected_answer": 18209
+  },
+  {
+    "id": 90,
+    "dataset": "Student_performance",
+    "type": "sql",
+    "question": "students with study time greater than 15",
+    "sql": "SELECT * FROM student_performance WHERE StudyTimeWeekly > 15",
+    "expected_answer": 826
+  },
+  {
+    "id": 91,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "list diabetic patients",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 1",
+    "expected_answer": 957
+  },
+  {
+    "id": 92,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "average bmi by gender",
+    "sql": "SELECT gender, AVG(bmi) FROM diabetes_prediction_dataset GROUP BY gender",
+    "expected_answer": 27.016348364304278
+  },
+  {
+    "id": 93,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "how many patients have hypertension",
+    "sql": "SELECT COUNT(*) FROM diabetes_prediction_dataset WHERE hypertension = 1",
+    "expected_answer": 1592
+  },
+  {
+    "id": 94,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "maximum age of patients",
+    "sql": "SELECT MAX(age) FROM diabetes_prediction_dataset",
+    "expected_answer": 80.0
+  },
+  {
+    "id": 95,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with heart disease 1",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE heart_disease = 1",
+    "expected_answer": 843
+  },
+  {
+    "id": 96,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "top 5 highest blood glucose level",
+    "sql": "SELECT blood_glucose_level FROM diabetes_prediction_dataset ORDER BY blood_glucose_level DESC LIMIT 5",
+    "expected_answer": 5
+  },
+  {
+    "id": 97,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "average hba1c level by smoking history",
+    "sql": "SELECT smoking_history, AVG(HbA1c_level) FROM diabetes_prediction_dataset GROUP BY smoking_history",
+    "expected_answer": 5.587673076923077
+  },
+  {
+    "id": 98,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "count patients by gender",
+    "sql": "SELECT gender, COUNT(*) FROM diabetes_prediction_dataset GROUP BY gender",
+    "expected_answer": 7429
+  },
+  {
+    "id": 99,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with bmi greater than 30",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE bmi > 30",
+    "expected_answer": 1885
+  },
+  {
+    "id": 100,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "minimum age of patients",
+    "sql": "SELECT MIN(age) FROM diabetes_prediction_dataset",
+    "expected_answer": 0.08
+  },
+  {
+    "id": 101,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with blood glucose level greater than 200",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE blood_glucose_level > 200",
+    "expected_answer": 849
+  },
+  {
+    "id": 102,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "average age by hypertension",
+    "sql": "SELECT hypertension, AVG(age) FROM diabetes_prediction_dataset GROUP BY hypertension",
+    "expected_answer": 46.647359037399
+  },
+  {
+    "id": 103,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with diabetes 0",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 0",
+    "expected_answer": 7043
+  },
+  {
+    "id": 104,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "total patients by smoking history",
+    "sql": "SELECT smoking_history, COUNT(*) FROM diabetes_prediction_dataset GROUP BY smoking_history",
+    "expected_answer": 1963
+  },
+  {
+    "id": 105,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with bmi between 25 and 30",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE bmi BETWEEN 25 AND 30",
+    "expected_answer": 2023
+  },
+  {
+    "id": 106,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "show female patients",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE gender = 'Female'",
+    "expected_answer": 4620
+  },
+  {
+    "id": 107,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "maximum bmi",
+    "sql": "SELECT MAX(bmi) FROM diabetes_prediction_dataset",
+    "expected_answer": 69.37
+  },
+  {
+    "id": 108,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "average blood glucose by heart disease",
+    "sql": "SELECT heart_disease, AVG(blood_glucose_level) FROM diabetes_prediction_dataset GROUP BY heart_disease",
+    "expected_answer": 150.64139753634743
+  },
+  {
+    "id": 109,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with hba1c level greater than 7",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE HbA1c_level > 7",
+    "expected_answer": 541
+  },
+  {
+    "id": 110,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "total patients by age group",
+    "sql": "SELECT age, COUNT(*) FROM diabetes_prediction_dataset GROUP BY age",
+    "expected_answer": 275
+  },
+  {
+    "id": 111,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with hypertension 1 and heart disease 1",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE hypertension = 1 AND heart_disease = 1",
+    "expected_answer": 208
+  },
+  {
+    "id": 112,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "average bmi by diabetes",
+    "sql": "SELECT diabetes, AVG(bmi) FROM diabetes_prediction_dataset GROUP BY diabetes",
+    "expected_answer": 31.94954928511791
+  },
+  {
+    "id": 113,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with age between 40 and 60",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE age BETWEEN 40 AND 60",
+    "expected_answer": 1853
+  },
+  {
+    "id": 114,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "count male patients with hypertension",
+    "sql": "SELECT COUNT(*) FROM diabetes_prediction_dataset WHERE gender = 'Male' AND hypertension = 1",
+    "expected_answer": 972
+  },
+  {
+    "id": 115,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "minimum blood glucose level",
+    "sql": "SELECT MIN(blood_glucose_level) FROM diabetes_prediction_dataset",
+    "expected_answer": 80
+  },
+  {
+    "id": 116,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with smoking history 'never'",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE smoking_history = 'never'",
+    "expected_answer": 4987
+  },
+  {
+    "id": 117,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "average hba1c by gender",
+    "sql": "SELECT gender, AVG(HbA1c_level) FROM diabetes_prediction_dataset GROUP BY gender",
+    "expected_answer": 5.778648290223537
+  },
+  {
+    "id": 118,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with bmi less than 18.5",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE bmi < 18.5",
+    "expected_answer": 458
+  },
+  {
+    "id": 119,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "maximum age by smoking history",
+    "sql": "SELECT smoking_history, MAX(age) FROM diabetes_prediction_dataset GROUP BY smoking_history",
+    "expected_answer": 80.0
+  },
+  {
+    "id": 120,
+    "dataset": "diabetes_prediction_dataset",
+    "type": "sql",
+    "question": "patients with diabetes 1 and hypertension 1",
+    "sql": "SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 1 AND hypertension = 1",
+    "expected_answer": 276
+  },
+  {
+    "id": 121,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "list patients with outcome 1",
+    "sql": "SELECT * FROM dengue WHERE Outcome = 1",
+    "expected_answer": 439
+  },
+  {
+    "id": 122,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "average age by outcome",
+    "sql": "SELECT Outcome, AVG(Age) FROM dengue GROUP BY Outcome",
+    "expected_answer": 39.88181818181818
+  },
+  {
+    "id": 123,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "how many female patients",
+    "sql": "SELECT COUNT(*) FROM dengue WHERE Gender = 'Female'",
+    "expected_answer": 365
+  },
+  {
+    "id": 124,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "maximum body temperature",
+    "sql": "SELECT MAX(Body_Temperature) FROM dengue",
+    "expected_answer": 40.6
+  },
+  {
+    "id": 125,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with severe joint pain",
+    "sql": "SELECT * FROM dengue WHERE Joint_Pain = 'Severe'",
+    "expected_answer": 39
+  },
+  {
+    "id": 126,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "top 5 highest platelet count",
+    "sql": "SELECT Platelet_Count FROM dengue ORDER BY Platelet_Count DESC LIMIT 5",
+    "expected_answer": 5
+  },
+  {
+    "id": 127,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "average wbc count by area type",
+    "sql": "SELECT AreaType, AVG(WBC_Count) FROM dengue GROUP BY AreaType",
+    "expected_answer": 3422.25
+  },
+  {
+    "id": 128,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "count patients by area",
+    "sql": "SELECT Area, COUNT(*) FROM dengue GROUP BY Area",
+    "expected_answer": 24
+  },
+  {
+    "id": 129,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with headache 1",
+    "sql": "SELECT * FROM dengue WHERE Headache = 1",
+    "expected_answer": 311
+  },
+  {
+    "id": 130,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "minimum platelet count",
+    "sql": "SELECT MIN(Platelet_Count) FROM dengue",
+    "expected_answer": 26885
+  },
+  {
+    "id": 131,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with rash 1",
+    "sql": "SELECT * FROM dengue WHERE Rash = 1",
+    "expected_answer": 165
+  },
+  {
+    "id": 132,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "average body temperature by house type",
+    "sql": "SELECT HouseType, AVG(Body_Temperature) FROM dengue GROUP BY HouseType",
+    "expected_answer": 37.31473684210526
+  },
+  {
+    "id": 133,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with myalgia 1",
+    "sql": "SELECT * FROM dengue WHERE Myalgia = 1",
+    "expected_answer": 387
+  },
+  {
+    "id": 134,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "total patients by gender",
+    "sql": "SELECT Gender, COUNT(*) FROM dengue GROUP BY Gender",
+    "expected_answer": 460
+  },
+  {
+    "id": 135,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with fever duration between 3 and 5",
+    "sql": "SELECT * FROM dengue WHERE Fever_Duration BETWEEN 3 AND 5",
+    "expected_answer": 173
+  },
+  {
+    "id": 136,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "show patients with ns1 1",
+    "sql": "SELECT * FROM dengue WHERE NS1 = 1",
+    "expected_answer": 438
+  },
+  {
+    "id": 137,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "maximum platelet count by outcome",
+    "sql": "SELECT Outcome, MAX(Platelet_Count) FROM dengue GROUP BY Outcome",
+    "expected_answer": 362426
+  },
+  {
+    "id": 138,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "average age by gender",
+    "sql": "SELECT Gender, AVG(Age) FROM dengue GROUP BY Gender",
+    "expected_answer": 39.07733333333333
+  },
+  {
+    "id": 139,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with retro orbital pain 1",
+    "sql": "SELECT * FROM dengue WHERE Retro_Orbital_Pain = 1",
+    "expected_answer": 237
+  },
+  {
+    "id": 140,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "total patients by district",
+    "sql": "SELECT District, COUNT(*) FROM dengue GROUP BY District",
+    "expected_answer": 476
+  },
+  {
+    "id": 141,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with outcome 0",
+    "sql": "SELECT * FROM dengue WHERE Outcome = 0",
+    "expected_answer": 44
+  },
+  {
+    "id": 142,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "average platelet count by area",
+    "sql": "SELECT Area, AVG(Platelet_Count) FROM dengue GROUP BY Area",
+    "expected_answer": 230660.0
+  },
+  {
+    "id": 143,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with age less than 20",
+    "sql": "SELECT * FROM dengue WHERE Age < 20",
+    "expected_answer": 162
+  },
+  {
+    "id": 144,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "count patients by house type",
+    "sql": "SELECT HouseType, COUNT(*) FROM dengue GROUP BY HouseType",
+    "expected_answer": 266
+  },
+  {
+    "id": 145,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with igm 1",
+    "sql": "SELECT * FROM dengue WHERE IgM = 1",
+    "expected_answer": 282
+  },
+  {
+    "id": 146,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "minimum body temperature",
+    "sql": "SELECT MIN(Body_Temperature) FROM dengue",
+    "expected_answer": 36.0
+  },
+  {
+    "id": 147,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with joint pain moderate",
+    "sql": "SELECT * FROM dengue WHERE Joint_Pain = 'Moderate'",
+    "expected_answer": 79
+  },
+  {
+    "id": 148,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "average wbc count by outcome",
+    "sql": "SELECT Outcome, AVG(WBC_Count) FROM dengue GROUP BY Outcome",
+    "expected_answer": 3094.380681818181
+  },
+  {
+    "id": 149,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "patients with fever duration greater than 5",
+    "sql": "SELECT * FROM dengue WHERE Fever_Duration > 5",
+    "expected_answer": 141
+  },
+  {
+    "id": 150,
+    "dataset": "dengue",
+    "type": "sql",
+    "question": "show patients with igg 1",
+    "sql": "SELECT * FROM dengue WHERE IgG = 1",
+    "expected_answer": 438
+  },
+  {
+    "id": 151,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "list customers with purchase amount greater than 500",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Purchase_Amount\" > 500",
+    "expected_answer": 545
+  },
+  {
+    "id": 152,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "average purchase amount by location",
+    "sql": "SELECT Location, AVG(\"Purchase_Amount\") FROM ecommerce_dataset GROUP BY Location",
+    "expected_answer": 604.8393939393939
+  },
+  {
+    "id": 153,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "how many male customers",
+    "sql": "SELECT COUNT(*) FROM ecommerce_dataset WHERE Gender = 'Male'",
+    "expected_answer": 360
+  },
+  {
+    "id": 154,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "maximum time spent on website",
+    "sql": "SELECT MAX(\"Time_Spent_on_Website_min\") FROM ecommerce_dataset",
+    "expected_answer": 59
+  },
+  {
+    "id": 155,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with discount availed true",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Discount_Availed\" = 'True'",
+    "expected_answer": 519
+  },
+  {
+    "id": 156,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "top 5 highest purchase amounts",
+    "sql": "SELECT \"Purchase_Amount\" FROM ecommerce_dataset ORDER BY \"Purchase_Amount\" DESC LIMIT 5",
+    "expected_answer": 5
+  },
+  {
+    "id": 157,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "average purchase amount by product category",
+    "sql": "SELECT \"Product_Category\", AVG(\"Purchase_Amount\") FROM ecommerce_dataset GROUP BY \"Product_Category\"",
+    "expected_answer": 542.9393393393392
+  },
+  {
+    "id": 158,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "count customers by gender",
+    "sql": "SELECT Gender, COUNT(*) FROM ecommerce_dataset GROUP BY Gender",
+    "expected_answer": 360
+  },
+  {
+    "id": 159,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with delivery time greater than 5",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Delivery_Time_days\" > 5",
+    "expected_answer": 470
+  },
+  {
+    "id": 160,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "minimum purchase amount",
+    "sql": "SELECT MIN(\"Purchase_Amount\") FROM ecommerce_dataset",
+    "expected_answer": 6.3
+  },
+  {
+    "id": 161,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with review score 1",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Review_Score_1_5\" = 1",
+    "expected_answer": 131
+  },
+  {
+    "id": 162,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "average purchase amount by device type",
+    "sql": "SELECT \"Device_Type\", AVG(\"Purchase_Amount\") FROM ecommerce_dataset GROUP BY \"Device_Type\"",
+    "expected_answer": 548.586
+  },
+  {
+    "id": 163,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with return customer true",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Return_Customer\" = 'True'",
+    "expected_answer": 491
+  },
+  {
+    "id": 164,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "total purchase amount by payment method",
+    "sql": "SELECT \"Payment_Method\", SUM(\"Purchase_Amount\") FROM ecommerce_dataset GROUP BY \"Payment_Method\"",
+    "expected_answer": 206785.64999999997
+  },
+  {
+    "id": 165,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with age between 20 and 30",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE Age BETWEEN 20 AND 30",
+    "expected_answer": 171
+  },
+  {
+    "id": 166,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "show customers with subscription status premium",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Subscription_Status\" = 'Premium'",
+    "expected_answer": 336
+  },
+  {
+    "id": 167,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "maximum purchase amount by location",
+    "sql": "SELECT Location, MAX(\"Purchase_Amount\") FROM ecommerce_dataset GROUP BY Location",
+    "expected_answer": 999.93
+  },
+  {
+    "id": 168,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "average time spent by product category",
+    "sql": "SELECT \"Product_Category\", AVG(\"Time_Spent_on_Website_min\") FROM ecommerce_dataset GROUP BY \"Product_Category\"",
+    "expected_answer": 31.775
+  },
+  {
+    "id": 169,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with number of items purchased greater than 5",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Number_of_Items_Purchased\" > 5",
+    "expected_answer": 239
+  },
+  {
+    "id": 170,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "total customers by customer satisfaction",
+    "sql": "SELECT \"Customer_Satisfaction\", COUNT(*) FROM ecommerce_dataset GROUP BY \"Customer_Satisfaction\"",
+    "expected_answer": 414
+  },
+  {
+    "id": 171,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with delivery time 1",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Delivery_Time_days\" = 1",
+    "expected_answer": 61
+  },
+  {
+    "id": 172,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "average review score by device type",
+    "sql": "SELECT \"Device_Type\", AVG(\"Review_Score_1_5\") FROM ecommerce_dataset GROUP BY \"Device_Type\"",
+    "expected_answer": 3.2315
+  },
+  {
+    "id": 173,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with discount availed false",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Discount_Availed\" = 'False'",
+    "expected_answer": 483
+  },
+  {
+    "id": 174,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "minimum time spent on website",
+    "sql": "SELECT MIN(\"Time_Spent_on_Website_min\") FROM ecommerce_dataset",
+    "expected_answer": 1
+  },
+  {
+    "id": 175,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with customer satisfaction high",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE \"Customer_Satisfaction\" = 'High'",
+    "expected_answer": 277
+  },
+  {
+    "id": 176,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "total purchase amount by gender",
+    "sql": "SELECT Gender, SUM(\"Purchase_Amount\") FROM ecommerce_dataset GROUP BY Gender",
+    "expected_answer": 236922.95000000007
+  },
+  {
+    "id": 177,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with location dhaka",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE Location = 'Dhaka'",
+    "expected_answer": 121
+  },
+  {
+    "id": 178,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "average delivery time by subscription status",
+    "sql": "SELECT \"Subscription_Status\", AVG(\"Delivery_Time_days\") FROM ecommerce_dataset GROUP BY \"Subscription_Status\"",
+    "expected_answer": 6.817201060954389
+  },
+  {
+    "id": 179,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "customers with age greater than 60",
+    "sql": "SELECT * FROM ecommerce_dataset WHERE Age > 60",
+    "expected_answer": 174
+  },
+  {
+    "id": 180,
+    "dataset": "E-commerce",
+    "type": "sql",
+    "question": "top 5 lowest purchase amounts",
+    "sql": "SELECT \"Purchase_Amount\" FROM ecommerce_dataset ORDER BY \"Purchase_Amount\" ASC LIMIT 5",
+    "expected_answer": 5
+  }
 ]

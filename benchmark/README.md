@@ -23,9 +23,9 @@ python benchmark/run_benchmark.py
 
 This single command:
 
-1. Loads all 5 datasets into an SQLite database
+1. Loads all 6 datasets into an SQLite database
 2. Loads the NL2SQL intent classification model
-3. Executes all 271 reference SQL queries (ground truth)
+3. Executes all 180 reference SQL queries (ground truth)
 4. Runs each natural language query through the full NL2SQL-366 pipeline
 5. Validates, executes, and compares generated SQL results
 6. Computes all metrics (accuracy, F1, precision, recall, etc.)
@@ -114,15 +114,62 @@ The comparator handles:
 |---------|------|--------|------------|
 | Housing | 545 | Real estate | `housing` |
 | Student Performance | 2,392 | Education | `student_performance` |
-| Temperature & Rain | 1,380 | Weather | `temp_and_rain` |
+| Diabetes Prediction | 100,000 | Healthcare | `diabetes_prediction_dataset` |
 | Dengue | 1,000 | Healthcare | `dengue` |
-| Employee | 25 | HR | `employee` |
+| Employee | 25 | HR | `employee_dataset` |
+| E-commerce | 10,000 | Retail | `ecommerce_dataset` |
 
 ## Benchmark Query Distribution
 
-- **Total SQL queries**: 271
-- **Intent distribution**: COUNT (141), AVG (71), MAX (26), MIN (18), SUM (12), SELECT (3)
-- **Query complexity**: Simple filters, aggregate queries, GROUP BY with ORDER BY, multi-condition WHERE clauses
+- **Total SQL queries**: 180
+- **Queries per dataset**: 30
+- **Intent distribution**: SELECT (83), AVG (34), COUNT (25), MAX (14), MIN (11), SUM (13)
+- **Query complexity**: Simple filters, aggregate queries, GROUP BY with ORDER BY, multi-condition WHERE clauses, BETWEEN ranges, ranking with LIMIT
+
+## Latest Benchmark Results (v3)
+
+| Metric | Score |
+|--------|-------|
+| Total Queries | 180 |
+| Intent Accuracy | 80.00% |
+| Valid SQL | 93.89% |
+| Execution Success | 93.89% |
+| Result Match Accuracy | 50.00% |
+| Macro F1 | 65.84% |
+| Passed | 90 / 180 |
+| Avg SQL Generation Time | 0.01 ms |
+| Avg Execution Time | 4.73 ms |
+| Total Runtime | 10.48 s |
+
+### Per-Intent Breakdown
+
+| Intent | Queries | Intent Acc. | Result Match | Valid SQL |
+|--------|---------|-------------|--------------|-----------|
+| AVG | 34 | 100.00% | 67.65% | 91.18% |
+| COUNT | 25 | 80.00% | 36.00% | 88.00% |
+| MAX | 14 | 100.00% | 64.29% | 92.86% |
+| MIN | 11 | 100.00% | 63.64% | 90.91% |
+| SELECT | 83 | 62.65% | 42.17% | 100.00% |
+| SUM | 13 | 100.00% | 53.85% | 76.92% |
+
+### Per-Dataset Breakdown
+
+| Dataset | Queries | Result Match | Intent Acc. |
+|---------|---------|--------------|-------------|
+| housing_dataset | 30 | 70.00% | 100.00% |
+| ecommerce_dataset | 30 | 56.67% | 70.00% |
+| diabetes_prediction_dataset | 30 | 53.33% | 73.33% |
+| dengue_dataset | 30 | 46.67% | 63.33% |
+| student_performance_dataset | 30 | 43.33% | 80.00% |
+| employee_dataset | 30 | 30.00% | 93.33% |
+
+### Error Distribution
+
+| Error Category | Count |
+|----------------|-------|
+| intent_error | 36 |
+| result_mismatch | 46 |
+| sql_validation_error | 8 |
 
 ## File Descriptions
 
@@ -159,7 +206,21 @@ The benchmark is fully deterministic:
 
 ## Change Log
 
-### v2 — Pipeline Optimization (55.35% Result Match)
+### v3 — Benchmark Restructuring (50.00% Result Match)
+
+Restructured the benchmark to use six real-world datasets and 180 reference SQL queries with normalized, executable SQL throughout. Key changes:
+
+| Change | Description | Impact |
+|--------|-------------|--------|
+| Dataset swap | Replaced `temp_and_rain` (CSV missing) with `diabetes_prediction_dataset` (100k rows, healthcare) | 30 new queries |
+| Column cleaning | Aggressive column-name normalization strips `$`, `(`, `)`, `.`, collapses underscores | Resolves 12 reference errors in E-commerce |
+| Reference SQL fixes | All 180 reference SQLs now use canonical table names and properly double-quoted identifiers | All 180 queries execute cleanly |
+| Dataset aliases | Case-insensitive alias resolution supports `Employee Dataset`, `E-commerce`, `Housing`, etc. | Robust question-label handling |
+| Table aliasing | Original CSV-stem table names registered as SQLite aliases alongside canonical names | Backward-compatible reference SQL |
+
+**Result: 0/180 → 180/180 reference SQL queries execute successfully; 90/180 generated queries match the reference result.**
+
+### v2 — Pipeline Optimization (55.35% Result Match on legacy 271-query benchmark)
 
 Identified and fixed 8 root causes across 6 core modules using systematic failure analysis of 178 failed queries:
 
@@ -174,9 +235,7 @@ Identified and fixed 8 root causes across 6 core modules using systematic failur
 | Two-pass implicit filter | `sql_generator.py` | Numbers before AND after column ("have 2 parking") | ~12 queries |
 | Operator fixes | `operators.json`, `intent_detector.py` | Removed false LIKE, improved SUM/SELECT intent | ~5 queries |
 
-**Net improvement: 34.32% → 55.35% (+21.03 pp, +61% relative), 93 → 150 passed queries.**
-
-### v1 — Initial Benchmark (34.32% Result Match)
+### v1 — Initial Benchmark (34.32% Result Match on legacy 271-query benchmark)
 
 Baseline evaluation on 271 queries across 5 datasets.
 

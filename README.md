@@ -221,6 +221,45 @@ SQL Executor         ← SQLite / PostgreSQL → (columns, rows)
 
 ---
 
+## Benchmark
+
+The project ships with a research-grade benchmark suite under `benchmark/` that evaluates the full NL2SQL pipeline on **180 reference SQL queries** across **6 real-world datasets** using **execution-based result-set equivalence** as the primary correctness metric (not SQL string similarity).
+
+### Datasets
+
+| Dataset | Rows | Domain | Table Name |
+|---------|------|--------|------------|
+| Housing | 545 | Real estate | `housing` |
+| Student Performance | 2,392 | Education | `student_performance` |
+| Diabetes Prediction | 100,000 | Healthcare | `diabetes_prediction_dataset` |
+| Dengue | 1,000 | Healthcare | `dengue` |
+| Employee | 25 | HR | `employee_dataset` |
+| E-commerce | 10,000 | Retail | `ecommerce_dataset` |
+
+### Running the benchmark
+
+```bash
+python benchmark/run_benchmark.py
+```
+
+Outputs (CSV, JSON, Markdown report, 6 PNG charts, and the SQLite benchmark DB) are written to `benchmark/output/`.
+
+### Latest results (v3)
+
+| Metric | Score |
+|--------|-------|
+| Total Queries | 180 |
+| Intent Accuracy | 80.00% |
+| Valid SQL | 93.89% |
+| Execution Success | 93.89% |
+| **Result Match Accuracy** | **50.00%** |
+| Macro F1 | 65.84% |
+| Passed | 90 / 180 |
+
+See `benchmark/README.md` and `benchmark/output/benchmark_report.md` for the full per-intent and per-dataset breakdown, error analysis, and change log.
+
+---
+
 ## Known Limitations
 
 | Limitation | Details |

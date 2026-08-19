@@ -121,12 +121,12 @@ EXPECTED_TOTAL_QUERIES = 180
 #
 # questions.json uses:
 #
-#   dengue_dataset
-#   ecommerce_dataset
-#   employee_dataset
-#   housing_dataset
-#   student_performance_dataset
-#   temp_and_rain_dataset
+#   dengue
+#   diabetes_prediction_dataset
+#   E-commerce
+#   Employee Dataset
+#   Housing
+#   Student_performance
 #
 # ============================================================
 
@@ -135,6 +135,11 @@ DATASETS = {
     "dengue_dataset": {
         "csv": "dengue.csv",
         "table": "dengue",
+    },
+
+    "diabetes_prediction_dataset": {
+        "csv": "diabetes_prediction_dataset.csv",
+        "table": "diabetes_prediction_dataset",
     },
 
     "ecommerce_dataset": {
@@ -156,11 +161,6 @@ DATASETS = {
         "csv": "Student_performance.csv",
         "table": "student_performance",
     },
-
-    "temp_and_rain_dataset": {
-        "csv": "Temp_and_rain.csv",
-        "table": "temp_and_rain",
-    },
 }
 
 
@@ -178,41 +178,65 @@ DATASETS = {
 
 DATASET_ALIASES = {
 
+    # ---- dengue ---------------------------------------------
     "dengue":
         "dengue_dataset",
 
     "dengue_dataset":
         "dengue_dataset",
 
+    # ---- diabetes -------------------------------------------
+    "diabetes":
+        "diabetes_prediction_dataset",
+
+    "diabetes_dataset":
+        "diabetes_prediction_dataset",
+
+    "diabetes_prediction":
+        "diabetes_prediction_dataset",
+
+    "diabetes_prediction_dataset":
+        "diabetes_prediction_dataset",
+
+    # ---- ecommerce ------------------------------------------
     "ecommerce":
         "ecommerce_dataset",
 
     "ecommerce_dataset":
         "ecommerce_dataset",
 
+    "e-commerce":
+        "ecommerce_dataset",
+
+    "e_commerce":
+        "ecommerce_dataset",
+
+    # ---- employee -------------------------------------------
     "employee":
         "employee_dataset",
 
     "employee_dataset":
         "employee_dataset",
 
+    "employee dataset":
+        "employee_dataset",
+
+    # ---- housing --------------------------------------------
     "housing":
         "housing_dataset",
 
     "housing_dataset":
         "housing_dataset",
 
+    # ---- student_performance --------------------------------
     "student_performance":
         "student_performance_dataset",
 
     "student_performance_dataset":
         "student_performance_dataset",
 
-    "temp_and_rain":
-        "temp_and_rain_dataset",
-
-    "temp_and_rain_dataset":
-        "temp_and_rain_dataset",
+    "student":
+        "student_performance_dataset",
 }
 
 
@@ -221,13 +245,36 @@ DATASET_ALIASES = {
 # ============================================================
 
 def _clean_column_name(col: str) -> str:
+    """
+    Normalize a CSV column name into a SQLite-safe identifier.
 
-    return (
+    Steps:
+        1. Strip leading/trailing whitespace
+        2. Replace spaces and dashes with underscores
+        3. Drop characters that are invalid inside an unquoted SQLite
+           identifier: ``$ ( ) . , ; : ' "`` etc.
+        4. Collapse repeated underscores
+        5. Strip leading/trailing underscores
+    """
+    import re as _re
+
+    s = (
         str(col)
         .strip()
         .replace(" ", "_")
         .replace("-", "_")
     )
+
+    # Drop characters that are illegal in unquoted SQLite identifiers
+    s = _re.sub(r"[\$\(\)\.,;:'\"`\\]", "", s)
+
+    # Collapse repeated underscores
+    s = _re.sub(r"_{2,}", "_", s)
+
+    # Strip leading/trailing underscores
+    s = s.strip("_")
+
+    return s or "col"
 
 
 # ============================================================
@@ -237,14 +284,22 @@ def _clean_column_name(col: str) -> str:
 def normalize_dataset_key(dataset_key: str) -> str:
 
     if dataset_key is None:
+
         raise ValueError(
             "Dataset key is None"
         )
 
     key = str(dataset_key).strip()
 
+    # Try direct (case-sensitive) lookup first
     if key in DATASET_ALIASES:
         return DATASET_ALIASES[key]
+
+    # Try case-insensitive lookup (handles "Employee Dataset", "E-commerce", etc.)
+    key_lower = key.lower()
+    for alias, canonical in DATASET_ALIASES.items():
+        if alias.lower() == key_lower:
+            return canonical
 
     raise ValueError(
         f"Unsupported dataset '{dataset_key}'"
@@ -329,7 +384,7 @@ def load_all_datasets(
 
             print(
                 f"       [OK] Loading "
-                f"{dataset_key:<25} "
+                f"{dataset_key:<32} "
                 f"{meta['csv']}"
             )
 
@@ -355,7 +410,7 @@ def load_all_datasets(
                 dataset_key
             ] = df
 
-            # Main table
+            # Main table (canonical name)
             df.to_sql(
                 meta["table"],
                 conn,
@@ -363,7 +418,7 @@ def load_all_datasets(
                 index=False
             )
 
-            # Dataset-compatible alias
+            # Dataset-key alias (e.g., housing_dataset -> same data)
             if meta["table"] != dataset_key:
 
                 df.to_sql(
@@ -372,6 +427,27 @@ def load_all_datasets(
                     if_exists="replace",
                     index=False
                 )
+
+            # CSV-filename alias (e.g., "Housing", "Employee Dataset", "E-commerce")
+            csv_stem = os.path.splitext(
+                meta["csv"]
+            )[0]
+
+            if csv_stem and csv_stem != meta["table"] and csv_stem != dataset_key:
+
+                try:
+
+                    df.to_sql(
+                        csv_stem,
+                        conn,
+                        if_exists="replace",
+                        index=False
+                    )
+
+                except Exception:
+                    # Some CSV stems may contain characters that
+                    # are not valid SQL identifiers; skip silently.
+                    pass
 
             print(
                 f"                 "

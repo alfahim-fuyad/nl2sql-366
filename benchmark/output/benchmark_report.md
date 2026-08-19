@@ -1,36 +1,36 @@
 # NL2SQL-366 Benchmark Report
 
-**Generated:** 2026-08-18 18:02 UTC
-**Total Runtime:** 5.06 seconds
+**Generated:** 2026-08-19 05:12 UTC
+**Total Runtime:** 23.97 seconds
 
 ## 1. Benchmark Overview
 
 - **Total SQL Queries Evaluated:** 180
 - **Number of Datasets/Schemas:** 6
-- **Datasets:** dengue_dataset, ecommerce_dataset, employee_dataset, housing_dataset, student_performance_dataset, temp_and_rain_dataset
+- **Datasets:** dengue_dataset, diabetes_prediction_dataset, ecommerce_dataset, employee_dataset, housing_dataset, student_performance_dataset
 - **Queries per Dataset:** 30
 - **Intent Distribution:**
-  - AVG: 44 queries
-  - COUNT: 69 queries
-  - MAX: 17 queries
-  - MIN: 16 queries
-  - SELECT: 27 queries
-  - SUM: 7 queries
+  - AVG: 34 queries
+  - COUNT: 25 queries
+  - MAX: 14 queries
+  - MIN: 11 queries
+  - SELECT: 83 queries
+  - SUM: 13 queries
 
 ## 2. Overall Results
 
 | Metric | Score |
 |--------|-------|
-| Intent Accuracy | 79.44% |
-| Valid SQL | 92.22% |
-| Execution Success | 92.22% |
-| Result Match Accuracy | 60.56% |
+| Intent Accuracy | 80.00% |
+| Valid SQL | 93.89% |
+| Execution Success | 93.89% |
+| Result Match Accuracy | 50.00% |
 | Exact SQL Match | 0.00% |
-| Macro F1 | 73.83% |
+| Macro F1 | 65.84% |
 | Avg SQL Generation Time | 0.01 ms |
-| Avg Execution Time | 0.96 ms |
-| Total Passed | 109 |
-| Total Failed | 71 |
+| Avg Execution Time | 5.65 ms |
+| Total Passed | 90 |
+| Total Failed | 90 |
 
 ![Overall Metrics](chart_overall_metrics.png)
 
@@ -39,7 +39,7 @@
 | Method | Description | Accuracy |
 |--------|-------------|----------|
 | Reference SQL | Ground-truth SQL executed directly | 100.00% |
-| NL2SQL-366 | Natural language to SQL pipeline | 60.56% |
+| NL2SQL-366 | Natural language to SQL pipeline | 50.00% |
 
 > Reference SQL is treated as ground truth. NL2SQL-366 is correct when generated SQL produces the same result as the reference SQL.
 
@@ -49,12 +49,12 @@
 
 | Intent | Queries | Intent Acc. | Result Match | Exact SQL | Valid SQL | Exec Success |
 |--------|---------|-------------|--------------|-----------|-----------|-------------|
-| AVG | 44 | 88.64% | 86.36% | 0.00% | 88.64% | 88.64% |
-| COUNT | 69 | 71.01% | 47.83% | 0.00% | 97.10% | 97.10% |
-| MAX | 17 | 88.24% | 70.59% | 0.00% | 94.12% | 94.12% |
-| MIN | 16 | 93.75% | 75.00% | 0.00% | 93.75% | 93.75% |
-| SELECT | 27 | 77.78% | 37.04% | 0.00% | 88.89% | 88.89% |
-| SUM | 7 | 57.14% | 57.14% | 0.00% | 71.43% | 71.43% |
+| AVG | 34 | 100.00% | 67.65% | 0.00% | 91.18% | 91.18% |
+| COUNT | 25 | 80.00% | 36.00% | 0.00% | 88.00% | 88.00% |
+| MAX | 14 | 100.00% | 64.29% | 0.00% | 92.86% | 92.86% |
+| MIN | 11 | 100.00% | 63.64% | 0.00% | 90.91% | 90.91% |
+| SELECT | 83 | 62.65% | 42.17% | 0.00% | 100.00% | 100.00% |
+| SUM | 13 | 100.00% | 53.85% | 0.00% | 76.92% | 76.92% |
 
 ![Intent Accuracy](chart_intent_accuracy.png)
 
@@ -64,12 +64,12 @@
 
 | Dataset | Queries | Intent Acc. | Result Match | Exact SQL |
 |---------|---------|-------------|--------------|-----------|
-| dengue_dataset | 30 | 100.00% | 80.00% | 0.00% |
-| ecommerce_dataset | 30 | 46.67% | 46.67% | 0.00% |
-| employee_dataset | 30 | 90.00% | 60.00% | 0.00% |
-| housing_dataset | 30 | 90.00% | 73.33% | 0.00% |
-| student_performance_dataset | 30 | 76.67% | 50.00% | 0.00% |
-| temp_and_rain_dataset | 30 | 73.33% | 53.33% | 0.00% |
+| dengue_dataset | 30 | 63.33% | 46.67% | 0.00% |
+| diabetes_prediction_dataset | 30 | 73.33% | 53.33% | 0.00% |
+| ecommerce_dataset | 30 | 70.00% | 56.67% | 0.00% |
+| employee_dataset | 30 | 93.33% | 30.00% | 0.00% |
+| housing_dataset | 30 | 100.00% | 70.00% | 0.00% |
+| student_performance_dataset | 30 | 80.00% | 43.33% | 0.00% |
 
 ![Dataset Accuracy](chart_dataset_accuracy.png)
 
@@ -77,24 +77,24 @@
 
 | Intent | Precision | Recall | F1 | Support |
 |--------|-----------|--------|-----|---------|
-| AVG | 100.00% | 86.36% | 92.68% | 44 |
-| COUNT | 100.00% | 47.83% | 64.71% | 69 |
-| MAX | 100.00% | 70.59% | 82.76% | 17 |
-| MIN | 100.00% | 75.00% | 85.71% | 16 |
-| SELECT | 100.00% | 37.04% | 54.05% | 27 |
-| SUM | 100.00% | 57.14% | 72.73% | 7 |
+| AVG | 100.00% | 67.65% | 80.70% | 34 |
+| COUNT | 100.00% | 36.00% | 52.94% | 25 |
+| MAX | 100.00% | 64.29% | 78.26% | 14 |
+| MIN | 100.00% | 63.64% | 77.78% | 11 |
+| SELECT | 100.00% | 42.17% | 59.32% | 83 |
+| SUM | 100.00% | 53.85% | 70.00% | 13 |
 
 ## 6. Error Analysis
 
-**Total Failed Queries:** 71
+**Total Failed Queries:** 90
 
 **Error Distribution:**
 
 | Error Category | Count |
 |----------------|-------|
-| intent_error | 25 |
-| reference_error | 12 |
-| result_mismatch | 34 |
+| intent_error | 36 |
+| result_mismatch | 46 |
+| sql_validation_error | 8 |
 
 ![Error Distribution](chart_error_distribution.png)
 
@@ -102,76 +102,76 @@
 
 | ID | Dataset | Question | Expected Intent | Predicted | Error |
 |----|---------|----------|-----------------|-----------|-------|
-| 16 | dengue_dataset | count patients with NS1 positive | COUNT | COUNT | result_mismatch |
-| 17 | dengue_dataset | count patients with IgG positive | COUNT | COUNT | result_mismatch |
-| 18 | dengue_dataset | count patients with IgM positive | COUNT | COUNT | result_mismatch |
-| 23 | dengue_dataset | count patients with headache | COUNT | COUNT | result_mismatch |
-| 24 | dengue_dataset | count patients with myalgia | COUNT | COUNT | result_mismatch |
-| 30 | dengue_dataset | top 5 highest platelet count | SELECT | SELECT | result_mismatch |
-| 35 | ecommerce_dataset | total purchase amount | SUM | None | reference_error |
-| 36 | ecommerce_dataset | average purchase amount | AVG | None | reference_error |
-| 37 | ecommerce_dataset | maximum purchase amount | MAX | None | reference_error |
-| 38 | ecommerce_dataset | minimum purchase amount | MIN | None | reference_error |
-| 39 | ecommerce_dataset | average time spent on website | AVG | None | reference_error |
-| 40 | ecommerce_dataset | average delivery time | AVG | None | reference_error |
-| 41 | ecommerce_dataset | average review score | AVG | None | reference_error |
-| 42 | ecommerce_dataset | total number of items purchased | SUM | COUNT | intent_error |
-| 46 | ecommerce_dataset | show customers with purchase amount greater than 5 | SELECT | None | reference_error |
-| 47 | ecommerce_dataset | count customers who availed discount | COUNT | SELECT | intent_error |
-| 48 | ecommerce_dataset | count return customers | COUNT | SELECT | intent_error |
-| 52 | ecommerce_dataset | count customers who paid with credit card | COUNT | SELECT | intent_error |
-| 55 | ecommerce_dataset | total purchase amount by product category | SUM | None | reference_error |
-| 56 | ecommerce_dataset | average purchase amount by gender | AVG | None | reference_error |
-| 59 | ecommerce_dataset | top 5 highest purchase amount | SELECT | None | reference_error |
-| 60 | ecommerce_dataset | lowest 5 purchase amount | SELECT | None | reference_error |
-| 70 | employee_dataset | total employees in R and D | COUNT | SUM | intent_error |
-| 73 | employee_dataset | top 5 highest monthly income | SELECT | SELECT | result_mismatch |
-| 74 | employee_dataset | how many female employees | COUNT | COUNT | result_mismatch |
-| 75 | employee_dataset | how many male employees | COUNT | COUNT | result_mismatch |
-| 77 | employee_dataset | employees with age between 30 and 40 | SELECT | COUNT | intent_error |
-| 79 | employee_dataset | employees with masters degree | SELECT | SELECT | result_mismatch |
-| 80 | employee_dataset | employees in Software Development | COUNT | COUNT | result_mismatch |
-| 83 | employee_dataset | count employees by gender | COUNT | COUNT | result_mismatch |
-| 86 | employee_dataset | employees with single marital status | SELECT | SELECT | result_mismatch |
-| 88 | employee_dataset | average performance rating by marital status | AVG | AVG | result_mismatch |
-| 89 | employee_dataset | female employees with salary greater than 4000 | SELECT | SELECT | result_mismatch |
-| 90 | employee_dataset | total employees by department | COUNT | SUM | intent_error |
-| 101 | housing_dataset | top 10 highest priced houses | SELECT | SELECT | result_mismatch |
-| 105 | housing_dataset | maximum number of stories | MAX | COUNT | intent_error |
-| 108 | housing_dataset | lowest 5 house prices | SELECT | SELECT | result_mismatch |
-| 114 | housing_dataset | minimum price by number of stories | MIN | MIN | result_mismatch |
-| 115 | housing_dataset | houses on main road | SELECT | COUNT | intent_error |
-| 116 | housing_dataset | price between 5000000 and 7000000 | SELECT | MIN | intent_error |
-| 117 | housing_dataset | houses with air conditioning and guest room | SELECT | SELECT | result_mismatch |
-| 119 | housing_dataset | top 5 most expensive semi furnished houses | SELECT | SELECT | result_mismatch |
-| 130 | student_performance_dataset | how many female students | COUNT | COUNT | result_mismatch |
-| 131 | student_performance_dataset | how many male students | COUNT | COUNT | result_mismatch |
-| 132 | student_performance_dataset | count students with tutoring | COUNT | COUNT | result_mismatch |
-| 133 | student_performance_dataset | count students without tutoring | COUNT | COUNT | result_mismatch |
-| 134 | student_performance_dataset | count students with extracurricular activities | COUNT | COUNT | result_mismatch |
-| 135 | student_performance_dataset | count students who play sports | COUNT | COUNT | result_mismatch |
-| 136 | student_performance_dataset | students with GPA greater than 3.5 | COUNT | SELECT | intent_error |
-| 137 | student_performance_dataset | students with GPA less than 1.0 | COUNT | SELECT | intent_error |
+| 3 | employee_dataset | how many male employees | COUNT | COUNT | result_mismatch |
+| 5 | employee_dataset | employees with salary greater than 10000 | SELECT | SELECT | result_mismatch |
+| 6 | employee_dataset | top 5 highest performance ratings | SELECT | SELECT | result_mismatch |
+| 8 | employee_dataset | employees with age between 30 and 40 | SELECT | COUNT | intent_error |
+| 9 | employee_dataset | show female employees with more than 5 years exper | SELECT | SELECT | result_mismatch |
+| 11 | employee_dataset | minimum salary among employees | MIN | MIN | sql_validation_error |
+| 12 | employee_dataset | count employees with married status | COUNT | COUNT | result_mismatch |
+| 13 | employee_dataset | how many distinct departments | COUNT | COUNT | result_mismatch |
+| 14 | employee_dataset | employees with salary hike greater than 15 | SELECT | SELECT | result_mismatch |
+| 15 | employee_dataset | lowest 10 monthly incomes | SELECT | SELECT | result_mismatch |
+| 16 | employee_dataset | total salary by marital status | SUM | SUM | sql_validation_error |
+| 18 | employee_dataset | average salary by age group | AVG | AVG | result_mismatch |
+| 19 | employee_dataset | maximum salary in R&D | MAX | MAX | sql_validation_error |
+| 20 | employee_dataset | how many employees have doctorate | COUNT | COUNT | result_mismatch |
+| 21 | employee_dataset | show employees with 0 years experience | SELECT | SELECT | result_mismatch |
+| 22 | employee_dataset | total salary by gender | SUM | SUM | sql_validation_error |
+| 24 | employee_dataset | average salary by education level | AVG | AVG | sql_validation_error |
+| 26 | employee_dataset | show employees with salary between 3000 and 6000 | SELECT | SELECT | result_mismatch |
+| 27 | employee_dataset | how many employees in training department | COUNT | COUNT | result_mismatch |
+| 28 | employee_dataset | total salary by department | SUM | SUM | sql_validation_error |
+| 30 | employee_dataset | employees from software development | SELECT | COUNT | intent_error |
+| 33 | housing_dataset | how many houses have 4 bedrooms | COUNT | COUNT | result_mismatch |
+| 35 | housing_dataset | minimum price by stories | MIN | MIN | result_mismatch |
+| 38 | housing_dataset | top 5 highest priced houses | SELECT | SELECT | result_mismatch |
+| 48 | housing_dataset | maximum price by prefarea | MAX | MAX | result_mismatch |
+| 49 | housing_dataset | average bathrooms by furnished status | AVG | AVG | result_mismatch |
+| 52 | housing_dataset | total price by location | SUM | SUM | result_mismatch |
+| 53 | housing_dataset | count houses with 3 bedrooms | COUNT | COUNT | result_mismatch |
+| 57 | housing_dataset | lowest 10 prices | SELECT | SELECT | result_mismatch |
+| 58 | housing_dataset | total price by mainroad and furnishing status | SUM | SUM | result_mismatch |
+| 65 | student_performance_dataset | students with grade class 0 | SELECT | SELECT | result_mismatch |
+| 66 | student_performance_dataset | top 5 highest gpa | SELECT | SELECT | result_mismatch |
+| 67 | student_performance_dataset | average study time by ethnicity | AVG | AVG | result_mismatch |
+| 68 | student_performance_dataset | count students by parental education | COUNT | COUNT | result_mismatch |
+| 70 | student_performance_dataset | minimum gpa by gender | MIN | MIN | result_mismatch |
+| 71 | student_performance_dataset | students with tutoring 1 | SELECT | COUNT | intent_error |
+| 72 | student_performance_dataset | average gpa by grade class | AVG | AVG | result_mismatch |
+| 73 | student_performance_dataset | students with extracurricular 1 | SELECT | COUNT | intent_error |
+| 79 | student_performance_dataset | students with parental support 4 | SELECT | COUNT | intent_error |
+| 81 | student_performance_dataset | students with music 1 | SELECT | COUNT | intent_error |
+| 82 | student_performance_dataset | average gpa by parental support | AVG | AVG | result_mismatch |
+| 84 | student_performance_dataset | students with volunteering 1 | SELECT | COUNT | intent_error |
+| 85 | student_performance_dataset | minimum age by gender | MIN | MIN | result_mismatch |
+| 87 | student_performance_dataset | average gpa by ethnicity and gender | AVG | AVG | result_mismatch |
+| 88 | student_performance_dataset | students with age 16 | SELECT | COUNT | intent_error |
+| 89 | student_performance_dataset | total absences by grade class | SUM | SUM | result_mismatch |
+| 90 | student_performance_dataset | students with study time greater than 15 | SELECT | SELECT | result_mismatch |
+| 91 | diabetes_prediction_dataset | list diabetic patients | SELECT | SELECT | result_mismatch |
+| 93 | diabetes_prediction_dataset | how many patients have hypertension | COUNT | COUNT | result_mismatch |
+| 95 | diabetes_prediction_dataset | patients with heart disease 1 | SELECT | COUNT | intent_error |
 
 ## 7. Reference vs Generated SQL Analysis
 
 | Category | Count | Percentage |
 |----------|-------|------------|
 | SQL exactly identical, result correct | 0 | 0.00% |
-| SQL different, but result identical | 109 | 60.56% |
-| SQL valid but result incorrect | 57 | 31.67% |
-| SQL invalid | 14 | 7.78% |
+| SQL different, but result identical | 90 | 50.00% |
+| SQL valid but result incorrect | 79 | 43.89% |
+| SQL invalid | 11 | 6.11% |
 | SQL execution failed | 0 | 0.00% |
 
 ### Examples
 
 **Correct Result (ID 1):**
-- Question: count all patients
-- Reference: `SELECT COUNT(*) FROM dengue_dataset`
-- Generated: `SELECT COUNT(*) FROM "dengue"`
+- Question: list all employees
+- Reference: `SELECT * FROM employee_dataset`
+- Generated: `SELECT * FROM "employee_dataset"`
 
-**Valid SQL + Wrong Result (ID 16):**
-- Question: count patients with NS1 positive
-- Reference: `SELECT COUNT(*) FROM dengue_dataset WHERE NS1 = 1`
-- Generated: `SELECT COUNT(*) FROM "dengue"`
+**Valid SQL + Wrong Result (ID 3):**
+- Question: how many male employees
+- Reference: `SELECT COUNT(*) FROM employee_dataset WHERE Gender = 'Male'`
+- Generated: `SELECT COUNT(*) FROM "employee_dataset"`
 - Error: result_mismatch

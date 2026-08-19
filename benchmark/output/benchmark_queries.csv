@@ -1,181 +1,181 @@
 id,dataset,question,sql,expected_answer
-1,dengue_dataset,count all patients,SELECT COUNT(*) FROM dengue_dataset,1000
-2,dengue_dataset,average age of patients,SELECT AVG(Age) FROM dengue_dataset,35.92
-3,dengue_dataset,average body temperature,SELECT AVG(Body_Temperature) FROM dengue_dataset,38.18
-4,dengue_dataset,maximum age of patients,SELECT MAX(Age) FROM dengue_dataset,65
-5,dengue_dataset,minimum age of patients,SELECT MIN(Age) FROM dengue_dataset,8
-6,dengue_dataset,maximum platelet count,SELECT MAX(Platelet_Count) FROM dengue_dataset,362426
-7,dengue_dataset,minimum platelet count,SELECT MIN(Platelet_Count) FROM dengue_dataset,26885
-8,dengue_dataset,average platelet count,SELECT AVG(Platelet_Count) FROM dengue_dataset,151716.7
-9,dengue_dataset,average WBC count,SELECT AVG(WBC_Count) FROM dengue_dataset,4696.81
-10,dengue_dataset,total fever duration of all patients,SELECT SUM(Fever_Duration) FROM dengue_dataset,3023
-11,dengue_dataset,average fever duration,SELECT AVG(Fever_Duration) FROM dengue_dataset,3.02
-12,dengue_dataset,how many female patients,SELECT COUNT(*) FROM dengue_dataset WHERE Gender = 'Female',524
-13,dengue_dataset,how many male patients,SELECT COUNT(*) FROM dengue_dataset WHERE Gender = 'Male',476
-14,dengue_dataset,show female patients older than 30,SELECT * FROM dengue_dataset WHERE Gender = 'Female' AND Age > 30,303
-15,dengue_dataset,count patients from Mirpur,SELECT COUNT(*) FROM dengue_dataset WHERE Area = 'Mirpur',34
-16,dengue_dataset,count patients with NS1 positive,SELECT COUNT(*) FROM dengue_dataset WHERE NS1 = 1,519
-17,dengue_dataset,count patients with IgG positive,SELECT COUNT(*) FROM dengue_dataset WHERE IgG = 1,533
-18,dengue_dataset,count patients with IgM positive,SELECT COUNT(*) FROM dengue_dataset WHERE IgM = 1,475
-19,dengue_dataset,how many patients from developed area,SELECT COUNT(*) FROM dengue_dataset WHERE AreaType = 'Developed',501
-20,dengue_dataset,how many patients from undeveloped area,SELECT COUNT(*) FROM dengue_dataset WHERE AreaType = 'Undeveloped',499
-21,dengue_dataset,count patients living in building,SELECT COUNT(*) FROM dengue_dataset WHERE HouseType = 'Building',354
-22,dengue_dataset,count patients with outcome 1,SELECT COUNT(*) FROM dengue_dataset WHERE Outcome = 1,533
-23,dengue_dataset,count patients with headache,SELECT COUNT(*) FROM dengue_dataset WHERE Headache = 1,553
-24,dengue_dataset,count patients with myalgia,SELECT COUNT(*) FROM dengue_dataset WHERE Myalgia = 1,457
-25,dengue_dataset,patients with age between 20 and 40,SELECT COUNT(*) FROM dengue_dataset WHERE Age BETWEEN 20 AND 40,364
-26,dengue_dataset,count patients with platelet count less than 150000,SELECT COUNT(*) FROM dengue_dataset WHERE Platelet_Count < 150000,536
-27,dengue_dataset,count patients with body temperature above 38,SELECT COUNT(*) FROM dengue_dataset WHERE Body_Temperature > 38,533
-28,dengue_dataset,average age by gender,"SELECT Gender, AVG(Age) FROM dengue_dataset GROUP BY Gender",2
-29,dengue_dataset,count patients by area type,"SELECT AreaType, COUNT(*) FROM dengue_dataset GROUP BY AreaType",2
-30,dengue_dataset,top 5 highest platelet count,SELECT Platelet_Count FROM dengue_dataset ORDER BY Platelet_Count DESC LIMIT 5,5
-31,ecommerce_dataset,count all customers,SELECT COUNT(*) FROM ecommerce_dataset,10000
-32,ecommerce_dataset,average age of customers,SELECT AVG(Age) FROM ecommerce_dataset,43.79
-33,ecommerce_dataset,maximum age of customers,SELECT MAX(Age) FROM ecommerce_dataset,69
-34,ecommerce_dataset,minimum age of customers,SELECT MIN(Age) FROM ecommerce_dataset,18
-35,ecommerce_dataset,total purchase amount,SELECT SUM(Purchase_Amount_($)) FROM ecommerce_dataset,5038924.94
-36,ecommerce_dataset,average purchase amount,SELECT AVG(Purchase_Amount_($)) FROM ecommerce_dataset,503.89
-37,ecommerce_dataset,maximum purchase amount,SELECT MAX(Purchase_Amount_($)) FROM ecommerce_dataset,999.98
-38,ecommerce_dataset,minimum purchase amount,SELECT MIN(Purchase_Amount_($)) FROM ecommerce_dataset,5.19
-39,ecommerce_dataset,average time spent on website,SELECT AVG(Time_Spent_on_Website_(min)) FROM ecommerce_dataset,29.92
-40,ecommerce_dataset,average delivery time,SELECT AVG(Delivery_Time_(days)) FROM ecommerce_dataset,7.01
-41,ecommerce_dataset,average review score,SELECT AVG(Review_Score_(1-5)) FROM ecommerce_dataset,3.0
-42,ecommerce_dataset,total number of items purchased,SELECT SUM(Number_of_Items_Purchased) FROM ecommerce_dataset,49985
-43,ecommerce_dataset,how many female customers,SELECT COUNT(*) FROM ecommerce_dataset WHERE Gender = 'Female',3338
-44,ecommerce_dataset,how many male customers,SELECT COUNT(*) FROM ecommerce_dataset WHERE Gender = 'Male',3349
-45,ecommerce_dataset,count customers from Dhaka,SELECT COUNT(*) FROM ecommerce_dataset WHERE Location = 'Dhaka',1206
-46,ecommerce_dataset,show customers with purchase amount greater than 500,SELECT * FROM ecommerce_dataset WHERE Purchase_Amount_($) > 500,5066
-47,ecommerce_dataset,count customers who availed discount,SELECT COUNT(*) FROM ecommerce_dataset WHERE Discount_Availed = 1,5017
-48,ecommerce_dataset,count return customers,SELECT COUNT(*) FROM ecommerce_dataset WHERE Return_Customer = 1,4996
-49,ecommerce_dataset,count customers using mobile device,SELECT COUNT(*) FROM ecommerce_dataset WHERE Device_Type = 'Mobile',3374
-50,ecommerce_dataset,count customers with premium subscription,SELECT COUNT(*) FROM ecommerce_dataset WHERE Subscription_Status = 'Premium',3369
-51,ecommerce_dataset,count customers with high satisfaction,SELECT COUNT(*) FROM ecommerce_dataset WHERE Customer_Satisfaction = 'High',3304
-52,ecommerce_dataset,count customers who paid with credit card,SELECT COUNT(*) FROM ecommerce_dataset WHERE Payment_Method = 'Credit Card',2028
-53,ecommerce_dataset,customers with age between 20 and 40,SELECT COUNT(*) FROM ecommerce_dataset WHERE Age BETWEEN 20 AND 40,3939
-54,ecommerce_dataset,count customers in electronics category,SELECT COUNT(*) FROM ecommerce_dataset WHERE Product_Category = 'Electronics',1309
-55,ecommerce_dataset,total purchase amount by product category,"SELECT Product_Category, SUM(Purchase_Amount_($)) FROM ecommerce_dataset GROUP BY Product_Category",8
-56,ecommerce_dataset,average purchase amount by gender,"SELECT Gender, AVG(Purchase_Amount_($)) FROM ecommerce_dataset GROUP BY Gender",3
-57,ecommerce_dataset,count customers by location,"SELECT Location, COUNT(*) FROM ecommerce_dataset GROUP BY Location",8
-58,ecommerce_dataset,count customers by device type,"SELECT Device_Type, COUNT(*) FROM ecommerce_dataset GROUP BY Device_Type",3
-59,ecommerce_dataset,top 5 highest purchase amount,SELECT Purchase_Amount_($) FROM ecommerce_dataset ORDER BY Purchase_Amount_($) DESC LIMIT 5,5
-60,ecommerce_dataset,lowest 5 purchase amount,SELECT Purchase_Amount_($) FROM ecommerce_dataset ORDER BY Purchase_Amount_($) ASC LIMIT 5,5
-61,employee_dataset,count all employees,SELECT COUNT(*) FROM employee_dataset,25
-62,employee_dataset,average monthly income,SELECT AVG(Monthly_Income) FROM employee_dataset,4756.84
-63,employee_dataset,average age of employees,SELECT AVG(Age) FROM employee_dataset,35.56
-64,employee_dataset,maximum age of employees,SELECT MAX(Age) FROM employee_dataset,59
-65,employee_dataset,minimum age of employees,SELECT MIN(Age) FROM employee_dataset,22
-66,employee_dataset,maximum monthly income,SELECT MAX(Monthly_Income) FROM employee_dataset,15427
-67,employee_dataset,minimum monthly income,SELECT MIN(Monthly_Income) FROM employee_dataset,2028
-68,employee_dataset,average percent salary hike,SELECT AVG(Percent_Salary_Hike) FROM employee_dataset,15.24
-69,employee_dataset,average years of experience,SELECT AVG(Years_of_Experience) FROM employee_dataset,2.96
-70,employee_dataset,total employees in R and D,SELECT COUNT(*) FROM employee_dataset WHERE Department = 'R&D',5
-71,employee_dataset,employees with salary greater than 5000,SELECT * FROM employee_dataset WHERE Monthly_Income > 5000,5
-72,employee_dataset,average salary hike by department,"SELECT Department, AVG(Percent_Salary_Hike) FROM employee_dataset GROUP BY Department",5
-73,employee_dataset,top 5 highest monthly income,"SELECT Employee_Name, Monthly_Income FROM employee_dataset ORDER BY Monthly_Income DESC LIMIT 5",5
-74,employee_dataset,how many female employees,SELECT COUNT(*) FROM employee_dataset WHERE Gender = 'Female',6
-75,employee_dataset,how many male employees,SELECT COUNT(*) FROM employee_dataset WHERE Gender = 'Male',18
-76,employee_dataset,employees with performance rating 5,SELECT * FROM employee_dataset WHERE Performance_Rating = 5,4
-77,employee_dataset,employees with age between 30 and 40,SELECT * FROM employee_dataset WHERE Age BETWEEN 30 AND 40,12
-78,employee_dataset,average age by department,"SELECT Department, AVG(Age) FROM employee_dataset GROUP BY Department",5
-79,employee_dataset,employees with masters degree,SELECT * FROM employee_dataset WHERE Education = 'Masters',12
-80,employee_dataset,employees in Software Development,SELECT COUNT(*) FROM employee_dataset WHERE Department = 'Software Development',12
-81,employee_dataset,employees with salary less than 3000,SELECT * FROM employee_dataset WHERE Monthly_Income < 3000,8
-82,employee_dataset,maximum salary hike,SELECT MAX(Percent_Salary_Hike) FROM employee_dataset,23
-83,employee_dataset,count employees by gender,"SELECT Gender, COUNT(*) FROM employee_dataset GROUP BY Gender",3
-84,employee_dataset,employees with experience greater than 5,SELECT * FROM employee_dataset WHERE Years_of_Experience > 5,5
-85,employee_dataset,average monthly income by education,"SELECT Education, AVG(Monthly_Income) FROM employee_dataset GROUP BY Education",4
-86,employee_dataset,employees with single marital status,SELECT * FROM employee_dataset WHERE Marital_Status = 'Single',6
-87,employee_dataset,lowest monthly income,SELECT MIN(Monthly_Income) FROM employee_dataset,2028
-88,employee_dataset,average performance rating by marital status,"SELECT Marital_Status, AVG(Performance_Rating) FROM employee_dataset GROUP BY Marital_Status",4
-89,employee_dataset,female employees with salary greater than 4000,SELECT * FROM employee_dataset WHERE Gender = 'Female' AND Monthly_Income > 4000,3
-90,employee_dataset,total employees by department,"SELECT Department, COUNT(*) FROM employee_dataset GROUP BY Department",5
-91,housing_dataset,count all properties,SELECT COUNT(*) FROM housing_dataset,545
-92,housing_dataset,average price of houses,SELECT AVG(price) FROM housing_dataset,4760173.87
-93,housing_dataset,average area of houses,SELECT AVG(area) FROM housing_dataset,6066.36
-94,housing_dataset,maximum price of houses,SELECT MAX(price) FROM housing_dataset,13300000
-95,housing_dataset,minimum price of houses,SELECT MIN(price) FROM housing_dataset,1750000
-96,housing_dataset,maximum area of houses,SELECT MAX(area) FROM housing_dataset,16200
-97,housing_dataset,minimum area of houses,SELECT MIN(area) FROM housing_dataset,1650
-98,housing_dataset,average number of bedrooms,SELECT AVG(bedrooms) FROM housing_dataset,3.03
-99,housing_dataset,average number of bathrooms,SELECT AVG(bathrooms) FROM housing_dataset,1.53
-100,housing_dataset,houses with 4 bedrooms,SELECT * FROM housing_dataset WHERE bedrooms = 4,148
-101,housing_dataset,top 10 highest priced houses,SELECT * FROM housing_dataset ORDER BY price DESC LIMIT 10,10
-102,housing_dataset,average area of houses with air conditioning,SELECT AVG(area) FROM housing_dataset WHERE airconditioning = 'yes',5191.3
-103,housing_dataset,how many houses have guest room,SELECT COUNT(*) FROM housing_dataset WHERE guestroom = 'yes',155
-104,housing_dataset,total price of furnished houses,SELECT SUM(price) FROM housing_dataset WHERE furnishingstatus = 'furnished',455487500
-105,housing_dataset,maximum number of stories,SELECT MAX(stories) FROM housing_dataset,4
-106,housing_dataset,houses with area greater than 10000,SELECT * FROM housing_dataset WHERE area > 10000,21
-107,housing_dataset,average price by number of bedrooms,"SELECT bedrooms, AVG(price) FROM housing_dataset GROUP BY bedrooms",6
-108,housing_dataset,lowest 5 house prices,SELECT * FROM housing_dataset ORDER BY price ASC LIMIT 5,5
-109,housing_dataset,houses with basement,SELECT * FROM housing_dataset WHERE basement = 'yes',183
-110,housing_dataset,average price of houses with hot water heating,SELECT AVG(price) FROM housing_dataset WHERE hotwaterheating = 'yes',6061025.0
-111,housing_dataset,houses with 2 bathrooms,SELECT * FROM housing_dataset WHERE bathrooms = 2,200
-112,housing_dataset,sum of area by furnishing status,"SELECT furnishingstatus, SUM(area) FROM housing_dataset GROUP BY furnishingstatus",3
-113,housing_dataset,houses with parking greater than 2,SELECT * FROM housing_dataset WHERE parking > 2,44
-114,housing_dataset,minimum price by number of stories,"SELECT stories, MIN(price) FROM housing_dataset GROUP BY stories",4
-115,housing_dataset,houses on main road,SELECT * FROM housing_dataset WHERE mainroad = 'yes',482
-116,housing_dataset,price between 5000000 and 7000000,SELECT * FROM housing_dataset WHERE price BETWEEN 5000000 AND 7000000,114
-117,housing_dataset,houses with air conditioning and guest room,SELECT * FROM housing_dataset WHERE airconditioning = 'yes' AND guestroom = 'yes',62
-118,housing_dataset,count houses by air conditioning,"SELECT airconditioning, COUNT(*) FROM housing_dataset GROUP BY airconditioning",2
-119,housing_dataset,top 5 most expensive semi furnished houses,SELECT * FROM housing_dataset WHERE furnishingstatus = 'semi-furnished' ORDER BY price DESC LIMIT 5,5
-120,housing_dataset,average price by main road,"SELECT mainroad, AVG(price) FROM housing_dataset GROUP BY mainroad",2
-121,student_performance_dataset,count all students,SELECT COUNT(*) FROM student_performance_dataset,2000
-122,student_performance_dataset,average GPA of students,SELECT AVG(GPA) FROM student_performance_dataset,2.107
-123,student_performance_dataset,average age of students,SELECT AVG(Age) FROM student_performance_dataset,16.57
-124,student_performance_dataset,maximum GPA,SELECT MAX(GPA) FROM student_performance_dataset,4.0
-125,student_performance_dataset,minimum GPA,SELECT MIN(GPA) FROM student_performance_dataset,0.0
-126,student_performance_dataset,average study time weekly,SELECT AVG(StudyTimeWeekly) FROM student_performance_dataset,10.63
-127,student_performance_dataset,average absences,SELECT AVG(Absences) FROM student_performance_dataset,14.97
-128,student_performance_dataset,maximum absences,SELECT MAX(Absences) FROM student_performance_dataset,29
-129,student_performance_dataset,minimum absences,SELECT MIN(Absences) FROM student_performance_dataset,0
-130,student_performance_dataset,how many female students,SELECT COUNT(*) FROM student_performance_dataset WHERE Gender = 0,756
-131,student_performance_dataset,how many male students,SELECT COUNT(*) FROM student_performance_dataset WHERE Gender = 1,1244
-132,student_performance_dataset,count students with tutoring,SELECT COUNT(*) FROM student_performance_dataset WHERE Tutoring = 1,479
-133,student_performance_dataset,count students without tutoring,SELECT COUNT(*) FROM student_performance_dataset WHERE Tutoring = 0,1521
-134,student_performance_dataset,count students with extracurricular activities,SELECT COUNT(*) FROM student_performance_dataset WHERE Extracurricular = 1,788
-135,student_performance_dataset,count students who play sports,SELECT COUNT(*) FROM student_performance_dataset WHERE Sports = 1,505
-136,student_performance_dataset,students with GPA greater than 3.5,SELECT COUNT(*) FROM student_performance_dataset WHERE GPA > 3.5,136
-137,student_performance_dataset,students with GPA less than 1.0,SELECT COUNT(*) FROM student_performance_dataset WHERE GPA < 1.0,660
-138,student_performance_dataset,students with age 15,SELECT COUNT(*) FROM student_performance_dataset WHERE Age = 15,649
-139,student_performance_dataset,students with age 18,SELECT COUNT(*) FROM student_performance_dataset WHERE Age = 18,662
-140,student_performance_dataset,average GPA by gender,"SELECT Gender, AVG(GPA) FROM student_performance_dataset GROUP BY Gender",2
-141,student_performance_dataset,average absences by gender,"SELECT Gender, AVG(Absences) FROM student_performance_dataset GROUP BY Gender",2
-142,student_performance_dataset,average GPA by ethnicity,"SELECT Ethnicity, AVG(GPA) FROM student_performance_dataset GROUP BY Ethnicity",4
-143,student_performance_dataset,count students by parental education level,"SELECT ParentalEducation, COUNT(*) FROM student_performance_dataset GROUP BY ParentalEducation",5
-144,student_performance_dataset,top 5 highest GPA,"SELECT StudentID, GPA FROM student_performance_dataset ORDER BY GPA DESC LIMIT 5",5
-145,student_performance_dataset,lowest 5 GPA,"SELECT StudentID, GPA FROM student_performance_dataset ORDER BY GPA ASC LIMIT 5",5
-146,student_performance_dataset,count students by grade class,"SELECT GradeClass, COUNT(*) FROM student_performance_dataset GROUP BY GradeClass",5
-147,student_performance_dataset,students with absences less than 5,SELECT COUNT(*) FROM student_performance_dataset WHERE Absences < 5,289
-148,student_performance_dataset,students with absences greater than 25,SELECT COUNT(*) FROM student_performance_dataset WHERE Absences > 25,449
-149,student_performance_dataset,average GPA by tutoring status,"SELECT Tutoring, AVG(GPA) FROM student_performance_dataset GROUP BY Tutoring",2
-150,student_performance_dataset,female students with GPA greater than 3.0,SELECT COUNT(*) FROM student_performance_dataset WHERE Gender = 0 AND GPA > 3.0,105
-151,temp_and_rain_dataset,count all records,SELECT COUNT(*) FROM temp_and_rain_dataset,1344
-152,temp_and_rain_dataset,average temperature,SELECT AVG(tem) FROM temp_and_rain_dataset,24.89
-153,temp_and_rain_dataset,average rainfall,SELECT AVG(rain) FROM temp_and_rain_dataset,234.85
-154,temp_and_rain_dataset,maximum temperature,SELECT MAX(tem) FROM temp_and_rain_dataset,29.526
-155,temp_and_rain_dataset,minimum temperature,SELECT MIN(tem) FROM temp_and_rain_dataset,16.8006
-156,temp_and_rain_dataset,maximum rainfall,SELECT MAX(rain) FROM temp_and_rain_dataset,1012.02
-157,temp_and_rain_dataset,minimum rainfall,SELECT MIN(rain) FROM temp_and_rain_dataset,0.00089
-158,temp_and_rain_dataset,total rainfall all years,SELECT SUM(rain) FROM temp_and_rain_dataset,315635.47
-159,temp_and_rain_dataset,average temperature by month,"SELECT Month, AVG(tem) FROM temp_and_rain_dataset GROUP BY Month",12
-160,temp_and_rain_dataset,average rainfall by month,"SELECT Month, AVG(rain) FROM temp_and_rain_dataset GROUP BY Month",12
-161,temp_and_rain_dataset,average temperature by year,"SELECT Year, AVG(tem) FROM temp_and_rain_dataset GROUP BY Year",112
-162,temp_and_rain_dataset,average rainfall by year,"SELECT Year, AVG(rain) FROM temp_and_rain_dataset GROUP BY Year",112
-163,temp_and_rain_dataset,count months with rainfall greater than 500,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE rain > 500,206
-164,temp_and_rain_dataset,count months with rainfall less than 50,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE rain < 50,522
-165,temp_and_rain_dataset,count months with temperature greater than 28,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem > 28,397
-166,temp_and_rain_dataset,count months with temperature less than 20,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem < 20,246
-167,temp_and_rain_dataset,maximum temperature in month 6,SELECT MAX(tem) FROM temp_and_rain_dataset WHERE Month = 6,29.4177
-168,temp_and_rain_dataset,minimum temperature in month 1,SELECT MIN(tem) FROM temp_and_rain_dataset WHERE Month = 1,16.8006
-169,temp_and_rain_dataset,maximum rainfall in month 8,SELECT MAX(rain) FROM temp_and_rain_dataset WHERE Month = 8,1012.02
-170,temp_and_rain_dataset,minimum rainfall in month 12,SELECT MIN(rain) FROM temp_and_rain_dataset WHERE Month = 12,0.00089
-171,temp_and_rain_dataset,records from year 2000,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE Year = 2000,12
-172,temp_and_rain_dataset,records from year 1901,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE Year = 1901,12
-173,temp_and_rain_dataset,records from year 1990 to 2000,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE Year BETWEEN 1990 AND 2000,132
-174,temp_and_rain_dataset,average temperature in year 2000,SELECT AVG(tem) FROM temp_and_rain_dataset WHERE Year = 2000,25.05
-175,temp_and_rain_dataset,average temperature in year 1901,SELECT AVG(tem) FROM temp_and_rain_dataset WHERE Year = 1901,23.94
-176,temp_and_rain_dataset,temperature between 25 and 28,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem BETWEEN 25 AND 28,409
-177,temp_and_rain_dataset,rainfall between 200 and 400,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE rain BETWEEN 200 AND 400,363
-178,temp_and_rain_dataset,months with temperature above 28 and rainfall above 400,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem > 28 AND rain > 400,128
-179,temp_and_rain_dataset,months with temperature below 20 and rainfall above 100,SELECT COUNT(*) FROM temp_and_rain_dataset WHERE tem < 20 AND rain > 100,6
-180,temp_and_rain_dataset,maximum temperature by month,"SELECT Month, MAX(tem) FROM temp_and_rain_dataset GROUP BY Month",12
+1,employee_dataset,list all employees,SELECT * FROM employee_dataset,25
+2,employee_dataset,average monthly income by department,"SELECT Department, AVG(""Monthly_Income"") FROM employee_dataset GROUP BY Department",11131.0
+3,employee_dataset,how many male employees,SELECT COUNT(*) FROM employee_dataset WHERE Gender = 'Male',15
+4,employee_dataset,maximum age of employees,SELECT MAX(Age) FROM employee_dataset,59
+5,employee_dataset,employees with salary greater than 10000,"SELECT * FROM employee_dataset WHERE ""Monthly_Income"" > 10000",7
+6,employee_dataset,top 5 highest performance ratings,"SELECT ""Employee_Name"", ""Performance_Rating"" FROM employee_dataset ORDER BY ""Performance_Rating"" DESC LIMIT 5",5
+7,employee_dataset,total monthly income by gender,"SELECT Gender, SUM(""Monthly_Income"") FROM employee_dataset GROUP BY Gender",74043.0
+8,employee_dataset,employees with age between 30 and 40,SELECT * FROM employee_dataset WHERE Age BETWEEN 30 AND 40,11
+9,employee_dataset,show female employees with more than 5 years experience,"SELECT * FROM employee_dataset WHERE Gender = 'Female' AND ""Years_of_Experience"" > 5",3
+10,employee_dataset,average years of experience by education level,"SELECT Education, AVG(""Years_of_Experience"") FROM employee_dataset GROUP BY Education",3.0
+11,employee_dataset,minimum salary among employees,"SELECT MIN(""Monthly_Income"") FROM employee_dataset",2090
+12,employee_dataset,count employees with married status,"SELECT COUNT(*) FROM employee_dataset WHERE ""Marital_Status"" = 'Married'",14
+13,employee_dataset,how many distinct departments,SELECT COUNT(DISTINCT Department) FROM employee_dataset,9
+14,employee_dataset,employees with salary hike greater than 15,"SELECT * FROM employee_dataset WHERE ""Percent_Salary_Hike"" > 15",9
+15,employee_dataset,lowest 10 monthly incomes,"SELECT ""Monthly_Income"" FROM employee_dataset ORDER BY ""Monthly_Income"" ASC LIMIT 10",10
+16,employee_dataset,total salary by marital status,"SELECT ""Marital_Status"", SUM(""Monthly_Income"") FROM employee_dataset GROUP BY ""Marital_Status""",84418.0
+17,employee_dataset,employees who are not single,"SELECT * FROM employee_dataset WHERE ""Marital_Status"" != 'Single'",15
+18,employee_dataset,average salary by age group,"SELECT Age, AVG(""Monthly_Income"") FROM employee_dataset GROUP BY Age",4071.75
+19,employee_dataset,maximum salary in R&D,"SELECT MAX(""Monthly_Income"") FROM employee_dataset WHERE Department = 'R&D'",11994
+20,employee_dataset,how many employees have doctorate,SELECT COUNT(*) FROM employee_dataset WHERE Education = 'Doctorate',4
+21,employee_dataset,show employees with 0 years experience,"SELECT * FROM employee_dataset WHERE ""Years_of_Experience"" = 0",8
+22,employee_dataset,total salary by gender,"SELECT Gender, SUM(""Monthly_Income"") FROM employee_dataset GROUP BY Gender",74043.0
+23,employee_dataset,employees with performance rating greater than 3,"SELECT * FROM employee_dataset WHERE ""Performance_Rating"" > 3",5
+24,employee_dataset,average salary by education level,"SELECT Education, AVG(""Monthly_Income"") FROM employee_dataset GROUP BY Education",9093.833333333334
+25,employee_dataset,count employees by last working day,"SELECT ""Last_Working_Day"", COUNT(*) FROM employee_dataset GROUP BY ""Last_Working_Day""",23
+26,employee_dataset,show employees with salary between 3000 and 6000,"SELECT * FROM employee_dataset WHERE ""Monthly_Income"" BETWEEN 3000 AND 6000",15
+27,employee_dataset,how many employees in training department,SELECT COUNT(*) FROM employee_dataset WHERE Department = 'Training',1
+28,employee_dataset,total salary by department,"SELECT Department, SUM(""Monthly_Income"") FROM employee_dataset GROUP BY Department",59854.0
+29,employee_dataset,maximum performance rating,"SELECT MAX(""Performance_Rating"") FROM employee_dataset",5
+30,employee_dataset,employees from software development,SELECT * FROM employee_dataset WHERE Department = 'Software Development',8
+31,housing_dataset,show houses with price greater than 10000000,SELECT * FROM housing WHERE price > 10000000,10
+32,housing_dataset,average price by number of bedrooms,"SELECT bedrooms, AVG(price) FROM housing GROUP BY bedrooms",7901060.0
+33,housing_dataset,how many houses have 4 bedrooms,SELECT COUNT(*) FROM housing WHERE bedrooms = 4,230
+34,housing_dataset,maximum area of houses,SELECT MAX(area) FROM housing,16200
+35,housing_dataset,minimum price by stories,"SELECT stories, MIN(price) FROM housing GROUP BY stories",1750000
+36,housing_dataset,houses with mainroad yes,SELECT * FROM housing WHERE mainroad = 'yes',544
+37,housing_dataset,total price by furnishing status,"SELECT furnishingstatus, SUM(price) FROM housing GROUP BY furnishingstatus",2049311240.0
+38,housing_dataset,top 5 highest priced houses,SELECT price FROM housing ORDER BY price DESC LIMIT 5,5
+39,housing_dataset,average area by number of bathrooms,"SELECT bathrooms, AVG(area) FROM housing GROUP BY bathrooms",5289.636363636364
+40,housing_dataset,houses with airconditioning yes,SELECT * FROM housing WHERE airconditioning = 'yes',289
+41,housing_dataset,count houses with guestroom yes,SELECT COUNT(*) FROM housing WHERE guestroom = 'yes',169
+42,housing_dataset,houses with basement yes,SELECT * FROM housing WHERE basement = 'yes',129
+43,housing_dataset,average price by mainroad,"SELECT mainroad, AVG(price) FROM housing GROUP BY mainroad",8080080.0
+44,housing_dataset,houses with area between 5000 and 8000,SELECT * FROM housing WHERE area BETWEEN 5000 AND 8000,300
+45,housing_dataset,total bedrooms by stories,"SELECT stories, SUM(bedrooms) FROM housing GROUP BY stories",1574
+46,housing_dataset,minimum area of houses,SELECT MIN(area) FROM housing,1650
+47,housing_dataset,houses with hotwaterheating yes,SELECT * FROM housing WHERE hotwaterheating = 'yes',18
+48,housing_dataset,maximum price by prefarea,"SELECT prefarea, MAX(price) FROM housing GROUP BY prefarea",13300000
+49,housing_dataset,average bathrooms by furnished status,"SELECT furnishingstatus, AVG(bathrooms) FROM housing GROUP BY furnishingstatus",1.659848484848485
+50,housing_dataset,houses with parking greater than 1,SELECT * FROM housing WHERE parking > 1,327
+51,housing_dataset,show fully furnished houses,SELECT * FROM housing WHERE furnishingstatus = 'furnished',154
+52,housing_dataset,total price by location,"SELECT prefarea, SUM(price) FROM housing GROUP BY prefarea",2739620800.0
+53,housing_dataset,count houses with 3 bedrooms,SELECT COUNT(*) FROM housing WHERE bedrooms = 3,223
+54,housing_dataset,houses with price below 4000000,SELECT * FROM housing WHERE price < 4000000,183
+55,housing_dataset,average area by number of stories,"SELECT stories, AVG(area) FROM housing GROUP BY stories",5657.265625
+56,housing_dataset,houses with guestroom yes and airconditioning yes,SELECT * FROM housing WHERE guestroom = 'yes' AND airconditioning = 'yes',131
+57,housing_dataset,lowest 10 prices,SELECT price FROM housing ORDER BY price ASC LIMIT 10,10
+58,housing_dataset,total price by mainroad and furnishing status,"SELECT mainroad, furnishingstatus, SUM(price) FROM housing GROUP BY mainroad, furnishingstatus",2555678840.0
+59,housing_dataset,houses with area greater than 10000,SELECT * FROM housing WHERE area > 10000,17
+60,housing_dataset,average price by number of bedrooms,"SELECT bedrooms, AVG(price) FROM housing GROUP BY bedrooms",7901060.0
+61,student_performance_dataset,list students with gpa greater than 3.5,SELECT * FROM student_performance WHERE GPA > 3.5,223
+62,student_performance_dataset,average gpa by gender,"SELECT Gender, AVG(GPA) FROM student_performance GROUP BY Gender",2.025582291666666
+63,student_performance_dataset,how many students have gpa less than 2.0,SELECT COUNT(*) FROM student_performance WHERE GPA < 2.0,1303
+64,student_performance_dataset,maximum age of students,SELECT MAX(Age) FROM student_performance,18
+65,student_performance_dataset,students with grade class 0,SELECT * FROM student_performance WHERE GradeClass = 0.0,86
+66,student_performance_dataset,top 5 highest gpa,SELECT GPA FROM student_performance ORDER BY GPA DESC LIMIT 5,5
+67,student_performance_dataset,average study time by ethnicity,"SELECT Ethnicity, AVG(StudyTimeWeekly) FROM student_performance GROUP BY Ethnicity",9.850515022044771
+68,student_performance_dataset,count students by parental education,"SELECT ParentalEducation, COUNT(*) FROM student_performance GROUP BY ParentalEducation",547
+69,student_performance_dataset,students with absences greater than 20,SELECT * FROM student_performance WHERE Absences > 20,723
+70,student_performance_dataset,minimum gpa by gender,"SELECT Gender, MIN(GPA) FROM student_performance GROUP BY Gender",0.0
+71,student_performance_dataset,students with tutoring 1,SELECT * FROM student_performance WHERE Tutoring = 1,561
+72,student_performance_dataset,average gpa by grade class,"SELECT GradeClass, AVG(GPA) FROM student_performance GROUP BY GradeClass",2.7551382326652956
+73,student_performance_dataset,students with extracurricular 1,SELECT * FROM student_performance WHERE Extracurricular = 1,1517
+74,student_performance_dataset,total absences by gender,"SELECT Gender, SUM(Absences) FROM student_performance GROUP BY Gender",26226
+75,student_performance_dataset,students with gpa between 2.5 and 3.5,SELECT * FROM student_performance WHERE GPA BETWEEN 2.5 AND 3.5,608
+76,student_performance_dataset,show students with sports 1,SELECT * FROM student_performance WHERE Sports = 1,654
+77,student_performance_dataset,maximum gpa,SELECT MAX(GPA) FROM student_performance,4.0
+78,student_performance_dataset,average absences by ethnicity,"SELECT Ethnicity, AVG(Absences) FROM student_performance GROUP BY Ethnicity",16.886386363636365
+79,student_performance_dataset,students with parental support 4,SELECT * FROM student_performance WHERE ParentalSupport = 4,736
+80,student_performance_dataset,total gpa by ethnicity,"SELECT Ethnicity, SUM(GPA) FROM student_performance GROUP BY Ethnicity",3343.474901182086
+81,student_performance_dataset,students with music 1,SELECT * FROM student_performance WHERE Music = 1,105
+82,student_performance_dataset,average gpa by parental support,"SELECT ParentalSupport, AVG(GPA) FROM student_performance GROUP BY ParentalSupport",2.039290286641035
+83,student_performance_dataset,count students by age,"SELECT Age, COUNT(*) FROM student_performance GROUP BY Age",606
+84,student_performance_dataset,students with volunteering 1,SELECT * FROM student_performance WHERE Volunteering = 1,479
+85,student_performance_dataset,minimum age by gender,"SELECT Gender, MIN(Age) FROM student_performance GROUP BY Gender",15
+86,student_performance_dataset,students with gpa 0,SELECT * FROM student_performance WHERE GPA = 0.0,13
+87,student_performance_dataset,average gpa by ethnicity and gender,"SELECT Ethnicity, Gender, AVG(GPA) FROM student_performance GROUP BY Ethnicity, Gender",2.0786983845829066
+88,student_performance_dataset,students with age 16,SELECT * FROM student_performance WHERE Age = 16,1095
+89,student_performance_dataset,total absences by grade class,"SELECT GradeClass, SUM(Absences) FROM student_performance GROUP BY GradeClass",18209
+90,student_performance_dataset,students with study time greater than 15,SELECT * FROM student_performance WHERE StudyTimeWeekly > 15,826
+91,diabetes_prediction_dataset,list diabetic patients,SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 1,957
+92,diabetes_prediction_dataset,average bmi by gender,"SELECT gender, AVG(bmi) FROM diabetes_prediction_dataset GROUP BY gender",27.016348364304278
+93,diabetes_prediction_dataset,how many patients have hypertension,SELECT COUNT(*) FROM diabetes_prediction_dataset WHERE hypertension = 1,1592
+94,diabetes_prediction_dataset,maximum age of patients,SELECT MAX(age) FROM diabetes_prediction_dataset,80.0
+95,diabetes_prediction_dataset,patients with heart disease 1,SELECT * FROM diabetes_prediction_dataset WHERE heart_disease = 1,843
+96,diabetes_prediction_dataset,top 5 highest blood glucose level,SELECT blood_glucose_level FROM diabetes_prediction_dataset ORDER BY blood_glucose_level DESC LIMIT 5,5
+97,diabetes_prediction_dataset,average hba1c level by smoking history,"SELECT smoking_history, AVG(HbA1c_level) FROM diabetes_prediction_dataset GROUP BY smoking_history",5.587673076923077
+98,diabetes_prediction_dataset,count patients by gender,"SELECT gender, COUNT(*) FROM diabetes_prediction_dataset GROUP BY gender",7429
+99,diabetes_prediction_dataset,patients with bmi greater than 30,SELECT * FROM diabetes_prediction_dataset WHERE bmi > 30,1885
+100,diabetes_prediction_dataset,minimum age of patients,SELECT MIN(age) FROM diabetes_prediction_dataset,0.08
+101,diabetes_prediction_dataset,patients with blood glucose level greater than 200,SELECT * FROM diabetes_prediction_dataset WHERE blood_glucose_level > 200,849
+102,diabetes_prediction_dataset,average age by hypertension,"SELECT hypertension, AVG(age) FROM diabetes_prediction_dataset GROUP BY hypertension",46.647359037399
+103,diabetes_prediction_dataset,patients with diabetes 0,SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 0,7043
+104,diabetes_prediction_dataset,total patients by smoking history,"SELECT smoking_history, COUNT(*) FROM diabetes_prediction_dataset GROUP BY smoking_history",1963
+105,diabetes_prediction_dataset,patients with bmi between 25 and 30,SELECT * FROM diabetes_prediction_dataset WHERE bmi BETWEEN 25 AND 30,2023
+106,diabetes_prediction_dataset,show female patients,SELECT * FROM diabetes_prediction_dataset WHERE gender = 'Female',4620
+107,diabetes_prediction_dataset,maximum bmi,SELECT MAX(bmi) FROM diabetes_prediction_dataset,69.37
+108,diabetes_prediction_dataset,average blood glucose by heart disease,"SELECT heart_disease, AVG(blood_glucose_level) FROM diabetes_prediction_dataset GROUP BY heart_disease",150.64139753634743
+109,diabetes_prediction_dataset,patients with hba1c level greater than 7,SELECT * FROM diabetes_prediction_dataset WHERE HbA1c_level > 7,541
+110,diabetes_prediction_dataset,total patients by age group,"SELECT age, COUNT(*) FROM diabetes_prediction_dataset GROUP BY age",275
+111,diabetes_prediction_dataset,patients with hypertension 1 and heart disease 1,SELECT * FROM diabetes_prediction_dataset WHERE hypertension = 1 AND heart_disease = 1,208
+112,diabetes_prediction_dataset,average bmi by diabetes,"SELECT diabetes, AVG(bmi) FROM diabetes_prediction_dataset GROUP BY diabetes",31.94954928511791
+113,diabetes_prediction_dataset,patients with age between 40 and 60,SELECT * FROM diabetes_prediction_dataset WHERE age BETWEEN 40 AND 60,1853
+114,diabetes_prediction_dataset,count male patients with hypertension,SELECT COUNT(*) FROM diabetes_prediction_dataset WHERE gender = 'Male' AND hypertension = 1,972
+115,diabetes_prediction_dataset,minimum blood glucose level,SELECT MIN(blood_glucose_level) FROM diabetes_prediction_dataset,80
+116,diabetes_prediction_dataset,patients with smoking history 'never',SELECT * FROM diabetes_prediction_dataset WHERE smoking_history = 'never',4987
+117,diabetes_prediction_dataset,average hba1c by gender,"SELECT gender, AVG(HbA1c_level) FROM diabetes_prediction_dataset GROUP BY gender",5.778648290223537
+118,diabetes_prediction_dataset,patients with bmi less than 18.5,SELECT * FROM diabetes_prediction_dataset WHERE bmi < 18.5,458
+119,diabetes_prediction_dataset,maximum age by smoking history,"SELECT smoking_history, MAX(age) FROM diabetes_prediction_dataset GROUP BY smoking_history",80.0
+120,diabetes_prediction_dataset,patients with diabetes 1 and hypertension 1,SELECT * FROM diabetes_prediction_dataset WHERE diabetes = 1 AND hypertension = 1,276
+121,dengue_dataset,list patients with outcome 1,SELECT * FROM dengue WHERE Outcome = 1,439
+122,dengue_dataset,average age by outcome,"SELECT Outcome, AVG(Age) FROM dengue GROUP BY Outcome",39.88181818181818
+123,dengue_dataset,how many female patients,SELECT COUNT(*) FROM dengue WHERE Gender = 'Female',365
+124,dengue_dataset,maximum body temperature,SELECT MAX(Body_Temperature) FROM dengue,40.6
+125,dengue_dataset,patients with severe joint pain,SELECT * FROM dengue WHERE Joint_Pain = 'Severe',39
+126,dengue_dataset,top 5 highest platelet count,SELECT Platelet_Count FROM dengue ORDER BY Platelet_Count DESC LIMIT 5,5
+127,dengue_dataset,average wbc count by area type,"SELECT AreaType, AVG(WBC_Count) FROM dengue GROUP BY AreaType",3422.25
+128,dengue_dataset,count patients by area,"SELECT Area, COUNT(*) FROM dengue GROUP BY Area",24
+129,dengue_dataset,patients with headache 1,SELECT * FROM dengue WHERE Headache = 1,311
+130,dengue_dataset,minimum platelet count,SELECT MIN(Platelet_Count) FROM dengue,26885
+131,dengue_dataset,patients with rash 1,SELECT * FROM dengue WHERE Rash = 1,165
+132,dengue_dataset,average body temperature by house type,"SELECT HouseType, AVG(Body_Temperature) FROM dengue GROUP BY HouseType",37.31473684210526
+133,dengue_dataset,patients with myalgia 1,SELECT * FROM dengue WHERE Myalgia = 1,387
+134,dengue_dataset,total patients by gender,"SELECT Gender, COUNT(*) FROM dengue GROUP BY Gender",460
+135,dengue_dataset,patients with fever duration between 3 and 5,SELECT * FROM dengue WHERE Fever_Duration BETWEEN 3 AND 5,173
+136,dengue_dataset,show patients with ns1 1,SELECT * FROM dengue WHERE NS1 = 1,438
+137,dengue_dataset,maximum platelet count by outcome,"SELECT Outcome, MAX(Platelet_Count) FROM dengue GROUP BY Outcome",362426
+138,dengue_dataset,average age by gender,"SELECT Gender, AVG(Age) FROM dengue GROUP BY Gender",39.07733333333333
+139,dengue_dataset,patients with retro orbital pain 1,SELECT * FROM dengue WHERE Retro_Orbital_Pain = 1,237
+140,dengue_dataset,total patients by district,"SELECT District, COUNT(*) FROM dengue GROUP BY District",476
+141,dengue_dataset,patients with outcome 0,SELECT * FROM dengue WHERE Outcome = 0,44
+142,dengue_dataset,average platelet count by area,"SELECT Area, AVG(Platelet_Count) FROM dengue GROUP BY Area",230660.0
+143,dengue_dataset,patients with age less than 20,SELECT * FROM dengue WHERE Age < 20,162
+144,dengue_dataset,count patients by house type,"SELECT HouseType, COUNT(*) FROM dengue GROUP BY HouseType",266
+145,dengue_dataset,patients with igm 1,SELECT * FROM dengue WHERE IgM = 1,282
+146,dengue_dataset,minimum body temperature,SELECT MIN(Body_Temperature) FROM dengue,36.0
+147,dengue_dataset,patients with joint pain moderate,SELECT * FROM dengue WHERE Joint_Pain = 'Moderate',79
+148,dengue_dataset,average wbc count by outcome,"SELECT Outcome, AVG(WBC_Count) FROM dengue GROUP BY Outcome",3094.380681818181
+149,dengue_dataset,patients with fever duration greater than 5,SELECT * FROM dengue WHERE Fever_Duration > 5,141
+150,dengue_dataset,show patients with igg 1,SELECT * FROM dengue WHERE IgG = 1,438
+151,ecommerce_dataset,list customers with purchase amount greater than 500,"SELECT * FROM ecommerce_dataset WHERE ""Purchase_Amount"" > 500",545
+152,ecommerce_dataset,average purchase amount by location,"SELECT Location, AVG(""Purchase_Amount"") FROM ecommerce_dataset GROUP BY Location",604.8393939393939
+153,ecommerce_dataset,how many male customers,SELECT COUNT(*) FROM ecommerce_dataset WHERE Gender = 'Male',360
+154,ecommerce_dataset,maximum time spent on website,"SELECT MAX(""Time_Spent_on_Website_min"") FROM ecommerce_dataset",59
+155,ecommerce_dataset,customers with discount availed true,"SELECT * FROM ecommerce_dataset WHERE ""Discount_Availed"" = 'True'",519
+156,ecommerce_dataset,top 5 highest purchase amounts,"SELECT ""Purchase_Amount"" FROM ecommerce_dataset ORDER BY ""Purchase_Amount"" DESC LIMIT 5",5
+157,ecommerce_dataset,average purchase amount by product category,"SELECT ""Product_Category"", AVG(""Purchase_Amount"") FROM ecommerce_dataset GROUP BY ""Product_Category""",542.9393393393392
+158,ecommerce_dataset,count customers by gender,"SELECT Gender, COUNT(*) FROM ecommerce_dataset GROUP BY Gender",360
+159,ecommerce_dataset,customers with delivery time greater than 5,"SELECT * FROM ecommerce_dataset WHERE ""Delivery_Time_days"" > 5",470
+160,ecommerce_dataset,minimum purchase amount,"SELECT MIN(""Purchase_Amount"") FROM ecommerce_dataset",6.3
+161,ecommerce_dataset,customers with review score 1,"SELECT * FROM ecommerce_dataset WHERE ""Review_Score_1_5"" = 1",131
+162,ecommerce_dataset,average purchase amount by device type,"SELECT ""Device_Type"", AVG(""Purchase_Amount"") FROM ecommerce_dataset GROUP BY ""Device_Type""",548.586
+163,ecommerce_dataset,customers with return customer true,"SELECT * FROM ecommerce_dataset WHERE ""Return_Customer"" = 'True'",491
+164,ecommerce_dataset,total purchase amount by payment method,"SELECT ""Payment_Method"", SUM(""Purchase_Amount"") FROM ecommerce_dataset GROUP BY ""Payment_Method""",206785.64999999997
+165,ecommerce_dataset,customers with age between 20 and 30,SELECT * FROM ecommerce_dataset WHERE Age BETWEEN 20 AND 30,171
+166,ecommerce_dataset,show customers with subscription status premium,"SELECT * FROM ecommerce_dataset WHERE ""Subscription_Status"" = 'Premium'",336
+167,ecommerce_dataset,maximum purchase amount by location,"SELECT Location, MAX(""Purchase_Amount"") FROM ecommerce_dataset GROUP BY Location",999.93
+168,ecommerce_dataset,average time spent by product category,"SELECT ""Product_Category"", AVG(""Time_Spent_on_Website_min"") FROM ecommerce_dataset GROUP BY ""Product_Category""",31.775
+169,ecommerce_dataset,customers with number of items purchased greater than 5,"SELECT * FROM ecommerce_dataset WHERE ""Number_of_Items_Purchased"" > 5",239
+170,ecommerce_dataset,total customers by customer satisfaction,"SELECT ""Customer_Satisfaction"", COUNT(*) FROM ecommerce_dataset GROUP BY ""Customer_Satisfaction""",414
+171,ecommerce_dataset,customers with delivery time 1,"SELECT * FROM ecommerce_dataset WHERE ""Delivery_Time_days"" = 1",61
+172,ecommerce_dataset,average review score by device type,"SELECT ""Device_Type"", AVG(""Review_Score_1_5"") FROM ecommerce_dataset GROUP BY ""Device_Type""",3.2315
+173,ecommerce_dataset,customers with discount availed false,"SELECT * FROM ecommerce_dataset WHERE ""Discount_Availed"" = 'False'",483
+174,ecommerce_dataset,minimum time spent on website,"SELECT MIN(""Time_Spent_on_Website_min"") FROM ecommerce_dataset",1
+175,ecommerce_dataset,customers with customer satisfaction high,"SELECT * FROM ecommerce_dataset WHERE ""Customer_Satisfaction"" = 'High'",277
+176,ecommerce_dataset,total purchase amount by gender,"SELECT Gender, SUM(""Purchase_Amount"") FROM ecommerce_dataset GROUP BY Gender",236922.95000000007
+177,ecommerce_dataset,customers with location dhaka,SELECT * FROM ecommerce_dataset WHERE Location = 'Dhaka',121
+178,ecommerce_dataset,average delivery time by subscription status,"SELECT ""Subscription_Status"", AVG(""Delivery_Time_days"") FROM ecommerce_dataset GROUP BY ""Subscription_Status""",6.817201060954389
+179,ecommerce_dataset,customers with age greater than 60,SELECT * FROM ecommerce_dataset WHERE Age > 60,174
+180,ecommerce_dataset,top 5 lowest purchase amounts,"SELECT ""Purchase_Amount"" FROM ecommerce_dataset ORDER BY ""Purchase_Amount"" ASC LIMIT 5",5
