@@ -1,6 +1,6 @@
 # nl2sql-366 — Natural Language to SQL Query Generation System
 
-A Natural Language to SQL (nl2sql-366) system that converts plain English questions into SQL queries for CSV/Excel datasets. Users can upload a CSV/Excel file, ask questions in English, and get results without writing SQL.
+A Natural Language to SQL (nl2sql-366) system that converts plain English questions into SQL queries for any CSV/Excel dataset. Users can upload a CSV/Excel file, ask questions in English, and get results without writing SQL.
 
 ---
 
@@ -8,7 +8,7 @@ A Natural Language to SQL (nl2sql-366) system that converts plain English questi
 
 nl2sql-366 uses a hybrid approach that combines Machine Learning (TF-IDF + Naive Bayes) with rule-based techniques. The system breaks a user's question into smaller parts, such as finding the intent, column names, operators, and values, and then combines them to generate the final SQL query. This follows a compositional approach, making the system simple, accurate, and easy to understand.
 
-The system works with CSV/Excel datasets by automatically detecting their schema, so users can start querying immediately without changing the code.
+The system works with any CSV/Excel dataset by automatically detecting its schema, so users can start querying immediately without changing the code.
 
 **Live demo:** [nl2sql-366 on Render](https://nl2sql-366.onrender.com)
 
@@ -16,7 +16,7 @@ The system works with CSV/Excel datasets by automatically detecting their schema
 
 ## Features
 
-* Upload CSV or Excel (`.xlsx`) files with automatic schema detection
+* Upload any CSV or Excel (`.xlsx`) file — schema is detected automatically
 * Supports six query types: `SELECT`, `COUNT`, `AVG`, `MAX`, `MIN`, `SUM`
 * `GROUP BY` aggregation: `"average salary by department"`
 * `ORDER BY + LIMIT` ranking: `"top 5 highest salary"`
@@ -24,7 +24,7 @@ The system works with CSV/Excel datasets by automatically detecting their schema
 * 300+ domain synonym dictionary (students, employees, health, sales, sports, …)
 * Fuzzy column matching with underscore-to-space normalization
 * SQL injection prevention and schema-level validation
-* Flask web UI with drag-and-drop CSV upload
+* Flask web UI with drag-and-drop file upload
 * SQLite locally, PostgreSQL in production
 
 ---
@@ -50,7 +50,7 @@ nl2sql-366/
 │
 ├── core/
 │   ├── attribute_matcher.py      # Fuzzy column name matching
-│   ├── dataset_loader.py         # CSV/Excel → SQLite / PostgreSQL
+│   ├── dataset_loader.py         # CSV → SQLite / PostgreSQL
 │   ├── intent_detector.py        # ML intent classifier
 │   ├── operator_detector.py      # NL phrase → SQL operator
 │   ├── response.py               # CLI result formatter
@@ -85,17 +85,16 @@ nl2sql-366/
 │   └── test_validator.py
 │
 ├── templates/
-│   ├── index.html                # Main web UI template
+│   ├── index.html                # Main web UI template (composes the partials below)
 │   └── partials/
-│       ├── navbar.html           # Top navbar + mobile hamburger menu
-│       ├── about_modal.html      # "About" modal content
-│       ├── help_modal.html       # "Help" modal content
-│       ├── upload_card.html      # Drag & drop upload card
-│       ├── preview_card.html     # Dataset preview table
-│       └── query_card.html       # Question input + SQL/results display
+│       ├── navbar.html            # Top navbar + mobile hamburger menu
+│       ├── about_modal.html       # "About" modal content
+│       ├── help_modal.html        # "Help" modal content
+│       ├── upload_card.html       # Drag & drop upload card
+│       ├── preview_card.html      # Dataset preview table
+│       └── query_card.html        # Question input + SQL/results display
 │
 ├── favicon.svg
-│
 ├── static/
 │   ├── css/
 │   │   ├── base.css              # Reset, body, container, header, card
@@ -103,30 +102,26 @@ nl2sql-366/
 │   │   ├── modal.css             # Modal shell + About modal styling
 │   │   ├── upload.css            # Drop zone, upload strip, data requirements
 │   │   └── query-results.css     # Ask row, SQL output, results table, spinner
-│   │
 │   ├── images/
 │   │   └── ewu-logo.png
-│   │
 │   └── js/
 │       ├── dom.js                # Shared DOM element references
 │       ├── utils.js              # Shared UI helpers (errors, escaping)
 │       ├── upload.js             # Drag & drop / file upload logic
 │       ├── query.js              # Ask question + render results
 │       ├── navbar.js             # Logo reload + mobile hamburger menu
-│       └── modals.js             # About/Help modal behavior
+│       └── modals.js             # About/Help modal open & close behavior
 │
 ├── data/
 │   └── sample.csv                # Sample dataset for testing
 │
-├── simulation.html               # Interactive pipeline visualizer (learning tool)
+├── simulation.html               # Interactive pipeline visualiser (learning tool)
 ├── requirements.txt              # List of required Python packages
 ├── Procfile                      # Starts the Flask app on Render
 └── render.yaml                   # Render deployment settings
 ```
 
-Each CSS and JavaScript file has a single responsibility and is loaded directly by `templates/index.html`. No bundler or build step is required.
-
-The Jinja partials in `templates/partials/` are `{% include %}`-ed by `index.html` and keep the page markup organized by section; they are not standalone routes.
+Each CSS and JS file has a single responsibility and is loaded in dependency order directly by `templates/index.html` (no bundler or build step involved). The Jinja partials in `templates/partials/` are `{% include %}`-ed by `index.html` and keep the page markup organized by section; they aren't standalone routes.
 
 ---
 
@@ -147,21 +142,21 @@ The Jinja partials in `templates/partials/` are `{% include %}`-ed by `index.htm
 
 ## Getting Started
 
-### 1. Install Dependencies
+### 1. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Train the Intent Model
+### 2. Train the intent model
 
 ```bash
 python3 models/train_intent.py
 ```
 
-The pre-trained `.pkl` files are already included, so this step is only needed if you want to retrain the model on updated data.
+The pre-trained `.pkl` files are already included, so this step is only needed if you want to retrain on updated data.
 
-### 3. Run the Web App
+### 3. Run the web app
 
 ```bash
 python3 app.py
@@ -169,7 +164,7 @@ python3 app.py
 
 Open http://localhost:5000 in your browser.
 
-### 4. Or Use the CLI
+### 4. Or use the CLI
 
 ```bash
 python3 main.py
@@ -184,15 +179,6 @@ pytest tests/
 ```
 
 All 33 tests should pass.
-
-The test suite covers:
-
-* Dataset loading and schema detection
-* Attribute matching
-* Fuzzy and synonym-based matching
-* SQL generation and execution
-* Tokenizer and operator detection
-* SQL validation and safety checks
 
 ---
 
@@ -232,16 +218,13 @@ SQL Validator        ← Safety check + schema column verification
       │
       ▼
 SQL Executor         ← SQLite / PostgreSQL → (columns, rows)
-      │
-      ▼
-Results
 ```
 
 ---
 
 ## Benchmark
 
-The project includes a benchmark suite under `benchmark/` that evaluates the full NL2SQL pipeline on **180 reference SQL queries** across **6 real-world datasets** using **execution-based result-set equivalence** as the primary correctness metric rather than SQL string similarity.
+The project ships with a benchmark suite under `benchmark/` that evaluates the full NL2SQL pipeline on **180 reference SQL queries** across **6 real-world datasets** using **execution-based result-set equivalence** as the primary correctness metric (not SQL string similarity).
 
 ### Datasets
 
@@ -260,7 +243,7 @@ The project includes a benchmark suite under `benchmark/` that evaluates the ful
 python benchmark/run_benchmark.py
 ```
 
-Outputs (CSV, JSON, Markdown report, 6 PNG charts, and the SQLite benchmark database) are written to `benchmark/output/`.
+Outputs (CSV, JSON, Markdown report, 6 PNG charts, and the SQLite benchmark DB) are written to `benchmark/output/`.
 
 ### Latest Results (v3)
 
@@ -274,22 +257,22 @@ Outputs (CSV, JSON, Markdown report, 6 PNG charts, and the SQLite benchmark data
 | Macro F1                  | 65.84%     |
 | Passed                    | 90 / 180   |
 
-See `benchmark/README.md` and `benchmark/output/benchmark_report.md` for the full per-intent and per-dataset breakdown, error analysis, and change log.
+See [`benchmark/README.md`](benchmark/README.md) and [`benchmark/output/benchmark_report.md`](benchmark/output/benchmark_report.md) for the full per-intent and per-dataset breakdown, error analysis, and change log.
 
 ---
 
 ## Known Limitations
 
-| Limitation        | Details                                                        |
-| ----------------- | -------------------------------------------------------------- |
-| OR / IN filters   | Only AND-connected conditions are supported                    |
-| Nested conditions | Parenthesized logic like `(A OR B) AND C` is not supported     |
-| JOINs             | Only single-table queries are supported                        |
-| Date expressions  | Natural language dates such as `"last month"` are not resolved |
-| Language          | English only                                                   |
+| Limitation        | Details                                                    |
+| ----------------- | ---------------------------------------------------------- |
+| OR / IN filters   | Only AND-connected conditions are supported                |
+| Nested conditions | Parenthesized logic like `(A OR B) AND C` is not supported |
+| JOINs             | Only single-table queries are supported                    |
+| Date expressions  | Natural language dates ("last month") are not resolved     |
+| Language          | English only                                               |
 
 ---
 
 ## License
 
-This project was developed as part of the **CSE366 (Artificial Intelligence)** course at **East West University**.
+This project was developed as part of the CSE366 (Artificial Intelligence) course at East West University.
