@@ -1,8 +1,7 @@
-# core/value_matcher.py
-
 import os
 import re
 import json
+
 from rapidfuzz import process, fuzz
 
 
@@ -51,6 +50,9 @@ def _normalize_text(text):
     Normalize text for matching.
     """
 
+    if text is None:
+        return ""
+
     text = str(text).lower()
 
     text = text.replace("_", " ")
@@ -78,19 +80,6 @@ def extract_numbers(text):
     """
     Extract integer / decimal / negative numbers
     together with their positions.
-
-    Example:
-
-        "age greater than 25"
-
-    returns approximately:
-
-        [
-            {
-                "value": 25,
-                "position": ...
-            }
-        ]
     """
 
     if not text:
@@ -109,7 +98,6 @@ def extract_numbers(text):
         raw = match.group()
 
         try:
-
             if "." in raw:
                 value = float(raw)
             else:
@@ -132,7 +120,7 @@ def extract_numbers(text):
 
 def _normalize_value(value):
     """
-    Normalize a dataset categorical value for matching.
+    Normalize a dataset categorical value.
     """
 
     if value is None:
@@ -161,20 +149,22 @@ def _get_sample_values(info):
     if values is None:
         return []
 
-    return values
+    if not isinstance(values, (list, tuple, set)):
+        return [values]
+
+    return list(values)
 
 
 # =========================================================
 # BUILD VALUE LOOKUP
 # =========================================================
 
-def _build_value_lookup(schema, allowed_columns=None):
+def _build_value_lookup(
+    schema,
+    allowed_columns=None
+):
     """
-    Build:
-
-        normalized value -> column/value
-
-    from schema sample values.
+    Build categorical value lookup.
     """
 
     lookup = []
@@ -187,15 +177,18 @@ def _build_value_lookup(schema, allowed_columns=None):
 
     for column, info in schema.items():
 
-        if allowed is not None and column not in allowed:
-            continue
+        if allowed is not None:
+            if column not in allowed:
+                continue
 
         for value in _get_sample_values(info):
 
             if value is None:
                 continue
 
-            normalized = _normalize_value(value)
+            normalized = _normalize_value(
+                value
+            )
 
             if not normalized:
                 continue
@@ -210,21 +203,25 @@ def _build_value_lookup(schema, allowed_columns=None):
 
 
 # =========================================================
-# FIND SYNONYM CANONICAL VALUE
+# SYNONYM TARGET
 # =========================================================
 
-def _synonym_target(word, synonyms):
+def _synonym_target(
+    word,
+    synonyms
+):
     """
     Return canonical synonym target.
 
     Example:
-
         female -> gender
         sex    -> gender
         years  -> age
     """
 
-    normalized = _normalize_text(word)
+    normalized = _normalize_text(
+        word
+    )
 
     if normalized in synonyms:
         return _normalize_text(
@@ -245,18 +242,7 @@ def _match_one_value(
     threshold=78,
 ):
     """
-    Match a phrase against actual dataset values.
-
-    Example:
-
-        question:
-            "how many female are there"
-
-        dataset:
-            gender = ["Male", "Female"]
-
-        result:
-            Female
+    Match one phrase against dataset values.
     """
 
     if not phrase:
@@ -269,10 +255,6 @@ def _match_one_value(
     if not phrase_norm:
         return None
 
-    # -----------------------------------------------------
-    # DIRECT VALUE MATCH
-    # -----------------------------------------------------
-
     candidates = [
         item["normalized"]
         for item in value_lookup
@@ -280,6 +262,25 @@ def _match_one_value(
 
     if not candidates:
         return None
+
+    # -----------------------------------------------------
+    # EXACT MATCH FIRST
+    # -----------------------------------------------------
+
+    for item in value_lookup:
+
+        if item["normalized"] == phrase_norm:
+
+            return {
+                "column": item["column"],
+                "value": item["value"],
+                "score": 100,
+                "matched_text": phrase,
+            }
+
+    # -----------------------------------------------------
+    # FUZZY DIRECT MATCH
+    # -----------------------------------------------------
 
     result = process.extractOne(
         phrase_norm,
@@ -309,7 +310,7 @@ def _match_one_value(
                     }
 
     # -----------------------------------------------------
-    # SYNONYM-AWARE MATCH
+    # SYNONYM MATCH
     # -----------------------------------------------------
 
     canonical = _synonym_target(
@@ -319,8 +320,23 @@ def _match_one_value(
 
     if canonical:
 
-        # The canonical word itself can sometimes
-        # be an actual categorical value.
+        # First check exact canonical value.
+        for item in value_lookup:
+
+            if (
+                item["normalized"]
+                == canonical
+            ):
+
+                return {
+                    "column": item["column"],
+                    "value": item["value"],
+                    "score": 100,
+                    "matched_text": phrase,
+                    "canonical": canonical,
+                }
+
+        # Then fuzzy canonical match.
         result = process.extractOne(
             canonical,
             candidates,
@@ -364,30 +380,24 @@ def match_categorical_values(
     threshold=78,
 ):
     """
-    Detect categorical values from the question.
+    Detect categorical values from question.
 
-    Important examples:
+    Example:
 
         "how many female are there"
 
         female
-          ↓
-        synonyms.json
-          ↓
+            ↓
         gender
-          ↓
-        schema values
-          ↓
+            ↓
         Female
 
     Returns:
-
         [
             {
                 "column": "gender",
                 "value": "Female",
-                "score": 100,
-                "matched_text": "female"
+                ...
             }
         ]
     """
@@ -399,23 +409,38 @@ def match_categorical_values(
         synonyms_path
     )
 
+    # -----------------------------------------------------
+    # Primary lookup
+    # -----------------------------------------------------
+
     value_lookup = _build_value_lookup(
         schema,
         allowed_columns
     )
 
+    # -----------------------------------------------------
+    # If attribute matcher didn't find a column,
+    # retry against all categorical values.
+    # This is important for:
+    #
+    # "how many female are there"
+    #
+    # where attribute matcher may not return gender.
+    # -----------------------------------------------------
+
+    if not value_lookup:
+
+        value_lookup = _build_value_lookup(
+            schema,
+            None
+        )
+
     if not value_lookup:
         return []
-
-    results = []
 
     question_lower = str(
         question
     ).lower()
-
-    # -----------------------------------------------------
-    # CREATE PHRASES
-    # -----------------------------------------------------
 
     tokens = list(
         re.finditer(
@@ -426,6 +451,10 @@ def match_categorical_values(
 
     if not tokens:
         return []
+
+    # =====================================================
+    # CREATE PHRASES
+    # =====================================================
 
     phrases = []
 
@@ -467,9 +496,9 @@ def match_categorical_values(
             "position": start,
         })
 
-    # -----------------------------------------------------
-    # REMOVE COMMON QUESTION WORDS
-    # -----------------------------------------------------
+    # =====================================================
+    # IGNORED WORDS
+    # =====================================================
 
     ignored = {
         "how",
@@ -504,20 +533,27 @@ def match_categorical_values(
         "record",
         "rows",
         "row",
+        "please",
+        "can",
+        "you",
+        "tell",
+        "display",
+        "return",
+        "calculate",
+        "calculate",
+        "number",
+        "count",
     }
 
     phrases = [
         p
         for p in phrases
-        if (
-            p["text"]
-            not in ignored
-        )
+        if p["text"] not in ignored
     ]
 
-    # -----------------------------------------------------
+    # =====================================================
     # MATCH PHRASES
-    # -----------------------------------------------------
+    # =====================================================
 
     best_by_column = {}
 
@@ -525,7 +561,6 @@ def match_categorical_values(
 
         text = phrase["text"]
 
-        # Avoid matching very long generic phrases.
         if len(text.split()) > 3:
             continue
 
@@ -545,6 +580,7 @@ def match_categorical_values(
             column
         )
 
+        # Prefer exact / higher-score match.
         if (
             previous is None
             or match["score"]
@@ -557,9 +593,9 @@ def match_categorical_values(
 
             best_by_column[column] = match
 
-    # -----------------------------------------------------
-    # RETURN RESULTS
-    # -----------------------------------------------------
+    # =====================================================
+    # RETURN
+    # =====================================================
 
     return sorted(
         best_by_column.values(),
@@ -582,8 +618,7 @@ def match_value_for_column(
     threshold=78,
 ):
     """
-    Convenience helper for matching values
-    against one specific column.
+    Match value against one specific column.
     """
 
     results = match_categorical_values(
